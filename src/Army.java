@@ -2,16 +2,19 @@ import java.awt.Image;
 import java.util.ArrayList;
 
 
-public class Army extends Selectable{
+public class Army{
 	
 	ArrayList<Unit> containedUnits;
 	Image coverImage;
 	Boolean selected;
+	int x;
+	int y;
 	
-	public Army(ArrayList<Unit> containedUnits, Image coverImage){
-		this.ID = ID;
+	public Army(ArrayList<Unit> containedUnits, Image coverImage, int x, int y){
 		this.containedUnits = containedUnits;
 		this.coverImage = coverImage;
+		this.x = x;
+		this.y = y;
 		selected = false;
 	}
 	
@@ -25,5 +28,12 @@ public class Army extends Selectable{
 	
 	public void setSelected(Boolean isSelected){
 		selected = isSelected;
+	}
+
+	public int getX() {
+		return x;
+	}
+	public int getY() {
+		return y;
 	}
 }

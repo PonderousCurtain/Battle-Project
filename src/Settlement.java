@@ -2,14 +2,16 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 
-public class Settlement extends Selectable{
+public class Settlement{
 	ArrayList<Building> avalibleBuildings;
 	int gridSize;
 	SettlementGridSpace[][] gridArray;
 	ArrayList<Building> placedBuildings;
 	int overallProffit;
+	int ID;
 	
-	public Settlement(int gridSize){
+	public Settlement(int gridSize, int ID){
+		this. ID = ID;
 		avalibleBuildings = new ArrayList<Building>();
 		this.gridSize = gridSize;
 		
@@ -61,11 +63,8 @@ public class Settlement extends Selectable{
 	public void setGrid(int gridX, int gridY, int newValue){
 		gridArray[gridX][gridY].setValue(newValue);
 	}
-	public int getX(){
-		return x;
-	}
-	public int getY(){
-		return y;
+	public int getID(){
+		return ID;
 	}
 	public ArrayList<Building> getBuildings(){
 		return avalibleBuildings;

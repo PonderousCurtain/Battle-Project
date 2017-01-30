@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 
 
 public class OverworldManager extends JPanel{
-
+	//declare the variables that will be used in this class
 	int screenWidth;
 	int screenHeight;
 	CardManager cM;
@@ -22,39 +22,45 @@ public class OverworldManager extends JPanel{
 	ArrayList<Army> allArmies;
 
 	public OverworldManager(int screenWidth, int screenHeight){
+		//initialise the new layout manager that this class and panel will use
 		GridBagConstraints c = new GridBagConstraints();
 		setLayout(new GridBagLayout());
 
+		//create a new save manager
 		SaveManager sM = new SaveManager();
-
+		//use the save manager to retrieve the map terrain and settlement locations as a map
 		map = sM.loadBlockages("OverworldMap.txt");
 
+		// set the size of the panel to the size of the application frame
 		this.screenHeight = screenHeight;
 		this.screenWidth = screenWidth;
 
+		//create a new viewport passing the start offset (currently 0, 0 to indicate that the initial view is of the top left corner of the map
 		viewport = new OverworldViewManager(0, 0, map);
+		//create a new information panel
 		OverworldInformationPanel infoPanel = new OverworldInformationPanel(300, 1000);
-
+		//create a new paint display and allocate it the entire frame to allow animation and display
 		Paint display = new Paint();
 		display.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		
+		//initialise the array of the armies on the world map
 		allArmies = new ArrayList<Army>();
 		
-		//for testing purposes adding in an initial army to manipulate
+		//for testing purposes add in an initial army to manipulate
 		ArrayList<Unit> testArmyUnits = new ArrayList<Unit>();
 		testArmyUnits.add(new Unit(430, 270, 5, 200, Color.ORANGE, 10, 1, 500, 10));
-		Army testArmy1 = new Army(testArmyUnits, new ImageIcon("TestArmy.png").getImage());
-		testArmy1.setX(20);
-		testArmy1.setY(20);
-		testArmy1.setID(87);
+		Army testArmy1 = new Army(testArmyUnits, new ImageIcon("TestArmy.png").getImage(), 20, 20);
+		//add the test army to the array of armies
 		allArmies.add(testArmy1);
-		
+		//pass the list of armies to the view port 
 		viewport.giveArmies(allArmies);
 
+		//configure the layout manager
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 0;
 		c.gridy = 0;
-
+		
+		//add the viewport and information panel to the panel
 		add(viewport, c);
 
 		c.gridx = 1;
@@ -63,67 +69,68 @@ public class OverworldManager extends JPanel{
 	}
 
 	public class Paint extends JPanel{
+		//set up the paint class
 		public void paintComponent(Graphics gr){
 			Graphics2D g = (Graphics2D) gr;
 
+			//paint the background of the panel
 			g.setColor(Color.GREEN);
 			g.fillRect(0, 0, screenWidth, screenHeight);
 		}
 	}
 
 	public void giveCardManager(CardManager newCM){
+		//set the card manager to that passed to this class
 		cM = newCM;
 	}
 
 	public void mouseMoved(MouseEvent event){
+		//get the location on the frame of the mouse
 		int mouseX = event.getX();
 		int mouseY = event.getY();
 
+		//convert the distance into the frame into the distance into the map
 		int distIntoViewportX = mouseX - viewport.getX();
 		int distIntoViewportY = mouseY - viewport.getY();
 
+		//check if the calculated location lies within the map view port
 		if(distIntoViewportX > 0 && distIntoViewportX < viewport.getWidth()){
 			if(distIntoViewportY > 0 && distIntoViewportY < viewport.getHeight()){
-
-				//mouse is inside the view port
-				if(viewport.isSomethingAtLocation(distIntoViewportX, distIntoViewportY)){
-					Selectable selectedObject = viewport.getSelected();
-					//System.out.println(selectedObject.getID());
-				}
-
+				//if the mouse in inside the viewport update the viewport selected item to whatever is being selected currently
+				viewport.selectItemAtLocation(distIntoViewportX, distIntoViewportY);
 			}
 		}
 	}
 
 	public void mouseClicked(MouseEvent event){
+		//calculate the distance into the map the mosue has been clicked
 		int distIntoViewportX = event.getX() - viewport.getX();
 		int distIntoViewportY = event.getY() - viewport.getY();
 
+		//check if the mouse click was inside the viewport
 		if(distIntoViewportX > 0 && distIntoViewportX < viewport.getWidth()){
 			if(distIntoViewportY > 0 && distIntoViewportY < viewport.getHeight()){
-				viewport.clicked();
-				mouseMoved(event);
-				//check if the mouse is over another object and if so run click again to select it
-				if(viewport.isMouseingOverSomething() && !viewport.isMouseingOverSelected()){
-					viewport.clicked();
-					System.out.println("Double clicked");
-				}
+				//if the mouse was inside the viewport then pass the location of the click to the view manager to be handled
+				viewport.clickedAtLocation(distIntoViewportX, distIntoViewportY);
 			}
 		}
 	}
 	public void mouseDragged(MouseEvent event){
-		//to be added once mouse clicked is complete
+		//replicate the mouse clicked method to allow for the case where the user was still slightly moving the mouse at the time of the click
+		mouseClicked(event);
 	}
 
 	public void keyPressed(KeyEvent event){
 		switch(event.getKeyCode()){
 		case KeyEvent.VK_ESCAPE:
+			//make the menu card appear when escape is pressed
 			cM.showCard("OverCard", "MenuCard");
 			break;
 		case KeyEvent.VK_S:
+			//add a keyboard shortcut to go to the last selected settlement manager
 			cM.showCard("OverCard", "SettlementManager");
 			break;
-
+			// set up the directional arrow keys to control movement of the view of the world map up down left and right
 		case KeyEvent.VK_RIGHT:
 			viewport.changeXOffset(1);
 			break;
