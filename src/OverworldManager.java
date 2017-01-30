@@ -13,11 +13,12 @@ import javax.swing.JPanel;
 
 
 public class OverworldManager extends JPanel{
-	//declare the variables that will be used in this class
+	//declare the variables and classes that will be used throughout this class
 	int screenWidth;
 	int screenHeight;
 	CardManager cM;
 	OverworldViewManager viewport;
+	OverworldInformationPanel infoPanel;
 	Obstruction[][] map;
 	ArrayList<Army> allArmies;
 
@@ -37,8 +38,6 @@ public class OverworldManager extends JPanel{
 
 		//create a new viewport passing the start offset (currently 0, 0 to indicate that the initial view is of the top left corner of the map
 		viewport = new OverworldViewManager(0, 0, map);
-		//create a new information panel
-		OverworldInformationPanel infoPanel = new OverworldInformationPanel(300, 1000);
 		//create a new paint display and allocate it the entire frame to allow animation and display
 		Paint display = new Paint();
 		display.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -54,6 +53,8 @@ public class OverworldManager extends JPanel{
 		allArmies.add(testArmy1);
 		//pass the list of armies to the view port 
 		viewport.giveArmies(allArmies);
+		//create a new information panel and pass the list of armies to it
+		infoPanel = new OverworldInformationPanel(300, 1000, allArmies);
 
 		//configure the layout manager
 		c.fill = GridBagConstraints.BOTH;
@@ -98,12 +99,17 @@ public class OverworldManager extends JPanel{
 			if(distIntoViewportY > 0 && distIntoViewportY < viewport.getHeight()){
 				//if the mouse in inside the viewport update the viewport selected item to whatever is being selected currently
 				viewport.selectItemAtLocation(distIntoViewportX, distIntoViewportY);
+				//check if an item was selected at that location
+				if(viewport.isSelectedArmy() || viewport.isSelectedSettlement()){
+					//if something is selected then update the information panel with the selected ID and the the type of item selected (true for settlement false for army)
+					infoPanel.updateSelected(viewport.getSelectedID(), viewport.isSelectedSettlement());
+				}
 			}
 		}
 	}
 
 	public void mouseClicked(MouseEvent event){
-		//calculate the distance into the map the mosue has been clicked
+		//calculate the distance into the map the mouse has been clicked
 		int distIntoViewportX = event.getX() - viewport.getX();
 		int distIntoViewportY = event.getY() - viewport.getY();
 

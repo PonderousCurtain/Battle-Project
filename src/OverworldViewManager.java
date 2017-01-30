@@ -162,6 +162,19 @@ public class OverworldViewManager extends JPanel{
 		}
 
 	}
+	
+	public int getSelectedID(){
+		//return the ID of the selected item
+		return hoveringID;
+	}
+	public boolean isSelectedSettlement(){
+		//return if a settlement is currently selected
+		return settlementHovering;
+	}
+	public boolean isSelectedArmy(){
+		//return if an army is currently selected
+		return armyHovering;
+	}
 
 	public int[] getGridLocation(int x, int y){
 		//set up an array with references to a grid squaer on the map
