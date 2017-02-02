@@ -36,4 +36,7 @@ public class Army{
 	public int getY() {
 		return y;
 	}
+	public ArrayList<Unit> getUnits(){
+		return containedUnits;
+	}
 }

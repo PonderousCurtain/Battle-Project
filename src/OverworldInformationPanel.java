@@ -1,3 +1,4 @@
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -20,6 +21,9 @@ public class OverworldInformationPanel extends JPanel{
 	String settlementName;
 	Army selectedArmy;
 	ArrayList<Army> allArmiesList;
+	SettlementInfoPanel settlementPanel;
+	ArmyInfoPanel armyPanel;
+	CardLayout cl;
 
 	public OverworldInformationPanel(int width, int height, ArrayList<Army> allArmiesList){
 		//initialise the variables  as those passed to this class
@@ -35,12 +39,27 @@ public class OverworldInformationPanel extends JPanel{
 		selectedID = 0;
 		isSelectedASettlement = false;
 
+		//initialisation of a new card layout
+		cl = new CardLayout();
+		
+		//initialise the two information panels
+		settlementPanel = new SettlementInfoPanel(300, 1000);
+		armyPanel = new ArmyInfoPanel(300, 1000);
+		
+		//set the layout of this panel and add the two information panels
+		setLayout(cl);
+		add(settlementPanel, "Settlement");
+		add(armyPanel, "Army");
+		
+		//start by showing a settlement panel
+		cl.show(this, "Army");
+		
 		//create a paint class
 		Paint display = new Paint();
 		//allocate the paint class the full panel space
 		display.setPreferredSize(new Dimension(width, height));
 		//add the paint class to the panel
-		add(display);
+		//add(display);
 
 	}
 
@@ -51,42 +70,17 @@ public class OverworldInformationPanel extends JPanel{
 		//determine the type of item that is selected
 		if(isSelectedASettlement){
 			//if the selected item is a settlement then update the settlement display
-			updateSettlementInformation();
+			settlementPanel.updateInformation();
+			//then display that settlement panel
+			cl.show(this, "Settlement");
 		} else {
 			//otherwise if an army is selected then update the army display
-			updateArmyInformation();
+			armyPanel.updateInformation(allArmiesList.get(newSelectedID));
+		// then display the army information panel
+			cl.show(this, "Army");
 		}
 		//repaint the information display with the values of the newly selected item
 		repaint();
-	}
-	
-	public void updateSettlementInformation(){
-		//attempt to connect to the database containing the settlement table
-		try{
-			System.out.println("Attempting connection");
-			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
-			System.out.println("Connected \n");
-			//create the query to be made to the table
-			Statement stmt = con.createStatement();
-			//get the result set for the query executed
-			ResultSet rs = stmt.executeQuery("select * from settlements where id = " + selectedID);
-			while(rs.next()){
-				//loop through all rows in the table that were returned
-				//set the settlement name to that stored in the correct column
-				settlementName = rs.getString(2);
-			}
-			//close the connection to the database
-			con.close();
-		} catch (Exception e){
-			//in case of an error print the error code for trouble shooting
-			System.out.println(e.toString());
-		}
-	}
-	
-	public void updateArmyInformation(){
-		//set the selected Army to the correct army from the list
-		selectedArmy = allArmiesList.get(selectedID);
 	}
 
 	public class Paint extends JPanel{
@@ -96,19 +90,6 @@ public class OverworldInformationPanel extends JPanel{
 			//paint a background on the panel
 			g.setColor(Color.GRAY);
 			g.fillRect(0, 0, width, height);
-
-			//check that something is selected (upon starting up nothing will have been selected)
-			if(selectedID != 0){
-
-				//check if the selected item is a settlement or an army
-				if(isSelectedASettlement){
-					//a settlement is selected
-					g.setColor(Color.BLACK);
-					g.drawString(settlementName, 10, 10);
-				} else {
-					//an army is selected
-				}
-			}
 		}
 	}
 }

@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -140,14 +141,14 @@ public class MapDisplay extends JPanel{
 		playerList.get(1).getControlledUnits().clear();
 		//add units for testing purposes
 
-		playerList.get(0).addUnit(new Unit(500, 340, 5, 100, Color.BLACK, 10, 0, 200, 10));
-		playerList.get(0).addUnit(new Unit(430, 270, 5, 200, Color.ORANGE, 10, 1, 500, 10));
-		playerList.get(0).addUnit(new Unit(750, 550, 5, 100, Color.MAGENTA, 10, 2, 200, 10));
+		playerList.get(0).addUnit(new Unit(500, 340, 5, 100, Color.BLACK, 10, 0, 200, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
+		playerList.get(0).addUnit(new Unit(430, 270, 5, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
+		playerList.get(0).addUnit(new Unit(750, 550, 5, 100, Color.MAGENTA, 10, 2, 200, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
 
-		playerList.get(1).addUnit(new Unit(700, 340, 5, 100, Color.RED, 10, 0, 100, 10));
-		playerList.get(1).addUnit(new Unit(715, 340, 5, 100, Color.RED, 10, 0, 100, 10));
-		playerList.get(1).addUnit(new Unit(700, 355, 5, 100, Color.RED, 10, 0, 100, 10));
-		playerList.get(1).addUnit(new Unit(715, 355, 5, 100, Color.RED, 10, 0, 100, 10));
+		playerList.get(1).addUnit(new Unit(700, 340, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
+		playerList.get(1).addUnit(new Unit(715, 340, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
+		playerList.get(1).addUnit(new Unit(700, 355, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
+		playerList.get(1).addUnit(new Unit(715, 355, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
 
 
 		//fill the map library with the required size grids

@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
@@ -24,16 +25,19 @@ public class Unit {
 	int attack;
 	double maxHealth;
 	
+	Image image;
+	
 	int targetX;
 	int targetY;
 
-	public Unit(int x, int y, int speed, int health, Color unitColor, int width, int type, int agroRange, int attack){
+	public Unit(int x, int y, int speed, int health, Color unitColor, int width, int type, int agroRange, int attack, Image image){
 		this.x = x;
 		this.y = y;
 		targetX = x;
 		targetY = y;
 		this.speed = speed;
 		this.health = health;
+		this.image = image;
 		maxHealth = health;
 		rect = new Rectangle(x, y, width, width);
 		this.unitColor = unitColor;
@@ -53,6 +57,10 @@ public class Unit {
 
 	public int getX(){
 		return x;
+	}
+	
+	public Image getImage(){
+		return image;
 	}
 	public void setX(int x){
 		rect.setBounds(new Rectangle(x, y, width, width));

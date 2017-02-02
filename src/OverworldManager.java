@@ -47,7 +47,10 @@ public class OverworldManager extends JPanel{
 		
 		//for testing purposes add in an initial army to manipulate
 		ArrayList<Unit> testArmyUnits = new ArrayList<Unit>();
-		testArmyUnits.add(new Unit(430, 270, 5, 200, Color.ORANGE, 10, 1, 500, 10));
+		testArmyUnits.add(new Unit(430, 270, 5, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
+		testArmyUnits.add(new Unit(550, 340, 5, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
+		testArmyUnits.add(new Unit(800, 270, 5, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitThree.jpg").getImage()));
+		testArmyUnits.add(new Unit(240, 730, 5, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitFour.jpg").getImage()));
 		Army testArmy1 = new Army(testArmyUnits, new ImageIcon("TestArmy.png").getImage(), 20, 20);
 		//add the test army to the array of armies
 		allArmies.add(testArmy1);
