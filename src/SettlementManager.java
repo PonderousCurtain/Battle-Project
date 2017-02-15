@@ -282,8 +282,10 @@ public class SettlementManager extends JPanel implements Cloneable{
 		cM = newCM;
 	}
 
-	public void giveSettlement(Settlement newSettlement){
-		currentSettlement = newSettlement;
+	public void setSettlement(int newSettlement){
+		currentSettlement = settlementList.get(newSettlement);
+		currentBuildingList = currentSettlement.getBuildings();
+		placedBuildingList = currentSettlement.getPlacedBuildings();
 	}
 
 	public void mouseMoved(MouseEvent event){

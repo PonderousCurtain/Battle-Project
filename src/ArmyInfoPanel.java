@@ -22,6 +22,9 @@ public class ArmyInfoPanel extends JPanel{
 		this.width = width;
 		this.height = height;
 		
+		//initialise the unit list to avoid errors
+		unitList = new ArrayList<Unit>();
+		
 		Paint display = new Paint();
 		display.setPreferredSize(new Dimension(width, height));
 		add(display);

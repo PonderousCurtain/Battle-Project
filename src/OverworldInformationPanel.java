@@ -24,6 +24,8 @@ public class OverworldInformationPanel extends JPanel{
 	SettlementInfoPanel settlementPanel;
 	ArmyInfoPanel armyPanel;
 	CardLayout cl;
+	CardManager cM;
+	SettlementManager sM;
 
 	public OverworldInformationPanel(int width, int height, ArrayList<Army> allArmiesList){
 		//initialise the variables  as those passed to this class
@@ -62,6 +64,18 @@ public class OverworldInformationPanel extends JPanel{
 		//add(display);
 
 	}
+	
+	public void giveCardManager(CardManager cM){
+		//get the card manger used through the code so this class can be used to change cards
+		this.cM = cM;
+		settlementPanel.giveCardManager(cM);
+	}
+	public void giveSettlementManager(SettlementManager sM){
+		//get the settlement manger used through the code so this class can be used to change cards
+		this.sM = sM;
+		//pass on the settlement manager to the settlement panel 
+		settlementPanel.giveSettlementManager(sM);
+	}
 
 	public void updateSelected(int newSelectedID, Boolean newIsSelectedIsASettlement){
 		//update the selected id and the type of item that has been selected
@@ -73,6 +87,7 @@ public class OverworldInformationPanel extends JPanel{
 			settlementPanel.updateInformation();
 			//then display that settlement panel
 			cl.show(this, "Settlement");
+			System.out.println("Display the settlement Panel");
 		} else {
 			//otherwise if an army is selected then update the army display
 			armyPanel.updateInformation(allArmiesList.get(newSelectedID));

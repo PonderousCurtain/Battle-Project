@@ -17,6 +17,7 @@ public class OverworldManager extends JPanel{
 	int screenWidth;
 	int screenHeight;
 	CardManager cM;
+	SettlementManager settlementM;
 	OverworldViewManager viewport;
 	OverworldInformationPanel infoPanel;
 	Obstruction[][] map;
@@ -87,6 +88,14 @@ public class OverworldManager extends JPanel{
 	public void giveCardManager(CardManager newCM){
 		//set the card manager to that passed to this class
 		cM = newCM;
+		//pass on the card manager to the information panel
+		infoPanel.giveCardManager(cM);
+	}
+	public void giveSettlementManager(SettlementManager newSM){
+		//set the settlement manager to that used in the running program
+		settlementM = newSM;
+		//pass the settlement manager to the information panel
+		infoPanel.giveSettlementManager(settlementM);
 	}
 
 	public void mouseMoved(MouseEvent event){

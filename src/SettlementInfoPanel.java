@@ -2,11 +2,15 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class SettlementInfoPanel extends JPanel{
@@ -14,15 +18,57 @@ public class SettlementInfoPanel extends JPanel{
 	int width;
 	int height;
 	String settlementName;
+	CardManager cM;
+	SettlementManager sM;
 	
 	public SettlementInfoPanel(int width, int height){
+		//set the size and layout for this panel
 		setPreferredSize(new Dimension(width, height));
+		//set the layout
+		setLayout(new GridLayout(0, 1));
 		this.width = width;
 		this.height = height;
+		
+		//set an initial settlement ID
+		settlementID = 1;
+		
+		//initialise the settlement name so it can display something 
+		settlementName = "No settlement selected";
+		
+		//create the button that will link this to the settlement manager
+		JButton settlementButton = new JButton("Settlement Manager");
+		settlementButton.setFocusable(false);
+		settlementButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				//show the settlement manager and give it the correct settlement
+				sM.setSettlement(settlementID - 1);
+				//set the frame focus onto the settlement manager
+				cM.showCard("OverCard", "SettlementManager");
+			}
+			
+		});
+		
+		//create the display for this panel
+		Paint display = new Paint();
+		display.setPreferredSize(new Dimension(width, height));
+		add(display);
+		add(settlementButton);
 	}
 
 	public void setNewSettlement(int newID){
+		//function to allow other classes to set the settlement that is currently being focused on
 		settlementID = newID;
+	}
+	
+	public void giveCardManager(CardManager cM){
+		//set the card manager to that used throughout the program to allow changing cards
+		this.cM = cM;
+	}
+	public void giveSettlementManager(SettlementManager sM){
+		//set the settlement manager to that used throughout the program to update settlements
+		this.sM = sM;
 	}
 	
 	public void updateInformation(){
@@ -52,8 +98,16 @@ public class SettlementInfoPanel extends JPanel{
 	public class Paint extends JPanel{
 		public void paintComponent(Graphics gr){
 			Graphics2D g = (Graphics2D) gr;
+			//paint the background
 			g.setColor(Color.GRAY);
 			g.fillRect(0, 0, width, height);
+			
+			//indicate the type of item that is selected
+			g.setColor(Color.BLACK);
+			g.drawString("Settlement", 10, 50);
+			
+			g.drawString(settlementName, 10, 70);
+			
 		}
 	}
 }
