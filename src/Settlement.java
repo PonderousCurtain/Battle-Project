@@ -52,6 +52,14 @@ public class Settlement{
 					//if the settlement has barracks available then add farms to the settlement buildings list
 					addBuilding("Barracks");
 				}
+				if(rs.getInt(7) == 1){
+					//if the settlement has barracks available then add farms to the settlement buildings list
+					addBuilding("Hanger");
+				}
+				if(rs.getInt(8) == 1){
+					//if the settlement has barracks available then add farms to the settlement buildings list
+					addBuilding("Dock");
+				}
 			}
 			//close the connection to the database
 			con.close();
