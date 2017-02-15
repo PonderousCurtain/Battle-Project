@@ -46,19 +46,19 @@ public class Settlement{
 				//add the correct buildings for the settlement
 				if(rs.getInt(5) == 1){
 					//if the settlement has farms available then add farms to the settlement buildings list
-					addBuilding("Farm");
+					addBuilding("Barracks");
 				}
 				if(rs.getInt(6) == 1){
 					//if the settlement has barracks available then add farms to the settlement buildings list
-					addBuilding("Barracks");
+					addBuilding("Hanger");
 				}
 				if(rs.getInt(7) == 1){
 					//if the settlement has barracks available then add farms to the settlement buildings list
-					addBuilding("Hanger");
+					addBuilding("Dock");
 				}
 				if(rs.getInt(8) == 1){
 					//if the settlement has barracks available then add farms to the settlement buildings list
-					addBuilding("Dock");
+					addBuilding("Farm");
 				}
 			}
 			//close the connection to the database
