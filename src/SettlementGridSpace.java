@@ -21,16 +21,8 @@ public class SettlementGridSpace {
 		return value;
 	}
 	
-	public void setColor(Color newColor){
-		color = newColor;
-	}
 	public void setImage(Image newImage){
 		image = newImage;
-	}
-	
-	
-	public Color getColor(){
-		return color;
 	}
 	public Image getPlacedImage(){
 		return image;

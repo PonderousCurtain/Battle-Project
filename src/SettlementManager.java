@@ -10,6 +10,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -43,7 +47,6 @@ public class SettlementManager extends JPanel implements Cloneable{
 	Building selectedBuilding;
 	ArrayList<int[]> currentBuildingSize;
 	ArrayList<int[]> selectedList;
-	Color currentBuildingColor;
 	Image currentBuildingPlacedImage;
 
 	int mouseX;
@@ -72,9 +75,29 @@ public class SettlementManager extends JPanel implements Cloneable{
 
 		//create the list of settlements
 		settlementList = new ArrayList<Settlement>();
-		//create a settlement for testing purposes and add it to the list
-		Settlement testSettlement1 = new Settlement(10, 2);
-		settlementList.add(testSettlement1);
+		
+		//use SQL to get the settlements from the table to add the correct number of settlements to the settlement list
+		try{
+			System.out.println("Attempting connection");
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+			System.out.println("Connected \n");
+			//create the query to be made to the table
+			Statement stmt = con.createStatement();
+			//get the result set for the query executed
+			ResultSet rs = stmt.executeQuery("select * from settlements");
+			while(rs.next()){
+				//loop through all rows in the table that were returned
+				//add new settlements for each of those in the settlement table with the correct ID
+				settlementList.add(new Settlement(10, rs.getInt(1)));
+			}
+			//close the connection to the database
+			con.close();
+		} catch (Exception e){
+			//in case of an error print the error code for trouble shooting
+			System.out.println(e.toString());
+		}
+		
 
 		//set the default settlement as the first in the list
 		currentSettlement = settlementList.get(0);
@@ -274,7 +297,6 @@ public class SettlementManager extends JPanel implements Cloneable{
 		//set all the building variables to the ones at the referenced index from the buttons
 		currentImage = currentBuildingList.get(buttonNumber + displacement).getImage();
 		currentBuildingSize = currentBuildingList.get(buttonNumber + displacement).getTakenBlocks();
-		currentBuildingColor = currentBuildingList.get(buttonNumber + displacement).getColor();
 		currentBuildingPlacedImage = currentBuildingList.get(buttonNumber + displacement).getPlacedImage();
 		currentBuilding = currentBuildingList.get(buttonNumber + displacement);
 	}
@@ -397,7 +419,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 							}
 						}
 					}
-					//set the selected building to the placed buildign with that index
+					//set the selected building to the placed building with that index
 					selectedBuilding = placedBuildingList.get(i);
 					break;
 				}
@@ -406,7 +428,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 	}
 
 	public void removeSelected(){
-		//remove the buildign from the placed building list and re-index the grid segments that the building took up
+		//remove the building from the placed building list and re-index the grid segments that the building took up
 		for(int i = 0; i < selectedList.size(); i ++){
 			int xRef = selectedList.get(i)[0];
 			int yRef = selectedList.get(i)[1];
@@ -486,8 +508,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 			for(int i = 0; i < currentBuildingSize.size(); i ++){
 				//set the values for the settlement grid square to that of the new values fo the building being placed
 				settlementGrid[mouseGridX + currentBuildingSize.get(i)[0]][mouseGridY + currentBuildingSize.get(i)[1]].setValue(1);
-				settlementGrid[mouseGridX + currentBuildingSize.get(i)[0]][mouseGridY + currentBuildingSize.get(i)[1]].setColor(currentBuildingColor);
-				//settlementGrid[mouseGridX + currentBuildingSize.get(i)[0]][mouseGridY + currentBuildingSize.get(i)[1]].setImage(currentBuildingPlacedImage);
+				settlementGrid[mouseGridX + currentBuildingSize.get(i)[0]][mouseGridY + currentBuildingSize.get(i)[1]].setImage(currentBuildingPlacedImage);
 				settlementGrid[mouseGridX + currentBuildingSize.get(i)[0]][mouseGridY + currentBuildingSize.get(i)[1]].setBuildingID(indexCount);
 			}
 			//update the settlement grid placement to reflect that there is a building in that position now
@@ -512,6 +533,17 @@ public class SettlementManager extends JPanel implements Cloneable{
 		case KeyEvent.VK_R:
 			//add a key binding for rotating buildings
 			rotateBuilding(currentBuildingSize);
+			break;
+		case KeyEvent.VK_X:
+			//add a key binding for removing a building
+			//toggle the boolean for whether a building is presently being removed or placed
+			removing = !removing;
+			//correct the button text to reflect the boolean value
+			if(removing){
+				removeButton.setText("Place Buildings");
+			} else {
+				removeButton.setText("Remove Buildings");
+			}
 			break;
 		case KeyEvent.VK_ESCAPE:
 			//add a key binding for exiting the settlement manager to the over world screen
@@ -556,10 +588,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 					switch(settlementGrid[countX][countY].getValue()){
 					case 1:
 						//if there is a building in that square then fill the colour of the correct building
-						g.setColor(settlementGrid[countX][countY].getColor());
-						g.fillRect(51 + countX*gapWidth, 51 + countY*gapWidth, gapWidth - 1, gapWidth - 1);
-			
-						//g.drawImage(settlementGrid[countX][countY].getPlacedImage(), 51 + countX*gapWidth, 51 + countY*gapWidth, gapWidth - 1, gapWidth - 1, null);
+						g.drawImage(settlementGrid[countX][countY].getPlacedImage(), 51 + countX*gapWidth, 51 + countY*gapWidth, gapWidth - 1, gapWidth - 1, null);
 						break;
 					case 2:
 						//if there is a building and the square is being hovered over then pain the square yellow

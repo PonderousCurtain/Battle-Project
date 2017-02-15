@@ -84,10 +84,9 @@ public class OverworldInformationPanel extends JPanel{
 		//determine the type of item that is selected
 		if(isSelectedASettlement){
 			//if the selected item is a settlement then update the settlement display
-			settlementPanel.updateInformation();
+			settlementPanel.setNewSettlement(selectedID);
 			//then display that settlement panel
 			cl.show(this, "Settlement");
-			System.out.println("Display the settlement Panel");
 		} else {
 			//otherwise if an army is selected then update the army display
 			armyPanel.updateInformation(allArmiesList.get(newSelectedID));

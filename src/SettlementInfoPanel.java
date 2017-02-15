@@ -43,7 +43,7 @@ public class SettlementInfoPanel extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				//show the settlement manager and give it the correct settlement
-				sM.setSettlement(settlementID - 1);
+				sM.setSettlement(settlementID);
 				//set the frame focus onto the settlement manager
 				cM.showCard("OverCard", "SettlementManager");
 			}
@@ -60,6 +60,7 @@ public class SettlementInfoPanel extends JPanel{
 	public void setNewSettlement(int newID){
 		//function to allow other classes to set the settlement that is currently being focused on
 		settlementID = newID;
+		updateInformation();
 	}
 	
 	public void giveCardManager(CardManager cM){
