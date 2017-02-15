@@ -104,7 +104,7 @@ public class Settlement{
 					blocks.add(new int[] {-1, 1});
 				}
 				if(rs.getInt(11) == 1){
-					blocks.add(new int[] {01, 1});
+					blocks.add(new int[] {0, 1});
 				}
 				if(rs.getInt(12) == 1){
 					blocks.add(new int[] {1, 1});

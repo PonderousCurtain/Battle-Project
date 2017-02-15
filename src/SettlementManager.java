@@ -215,6 +215,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 		});
 
 		buildingThree = new JButton("");
+		buildingThree.setFocusable(false);
 		buildingThree.addActionListener(new ActionListener(){
 
 			@Override
@@ -340,7 +341,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 
 	public void setSettlement(int newSettlement){
 		//set the new settlement variables to that of the new settlement
-		currentSettlement = settlementList.get(newSettlement);
+		currentSettlement = settlementList.get(newSettlement - 1);
 		//update the building lists to those of the new settlement
 		currentBuildingList = currentSettlement.getBuildings();
 		placedBuildingList = currentSettlement.getPlacedBuildings();
