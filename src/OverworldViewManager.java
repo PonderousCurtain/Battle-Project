@@ -134,7 +134,7 @@ public class OverworldViewManager extends JPanel{
 			//if the selection is locked then check if there is an army selected
 			if(armyHovering){
 				//if an army is selected then check if the mouse is within the movement area
-				checkArmyMovementArea(x, y);
+				checkArmyMovementArea();
 			}
 		}
 		//update the GUI with any needed highlighting
@@ -182,7 +182,7 @@ public class OverworldViewManager extends JPanel{
 
 	}
 
-	public void checkArmyMovementArea(int x, int y){
+	public void checkArmyMovementArea(){
 
 		//reset the boolean for mouse within army movement to false
 		withinArmyMovement = false;
@@ -201,7 +201,7 @@ public class OverworldViewManager extends JPanel{
 				squareCoords[1] = iY + allArmies.get(hoveringID).getY();
 				potentialMovementSquares.add(squareCoords);
 				//check if the square being currently added  is in the same location as the mouse
-				if(mouseCoords[0] == squareCoords[0] && mouseCoords[1] == squareCoords[1]){
+				if(mouseCoords[0] + xOffset == squareCoords[0] && mouseCoords[1] + yOffset == squareCoords[1]){
 					//if the mouse is in one of the squares the army can move to then set the respective boolean to true
 					withinArmyMovement = true;
 				}
@@ -214,17 +214,17 @@ public class OverworldViewManager extends JPanel{
 		//get the coordinates of the click location
 		int[] coords = getGridLocation(x, y);
 		//get the number of squares moved (the largest out of x or y)
-		int distanceMoved = Math.abs(allArmies.get(hoveringID).getX() - coords[0]);
-		if(Math.abs(allArmies.get(hoveringID).getY() - coords[1]) > Math.abs(allArmies.get(hoveringID).getX() - coords[0])){
-			distanceMoved = Math.abs(allArmies.get(hoveringID).getY() - coords[1]);
+		int distanceMoved = Math.abs(allArmies.get(hoveringID).getX() - (coords[0] + xOffset));
+		if(Math.abs(allArmies.get(hoveringID).getY() - (coords[1] + yOffset)) > Math.abs(allArmies.get(hoveringID).getX() - (coords[0] + yOffset))){
+			distanceMoved = Math.abs(allArmies.get(hoveringID).getY() - (coords[1] + yOffset));
 		}
 		//move the selected army to the new location
-		allArmies.get(hoveringID).setX(coords[0]);
-		allArmies.get(hoveringID).setY(coords[1]);
+		allArmies.get(hoveringID).setX(coords[0] + xOffset);
+		allArmies.get(hoveringID).setY(coords[1] + yOffset);
 		//reduce the further movements the army can make by the distance moved
 		allArmies.get(hoveringID).moveSquares(distanceMoved);
 		//recalculate the area the army can now more into
-		checkArmyMovementArea(x, y);
+		checkArmyMovementArea();
 
 		//check the new army location to see if the army was moved onto another army or a settlement
 		checkNewArmyLocation(x, y);
@@ -380,7 +380,7 @@ public class OverworldViewManager extends JPanel{
 				//highlight the grid squares that the army can move into
 				g.setColor(Color.BLUE);
 				for(int i = 0; i < potentialMovementSquares.size(); i ++){
-					g.drawRect(potentialMovementSquares.get(i)[0] * squareSize, potentialMovementSquares.get(i)[1] * squareSize, squareSize, squareSize);
+					g.drawRect((potentialMovementSquares.get(i)[0] - xOffset) * squareSize, (potentialMovementSquares.get(i)[1] - yOffset)* squareSize, squareSize, squareSize);
 				}
 				//check if the mouse if within the grid of squares that the army can move into
 				if(withinArmyMovement){
