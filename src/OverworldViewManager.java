@@ -222,7 +222,7 @@ public class OverworldViewManager extends JPanel{
 		allArmies.get(hoveringID).setX(coords[0] + xOffset);
 		allArmies.get(hoveringID).setY(coords[1] + yOffset);
 		//reduce the further movements the army can make by the distance moved
-		allArmies.get(hoveringID).moveSquares(distanceMoved);
+		//allArmies.get(hoveringID).moveSquares(distanceMoved);
 		//recalculate the area the army can now more into
 		checkArmyMovementArea();
 
@@ -249,10 +249,10 @@ public class OverworldViewManager extends JPanel{
 			}
 		}
 		//if the new location does not intersect another army then check if it intersects a settlement
-		if(map[coords[0]][coords[1]].isSettlement()){
+		if(map[coords[0] + xOffset][coords[1] + yOffset].isSettlement()){
 			//the army was moved onto a settlement
 			//get the settlement id that was moved onto
-			int intersectedSettlementID = map[coords[0]][coords[1]].getSettlementID();
+			int intersectedSettlementID = map[coords[0] + xOffset][coords[1] + yOffset].getSettlementID();
 			//interact with the settlement
 			interactWithSettlement(allArmies.get(hoveringID), intersectedSettlementID);
 		}
@@ -302,7 +302,7 @@ public class OverworldViewManager extends JPanel{
 				//create the query to be made to the table
 				Statement stmt = con.createStatement();
 				//change the player number of the settlement
-				stmt.executeQuery("update settlements set player = " + army.getPlayerIndex() + " where id = " + settlementID);
+				stmt.executeUpdate("update settlements set player = " + army.getPlayerIndex() + " where id = " + settlementID);
 				ResultSet rs = stmt.executeQuery("select * from settlements where id = " + settlementID);
 				while(rs.next()){
 					//loop through all rows in the table that were returned
