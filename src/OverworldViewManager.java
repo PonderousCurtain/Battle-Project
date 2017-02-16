@@ -183,8 +183,6 @@ public class OverworldViewManager extends JPanel{
 	}
 
 	public void checkArmyMovementArea(int x, int y){
-		//get the coordinates of the mouse
-		int[] coords = getGridLocation(x, y);
 		
 		//reset the boolean for mouse within army movement to false
 		withinArmyMovement = false;
@@ -286,17 +284,6 @@ public class OverworldViewManager extends JPanel{
 					}
 				}
 			}
-
-			//draw the armies
-			for(Army nextArmy: allArmies){
-				g.drawImage(nextArmy.getImage(), (nextArmy.getX() - xOffset) * squareSize, (nextArmy.getY() - yOffset) * squareSize, squareSize, squareSize, null);
-				//check if the army is selected
-				if(nextArmy.isSelected()){
-					//if the army is selected then highlight it
-					g.setColor(Color.YELLOW);
-					g.drawRect((nextArmy.getX() - xOffset) * squareSize, (nextArmy.getY() - yOffset) * squareSize, squareSize, squareSize);
-				}
-			}
 			
 			//check if an army is currently selected and the selection is also locked
 			if(selectionLocked && armyHovering){
@@ -310,6 +297,17 @@ public class OverworldViewManager extends JPanel{
 					//highlight the box that the mouse is in
 					g.setColor(Color.YELLOW);
 					g.drawRect(mouseCoords[0] * squareSize, mouseCoords[1] * squareSize, squareSize, squareSize);
+				}
+			}
+			
+			//draw the armies
+			for(Army nextArmy: allArmies){
+				g.drawImage(nextArmy.getImage(), (nextArmy.getX() - xOffset) * squareSize, (nextArmy.getY() - yOffset) * squareSize, squareSize, squareSize, null);
+				//check if the army is selected
+				if(nextArmy.isSelected()){
+					//if the army is selected then highlight it
+					g.setColor(Color.YELLOW);
+					g.drawRect((nextArmy.getX() - xOffset) * squareSize, (nextArmy.getY() - yOffset) * squareSize, squareSize, squareSize);
 				}
 			}
 		}
