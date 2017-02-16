@@ -27,6 +27,9 @@ public class OverworldViewManager extends JPanel{
 	int hoveringID;
 	Boolean selectionLocked;
 	int lastSelectedID;
+	Boolean withinArmyMovement;
+	ArrayList<int[]> potentialMovementSquares;
+	int[] mouseCoords;
 
 	public OverworldViewManager(int startX, int startY, Obstruction[][] worldMap){
 		//initialise the variables including the 2D array that contains the map terrain
@@ -40,7 +43,10 @@ public class OverworldViewManager extends JPanel{
 		settlementHovering = false;
 		selectionLocked = false;
 		lastSelectedID = 0;
-		
+		withinArmyMovement = false;
+		potentialMovementSquares = new ArrayList<int[]>();
+		mouseCoords = new int[2];
+
 		//set the size of the viewport to a square of 1000 by 1000 pixels
 
 		setPreferredSize(new Dimension(1000, 1000));
@@ -85,10 +91,12 @@ public class OverworldViewManager extends JPanel{
 	}
 
 	public Boolean selectItemAtLocation(int x, int y){
+		//covert the location into the corresponding grid square
+		int[] coords = getGridLocation(x, y);
+		//set the mouse coordinates to the grid coordinates calculated
+		mouseCoords = coords.clone();
 		//check that the selection is not currently locked otherwise maintain the last selected item
 		if(!selectionLocked){
-			//covert the location into the corresponding grid square
-			int[] coords = getGridLocation(x, y);
 			//check if there is a settlement at the location of the mouse
 			if(map[coords[0] + xOffset][coords[1] + yOffset].getSettlementID() != 0){
 				//if there is a settlement at this location then set the hovering ID to that of the settlement and indicate that it is a settlement that is selected
@@ -122,6 +130,12 @@ public class OverworldViewManager extends JPanel{
 					}
 				}
 			}
+		} else {
+			//if the selection is locked then check if there is an army selected
+			if(armyHovering){
+				//if an army is selected then check if the mouse is within the movement area
+				checkArmyMovementArea(x, y);
+			}
 		}
 		//update the GUI with any needed highlighting
 		repaint();
@@ -136,33 +150,86 @@ public class OverworldViewManager extends JPanel{
 
 	public void clickedAtLocation(int x, int y){
 		//convert the click location into the grid space that was clicked
-		int[] coords = getGridLocation(x, y);
-		//check there is not currently a selection locked by a previous click
-		if(!selectionLocked){
-			//check if an item is currently highlighted
-			if(settlementHovering || armyHovering){
-				//if there is a highlighted item then lock the settlement selection
-				selectionLocked = true;
-			}
+		//check if the user is trying to move an army
+		if(armyHovering && selectionLocked && withinArmyMovement){
+			moveSelectedArmy(x, y);
 		} else {
-			//if the selection was locked then unlock the selection
-			selectionLocked = false;
-			//set the last selected ID to that of the settlement that has just been unselected
-			lastSelectedID = hoveringID;
-			//check if there is a new item at the current click location
-			if(selectItemAtLocation(x, y)){
-				//if there is an item at the newly clicked location then check it is not the item that is already selected
-				if(hoveringID == lastSelectedID){
-					//if it is the same item that was already selected then continue having unselected it
-				} else {
-					//if the settlement was not the same one as was just unselected then lock it as selected
+			//if the user is not trying to move an army then continue with the standard selection
+			//check there is not currently a selection locked by a previous click
+			if(!selectionLocked){
+				//check if an item is currently highlighted
+				if(settlementHovering || armyHovering){
+					//if there is a highlighted item then lock the settlement selection
 					selectionLocked = true;
+				}
+			} else {
+				//if the selection was locked then unlock the selection
+				selectionLocked = false;
+				//set the last selected ID to that of the settlement that has just been unselected
+				lastSelectedID = hoveringID;
+				//check if there is a new item at the current click location
+				if(selectItemAtLocation(x, y)){
+					//if there is an item at the newly clicked location then check it is not the item that is already selected
+					if(hoveringID == lastSelectedID){
+						//if it is the same item that was already selected then continue having unselected it
+					} else {
+						//if the settlement was not the same one as was just unselected then lock it as selected
+						selectionLocked = true;
+					}
 				}
 			}
 		}
 
 	}
-	
+
+	public void checkArmyMovementArea(int x, int y){
+		//get the coordinates of the mouse
+		int[] coords = getGridLocation(x, y);
+		
+		//reset the boolean for mouse within army movement to false
+		withinArmyMovement = false;
+
+		//get the movement distance remaining for the army
+		int movement = allArmies.get(hoveringID).getPotentialMovement();
+
+		//clear the list of movement coordinates
+		potentialMovementSquares.clear();
+		//loop through the square of locations the army can move to
+		for(int iX = ((movement - 1) * -1); iX < movement; iX ++){
+			for(int iY = ((movement - 1)* -1); iY < movement; iY ++){
+				//add each square to an array list of the squares the army can move into
+				int[] squareCoords = new int[2];
+				squareCoords[0] = iX + allArmies.get(hoveringID).getX();
+				squareCoords[1] = iY + allArmies.get(hoveringID).getY();
+				potentialMovementSquares.add(squareCoords);
+				//check if the square being currently added  is in the same location as the mouse
+				if(mouseCoords[0] == squareCoords[0] && mouseCoords[1] == squareCoords[1]){
+					//if the mouse is in one of the squares the army can move to then set the respective boolean to true
+					withinArmyMovement = true;
+				}
+			}
+		}
+
+	}
+
+	public void moveSelectedArmy(int x, int y){
+		//get the coordinates of the click location
+		int[] coords = getGridLocation(x, y);
+		//get the number of squares moved (the largest out of x or y)
+		int distanceMoved = Math.abs(allArmies.get(hoveringID).getX() - coords[0]);
+		if(Math.abs(allArmies.get(hoveringID).getY() - coords[1]) > Math.abs(allArmies.get(hoveringID).getX() - coords[0])){
+			distanceMoved = Math.abs(allArmies.get(hoveringID).getY() - coords[1]);
+		}
+		//move the selected army to the new location
+		allArmies.get(hoveringID).setX(coords[0]);
+		allArmies.get(hoveringID).setY(coords[1]);
+		//reduce the further movements the army can make by the distance moved
+		allArmies.get(hoveringID).moveSquares(distanceMoved);
+		//recalculate the area the army can now more into
+		checkArmyMovementArea(x, y);
+		repaint();
+	}
+
 	public int getSelectedID(){
 		//return the ID of the selected item
 		return hoveringID;
@@ -228,6 +295,21 @@ public class OverworldViewManager extends JPanel{
 					//if the army is selected then highlight it
 					g.setColor(Color.YELLOW);
 					g.drawRect((nextArmy.getX() - xOffset) * squareSize, (nextArmy.getY() - yOffset) * squareSize, squareSize, squareSize);
+				}
+			}
+			
+			//check if an army is currently selected and the selection is also locked
+			if(selectionLocked && armyHovering){
+				//highlight the grid squares that the army can move into
+				g.setColor(Color.BLUE);
+				for(int i = 0; i < potentialMovementSquares.size(); i ++){
+					g.drawRect(potentialMovementSquares.get(i)[0] * squareSize, potentialMovementSquares.get(i)[1] * squareSize, squareSize, squareSize);
+				}
+				//check if the mouse if within the grid of squares that the army can move into
+				if(withinArmyMovement){
+					//highlight the box that the mouse is in
+					g.setColor(Color.YELLOW);
+					g.drawRect(mouseCoords[0] * squareSize, mouseCoords[1] * squareSize, squareSize, squareSize);
 				}
 			}
 		}

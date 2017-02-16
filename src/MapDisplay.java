@@ -140,6 +140,13 @@ public class MapDisplay extends JPanel{
 		playerList.get(0).getControlledUnits().clear();
 		playerList.get(1).getControlledUnits().clear();
 		//add units for testing purposes
+		
+		/*	NOTE TO SELF
+		 * 
+		 * JUST ADDED UNIT TABLE TO DATA BASE, INCORPORATE THIS AND ADD THE TIE BETWEEN THE OVERWORLD
+		 * AND THE BATTLES THEN BEGIN WORK ON MAKING UNITS FROM THE SETTLEMENT MANAGER
+		 * 
+		 */
 
 		playerList.get(0).addUnit(new Unit(500, 340, 5, 100, Color.BLACK, 10, 0, 200, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
 		playerList.get(0).addUnit(new Unit(430, 270, 5, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
