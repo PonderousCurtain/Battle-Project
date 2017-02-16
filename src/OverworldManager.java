@@ -53,7 +53,7 @@ public class OverworldManager extends JPanel{
 		testArmyUnits.add(new Unit(800, 270, 5, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitThree.jpg").getImage()));
 		testArmyUnits.add(new Unit(240, 730, 5, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitFour.jpg").getImage()));
 		testArmyUnits.add(new Unit(400, 520, 5, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitFive.jpg").getImage()));
-		Army testArmy1 = new Army(testArmyUnits, new ImageIcon("TestArmy.png").getImage(), 20, 20);
+		Army testArmy1 = new Army(testArmyUnits, new ImageIcon("TestArmy.png").getImage(), 20, 20, 0);
 		//add the test army to the array of armies
 		allArmies.add(testArmy1);
 		//pass the list of armies to the view port 

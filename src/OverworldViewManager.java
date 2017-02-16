@@ -183,7 +183,7 @@ public class OverworldViewManager extends JPanel{
 	}
 
 	public void checkArmyMovementArea(int x, int y){
-		
+
 		//reset the boolean for mouse within army movement to false
 		withinArmyMovement = false;
 
@@ -225,7 +225,97 @@ public class OverworldViewManager extends JPanel{
 		allArmies.get(hoveringID).moveSquares(distanceMoved);
 		//recalculate the area the army can now more into
 		checkArmyMovementArea(x, y);
+
+		//check the new army location to see if the army was moved onto another army or a settlement
+		checkNewArmyLocation(x, y);
 		repaint();
+	}
+
+	public void checkNewArmyLocation(int x, int y){
+		//get the coordinates of the new army location
+		int[] coords = getGridLocation(x, y);
+		//check if another army is in that square
+		for(Army nextArmy: allArmies){
+			if(nextArmy.getX() == coords[0] && nextArmy.getY() == coords[1]){
+				//check if the army already at the location is owned by the same player
+				if(nextArmy.getPlayerIndex() == allArmies.get(hoveringID).getPlayerIndex()){
+					//the army has intersected another player owned army
+					
+				} else {
+					//the army has intersected another player's army
+					//cause a battle between the two armies
+					fightArmies(allArmies.get(hoveringID), nextArmy);
+				}
+			}
+		}
+		//if the new location does not intersect another army then check if it intersects a settlement
+		if(map[coords[0]][coords[1]].isSettlement()){
+			//the army was moved onto a settlement
+			//get the settlement id that was moved onto
+			int intersectedSettlementID = map[coords[0]][coords[1]].getSettlementID();
+			//interact with the settlement
+			interactWithSettlement(allArmies.get(hoveringID), intersectedSettlementID);
+		}
+		
+	}
+	
+	public void fightArmies(Army attacker, Army defender){
+		//set up a fight between the two armies then set the frame focus to the map display 
+	}
+	
+	public void interactWithSettlement(Army army, int settlementID){
+		//set a default player number
+		int settlementPlayer = 0;
+		//connect to the data base and get the player number of the settlement
+		try{
+			System.out.println("Attempting connection");
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+			System.out.println("Connected \n");
+			//create the query to be made to the table
+			Statement stmt = con.createStatement();
+			//get the result set for the query executed
+			ResultSet rs = stmt.executeQuery("select * from settlements where id = " + settlementID);
+			while(rs.next()){
+				//loop through all rows in the table that were returned
+				//set the settlement name to that stored in the correct column
+				settlementPlayer = rs.getInt(9);
+			}
+			//close the connection to the database
+			con.close();
+		} catch (Exception e){
+			//in case of an error print the error code for trouble shooting
+			System.out.println(e.toString());
+		}
+		
+		//check if the player that owns the army also owns the settlement
+		if(settlementPlayer == army.getPlayerIndex()){
+			//the player owns both army and settlement
+		} else {
+			//the army is attacking the settlement
+			//take over the settlement by changing the player number in the data base
+			try{
+				System.out.println("Attempting connection");
+				Class.forName("com.mysql.jdbc.Driver");
+				Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+				System.out.println("Connected \n");
+				//create the query to be made to the table
+				Statement stmt = con.createStatement();
+				//change the player number of the settlement
+				stmt.executeQuery("update settlements set player = " + army.getPlayerIndex() + " where id = " + settlementID);
+				ResultSet rs = stmt.executeQuery("select * from settlements where id = " + settlementID);
+				while(rs.next()){
+					//loop through all rows in the table that were returned
+					//set the settlement name to that stored in the correct column
+					settlementPlayer = rs.getInt(9);
+				}
+				//close the connection to the database
+				con.close();
+			} catch (Exception e){
+				//in case of an error print the error code for trouble shooting
+				System.out.println(e.toString());
+			}
+		}
 	}
 
 	public int getSelectedID(){
@@ -284,7 +374,7 @@ public class OverworldViewManager extends JPanel{
 					}
 				}
 			}
-			
+
 			//check if an army is currently selected and the selection is also locked
 			if(selectionLocked && armyHovering){
 				//highlight the grid squares that the army can move into
@@ -299,7 +389,7 @@ public class OverworldViewManager extends JPanel{
 					g.drawRect(mouseCoords[0] * squareSize, mouseCoords[1] * squareSize, squareSize, squareSize);
 				}
 			}
-			
+
 			//draw the armies
 			for(Army nextArmy: allArmies){
 				g.drawImage(nextArmy.getImage(), (nextArmy.getX() - xOffset) * squareSize, (nextArmy.getY() - yOffset) * squareSize, squareSize, squareSize, null);

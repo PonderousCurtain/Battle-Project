@@ -13,13 +13,15 @@ public class Army{
 	int y;
 	int maximumMovement;
 	int movedThisTurn;
+	int playerID;
 	
-	public Army(ArrayList<Unit> containedUnits, Image coverImage, int x, int y){
+	public Army(ArrayList<Unit> containedUnits, Image coverImage, int x, int y, int playerID){
 		//initialise the main variables
 		this.containedUnits = containedUnits;
 		this.coverImage = coverImage;
 		this.x = x;
 		this.y = y;
+		this.playerID = playerID;
 		selected = false;
 		movedThisTurn = 0;
 		//set the maximum movement to a large value temporarily
@@ -39,6 +41,10 @@ public class Army{
 	//add return statements for each of the values needed for the army
 	public Image getImage(){
 		return coverImage;
+	}
+	
+	public int getPlayerIndex(){
+		return playerID;
 	}
 	
 	public int getPotentialMovement(){
