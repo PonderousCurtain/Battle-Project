@@ -472,6 +472,20 @@ public class MapDisplay extends JPanel{
 	}
 
 	public void endBattle(){
+		//make sure that all the units in the remaining army are no longer selected and are completely reset in terms of aggression, attacking and are not in transit
+		for(Unit nextUnit : playerList.get(0).getControlledUnits()){
+			//remove all paths
+			nextUnit.emptyPath();
+			nextUnit.emptyTempPath();
+			//remove aggression and attacking
+			nextUnit.setAgro(false);
+			nextUnit.setAttacking(false);
+			//set it to have arrived
+			nextUnit.setArrived(true);
+			//set the unit to not be selected
+			nextUnit.setSelected(false);
+			repaint();
+		}
 		//run the check method on the over world to update army information
 		viewport.updateArmies();
 		//change the frame focus back to the over world view

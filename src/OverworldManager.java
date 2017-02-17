@@ -49,36 +49,29 @@ public class OverworldManager extends JPanel{
 		//for testing purposes add in an initial army to manipulate
 		ArrayList<Unit> testArmyUnits = new ArrayList<Unit>();
 		testArmyUnits.add(new Unit(500, 340, 5, 100, Color.BLACK, 10, 0, 200, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
-		testArmyUnits.add(new Unit(430, 270, 5, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
-		testArmyUnits.add(new Unit(750, 550, 5, 100, Color.MAGENTA, 10, 2, 200, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
-		
-		/*
-		testArmyUnits.add(new Unit(430, 270, 20, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
-		testArmyUnits.add(new Unit(550, 340, 20, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
-		testArmyUnits.add(new Unit(800, 270, 20, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitThree.jpg").getImage()));
-		testArmyUnits.add(new Unit(240, 730, 20, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitFour.jpg").getImage()));
-		testArmyUnits.add(new Unit(400, 520, 20, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitFive.jpg").getImage()));
-		*/
+		testArmyUnits.add(new Unit(430, 270, 5, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
+		testArmyUnits.add(new Unit(750, 550, 5, 100, Color.MAGENTA, 10, 2, 200, 10, new ImageIcon("TestUnitThree.jpg").getImage()));
 		Army testArmy1 = new Army(testArmyUnits, new ImageIcon("TestArmy.png").getImage(), 20, 20, 0);
 		//add the test army to the array of armies
 		allArmies.add(testArmy1);
 		
 		//create and add a second army on a different team
 		ArrayList<Unit> testArmyUnits2 = new ArrayList<Unit>();
-		testArmyUnits2.add(new Unit(700, 340, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
-		testArmyUnits2.add(new Unit(715, 340, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
-		testArmyUnits2.add(new Unit(700, 355, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
-		testArmyUnits2.add(new Unit(715, 355, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
-		/*
-		testArmyUnits2.add(new Unit(430, 270, 20, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
-		testArmyUnits2.add(new Unit(550, 340, 20, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
-		testArmyUnits2.add(new Unit(800, 270, 20, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitThree.jpg").getImage()));
-		testArmyUnits2.add(new Unit(240, 730, 20, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitFour.jpg").getImage()));
-		testArmyUnits2.add(new Unit(400, 520, 20, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitFive.jpg").getImage()));
-		*/
+		testArmyUnits2.add(new Unit(700, 340, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitFour.jpg").getImage()));
+		testArmyUnits2.add(new Unit(715, 340, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitFour.jpg").getImage()));
+		testArmyUnits2.add(new Unit(700, 355, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitFour.jpg").getImage()));
+		testArmyUnits2.add(new Unit(715, 355, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitFour.jpg").getImage()));
 		Army testArmy2 = new Army(testArmyUnits2, new ImageIcon("TestArmy.png").getImage(), 80, 70, 1);
 		//add the test army to the array of armies
 		allArmies.add(testArmy2);
+		
+		ArrayList<Unit> testArmyUnits3 = new ArrayList<Unit>();
+		testArmyUnits3.add(new Unit(500, 340, 5, 100, Color.BLACK, 10, 0, 200, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
+		testArmyUnits3.add(new Unit(430, 270, 5, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
+		testArmyUnits3.add(new Unit(750, 550, 5, 100, Color.MAGENTA, 10, 2, 200, 10, new ImageIcon("TestUnitThree.jpg").getImage()));
+		Army testArmy3 = new Army(testArmyUnits3, new ImageIcon("TestArmy.png").getImage(), 30, 30, 0);
+		//add the test army to the array of armies
+		allArmies.add(testArmy3);
 		
 		//pass the list of armies to the view port 
 		viewport.giveArmies(allArmies);
