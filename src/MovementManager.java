@@ -103,24 +103,26 @@ public class MovementManager {
 
 		for(int cX = 0; cX < 2; cX ++){
 			for(int cY = 0; cY < height; cY ++){
-				switch(checkUnit.getType()){
-				case 0:
-					if((staticBlockages[currentXCoord + cX][currentYCoord + cY].getTileType() != 0 && staticBlockages[currentXCoord + cX][currentYCoord + cY].getTileType() != 3) || staticBlockages[currentXCoord + cX][currentYCoord + cY].getRoughness() == 0){
-						moveXCheck = false;
+				if(currentXCoord + cX < 100 && currentYCoord + cY < 100){
+					switch(checkUnit.getType()){
+					case 0:
+						if((staticBlockages[currentXCoord + cX][currentYCoord + cY].getTileType() != 0 && staticBlockages[currentXCoord + cX][currentYCoord + cY].getTileType() != 3) || staticBlockages[currentXCoord + cX][currentYCoord + cY].getRoughness() == 0){
+							moveXCheck = false;
+						}
+						//land
+						break;
+					case 1:
+						//air can move anywhere
+						break;
+					case 2:
+						if(staticBlockages[currentXCoord + cX][currentYCoord + cY].getTileType() != 2 && staticBlockages[currentXCoord + cX][currentYCoord + cY].getTileType() != 3){
+							moveXCheck = false;
+						}
+						//sea
+						break;
+					default:
+						break;
 					}
-					//land
-					break;
-				case 1:
-					//air can move anywhere
-					break;
-				case 2:
-					if(staticBlockages[currentXCoord + cX][currentYCoord + cY].getTileType() != 2 && staticBlockages[currentXCoord + cX][currentYCoord + cY].getTileType() != 3){
-						moveXCheck = false;
-					}
-					//sea
-					break;
-				default:
-					break;
 				}
 			}
 		}

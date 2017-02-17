@@ -261,6 +261,7 @@ public class OverworldViewManager extends JPanel{
 	
 	public void fightArmies(Army attacker, Army defender){
 		//set up a fight between the two armies then set the frame focus to the map display 
+		System.out.println("Fight two armies");
 	}
 	
 	public void interactWithSettlement(Army army, int settlementID){

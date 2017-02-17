@@ -20,6 +20,7 @@ public class SettlementInfoPanel extends JPanel{
 	String settlementName;
 	CardManager cM;
 	SettlementManager sM;
+	int settlementOwner;
 	
 	public SettlementInfoPanel(int width, int height){
 		//set the size and layout for this panel
@@ -31,6 +32,8 @@ public class SettlementInfoPanel extends JPanel{
 		
 		//set an initial settlement ID
 		settlementID = 1;
+		//set an initial settlement ownder
+		settlementOwner = 0;
 		
 		//initialise the settlement name so it can display something 
 		settlementName = "No settlement selected";
@@ -87,6 +90,7 @@ public class SettlementInfoPanel extends JPanel{
 						//loop through all rows in the table that were returned
 						//set the settlement name to that stored in the correct column
 						settlementName = rs.getString(2);
+						settlementOwner = rs.getInt(9);
 					}
 					//close the connection to the database
 					con.close();
@@ -108,6 +112,8 @@ public class SettlementInfoPanel extends JPanel{
 			g.drawString("Settlement", 10, 50);
 			
 			g.drawString(settlementName, 10, 70);
+			
+			g.drawString("Settlement owned by player " + settlementOwner, 10, 90);
 			
 		}
 	}

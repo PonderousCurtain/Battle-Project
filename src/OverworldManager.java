@@ -56,6 +56,18 @@ public class OverworldManager extends JPanel{
 		Army testArmy1 = new Army(testArmyUnits, new ImageIcon("TestArmy.png").getImage(), 20, 20, 0);
 		//add the test army to the array of armies
 		allArmies.add(testArmy1);
+		
+		//create and add a second army on a different team
+		ArrayList<Unit> testArmyUnits2 = new ArrayList<Unit>();
+		testArmyUnits2.add(new Unit(430, 270, 20, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
+		testArmyUnits2.add(new Unit(550, 340, 20, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
+		testArmyUnits2.add(new Unit(800, 270, 20, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitThree.jpg").getImage()));
+		testArmyUnits2.add(new Unit(240, 730, 20, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitFour.jpg").getImage()));
+		testArmyUnits2.add(new Unit(400, 520, 20, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitFive.jpg").getImage()));
+		Army testArmy2 = new Army(testArmyUnits2, new ImageIcon("TestArmy.png").getImage(), 80, 70, 1);
+		//add the test army to the array of armies
+		allArmies.add(testArmy2);
+		
 		//pass the list of armies to the view port 
 		viewport.giveArmies(allArmies);
 		//create a new information panel and pass the list of armies to it
