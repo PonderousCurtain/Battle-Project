@@ -92,6 +92,44 @@ public class OverworldViewManager extends JPanel{
 		repaint();
 	}
 
+	public void updateArmies(){
+		//loop through all armies
+		for(int i = 0; i < allArmies.size(); i ++){
+			//check if the army still contains units
+			if(allArmies.get(i).getUnits().size() == 0){
+				//check if the army is selected
+				if(allArmies.get(i).isSelected()){
+					//set the army to unselected and update the class to avoid pointers to the removed army
+					allArmies.get(i).setSelected(false);
+					//clear the movement squares
+					potentialMovementSquares.clear();
+					//set the mouse to not within the movement grid
+					withinArmyMovement = false;
+					//set the army hovering to false and set the selection to unlocked
+					armyHovering = false;
+					selectionLocked = false;
+				}
+				
+				//check if a different army is selected
+				else if(armyHovering){
+					//check if the army that is currently selected has a ID that is lower than the index of the army to be removed
+					if(i < hoveringID){
+						//lower the hoveringID by 1 to compensate for removing an item lower in the list than the hovering army ID
+						hoveringID --;
+					}
+				}
+
+				//remove this army from the list and lower the iterator to compensate
+				allArmies.remove(i);
+				i--;
+			} else {
+				//if the army still has units then recalculate the move distance for that army
+				allArmies.get(i).updateMaxMovement();
+			}
+		}
+		repaint();
+	}
+
 	public Boolean selectItemAtLocation(int x, int y){
 		//covert the location into the corresponding grid square
 		int[] coords = getGridLocation(x, y);
@@ -232,12 +270,12 @@ public class OverworldViewManager extends JPanel{
 		checkNewArmyLocation(x, y);
 		repaint();
 	}
-	
+
 	public void giveCardManager(CardManager newCM){
 		//be given the card manager used throughout the program
 		cM = newCM;
 	}
-	
+
 	public void giveMapDisplay(MapDisplay newMD){
 		//be given the map display used by the program
 		mD = newMD;
@@ -252,7 +290,7 @@ public class OverworldViewManager extends JPanel{
 				//check if the army already at the location is owned by the same player
 				if(nextArmy.getPlayerIndex() == allArmies.get(hoveringID).getPlayerIndex()){
 					//the army has intersected another player owned army
-					
+
 				} else {
 					//the army has intersected another player's army
 					//cause a battle between the two armies
@@ -268,15 +306,15 @@ public class OverworldViewManager extends JPanel{
 			//interact with the settlement
 			interactWithSettlement(allArmies.get(hoveringID), intersectedSettlementID);
 		}
-		
+
 	}
-	
+
 	public void fightArmies(Army attacker, Army defender){
 		//set up a fight between the two armies then set the frame focus to the map display 
 		mD.setUpNewBattle(attacker, defender);
 		cM.showCard("OverCard", "BattleCard");
 	}
-	
+
 	public void interactWithSettlement(Army army, int settlementID){
 		//set a default player number
 		int settlementPlayer = 0;
@@ -301,7 +339,7 @@ public class OverworldViewManager extends JPanel{
 			//in case of an error print the error code for trouble shooting
 			System.out.println(e.toString());
 		}
-		
+
 		//check if the player that owns the army also owns the settlement
 		if(settlementPlayer == army.getPlayerIndex()){
 			//the player owns both army and settlement

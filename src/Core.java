@@ -51,6 +51,7 @@ public class Core{
 		iP.giveCardManager(cM);
 		MManager.giveCardManager(cM);
 		sManager.giveCardManager(cM);
+		mD.giveCardManger(cM);
 
 
 

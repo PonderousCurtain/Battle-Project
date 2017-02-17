@@ -24,18 +24,23 @@ public class Army{
 		this.playerID = playerID;
 		selected = false;
 		movedThisTurn = 0;
+		
+		//update the maximum movement distance
+		updateMaxMovement();
+		
+	}
+	
+	public void updateMaxMovement(){
 		//set the maximum movement to a large value temporarily
-		maximumMovement = 10;
-		
-		//loop through the contained units 
-		for(int i = 0; i < containedUnits.size(); i ++){
-			//check if the next unit has a lower speed than the current maximum movement
-			if(containedUnits.get(i).getSpeed() < maximumMovement){
-				//if the speed is lower then lower the maximum movement to that value
-				maximumMovement = containedUnits.get(i).getSpeed();
-			}
-		}
-		
+				maximumMovement = 10;
+				//loop through the contained units 
+				for(int i = 0; i < containedUnits.size(); i ++){
+					//check if the next unit has a lower speed than the current maximum movement
+					if(containedUnits.get(i).getSpeed() < maximumMovement){
+						//if the speed is lower then lower the maximum movement to that value
+						maximumMovement = containedUnits.get(i).getSpeed();
+					}
+				}
 	}
 	
 	//add return statements for each of the values needed for the army

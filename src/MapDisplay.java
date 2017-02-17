@@ -41,6 +41,7 @@ public class MapDisplay extends JPanel{
 	PathFinder pF;
 	MovementManager mM;
 	SaveManager sM;
+	OverworldViewManager viewport;
 
 	ArrayList<Player> playerList;
 
@@ -49,6 +50,7 @@ public class MapDisplay extends JPanel{
 	Boolean gamePaused;
 
 	JPanel mapDisplay;
+	CardManager cM;
 
 	public MapDisplay(int screenWidth, int screenHeight){
 		//initialise the main variables
@@ -149,15 +151,37 @@ public class MapDisplay extends JPanel{
 						}
 					}
 				}
+
+				//check if any player has now lost all their units
+				//loop through all players
+				for(int i = 0; i < playerList.size(); i++){
+					//check the size of the list of controlled units
+					if(playerList.get(i).getControlledUnits().size() == 0){
+						//remove that player from the fight
+						playerList.remove(i);
+						//lower i to allow for its index being removed from the list
+						i--;
+					}
+				}
+
+				//check if the number of armies is now 1
+				if(playerList.size() == 1){
+					//if only one army remains then end the battle
+					endBattle();
+				}
 				repaint();
 			}
 
 		});
 
-		//start the timer
-		runTimer.start();
+
 		//set the game to not paused
 		gamePaused = false;
+	}
+
+	public void giveCardManger(CardManager newCM){
+		//get the card manage rused throughout the code
+		cM = newCM;
 	}
 
 	public void setUpNewBattle(Army armyOne, Army armyTwo){
@@ -197,6 +221,8 @@ public class MapDisplay extends JPanel{
 			//update the information panel to reflect that no units are selected
 			informationPanel.updateSelectedUnits(selectedList);
 		}
+		//start the timer
+		runTimer.start();
 		repaint();
 	}
 
@@ -331,14 +357,17 @@ public class MapDisplay extends JPanel{
 		//calculate the direct distance between two passed units
 		return (int) Math.sqrt(Math.pow((A.getX() - B.getX()), 2) + Math.pow((A.getY() - B.getY()), 2));
 	}
+
 	public InfoPanel getInformationPanel(){
 		//return the information panel being used
 		return informationPanel;
 	}
+
 	public void giveInfoPanel(InfoPanel iP){
 		//be passed the information panel to use
 		informationPanel = iP;
 	}
+
 	public void giveUpdateTimeCommand(float timeCommand){
 		if(timeCommand == 0){
 			//pause the game or play the game if paused
@@ -354,6 +383,7 @@ public class MapDisplay extends JPanel{
 			runTimer.setDelay((int) (normalRunTimerSpeed / timeCommand));
 		}
 	}
+
 	public void updateAgroRangeOfSelected(int agroRange){
 		//update the aggression range of the selected units to the values passed
 		for(Unit nextUnit: selectedList){
@@ -362,7 +392,8 @@ public class MapDisplay extends JPanel{
 		repaint();
 	}
 
-	public void battleTurn(Unit attackingUnit){
+	public Boolean battleTurn(Unit attackingUnit){
+
 		//check if the target unit has died from the damage dealt to it
 		Boolean targetDead = attackingUnit.getSparringPartner().deadFromDamage(attackingUnit.getAttack());
 		if(targetDead){
@@ -398,6 +429,7 @@ public class MapDisplay extends JPanel{
 
 			//remove the dead unit from the movement manager so it cannot be collided with
 			mM.removeUnit(attackingUnit.getSparringPartner());
+
 			//remove the dead unit from the list of all units in the battle
 			allList.remove(attackingUnit.getSparringPartner());
 			//clear the temporary path, aggression and attacking booleans to reflect that its target is dead
@@ -424,7 +456,7 @@ public class MapDisplay extends JPanel{
 				attackingUnit.setPath(path);
 				attackingUnit.setArrived(false);
 			} else {
-				//if the path does not exist then ste the attacke as having arrived
+				//if the path does not exist then set the attacker as having arrived
 				attackingUnit.setArrived(true);
 			}
 
@@ -432,6 +464,21 @@ public class MapDisplay extends JPanel{
 
 		//update the selected units
 		informationPanel.updateSelectedUnits(selectedList);
+		return targetDead;
+	}
+
+	public void giveViewport(OverworldViewManager newViewport){
+		viewport = newViewport;
+	}
+
+	public void endBattle(){
+		//run the check method on the over world to update army information
+		viewport.updateArmies();
+		//change the frame focus back to the over world view
+		cM.showCard("BattleCard", "OverCard");
+		//stop the battle timer
+		runTimer.stop();
+
 	}
 
 	public void checkWithinAttackRange(Unit checkUnit, Player checkPlayer){
@@ -518,6 +565,7 @@ public class MapDisplay extends JPanel{
 		informationPanel.updateSelectedUnits(selectedList);
 		repaint();
 	}
+
 	public void clearSelected(){
 		//loop through all the units in the selected list
 		for(Unit nextUnit: selectedList){
@@ -530,7 +578,6 @@ public class MapDisplay extends JPanel{
 		informationPanel.updateSelectedUnits(selectedList);
 	}
 
-	//mouse control
 	public void mouseDraggedInput(MouseEvent event) {
 		//check if the click was not a right mouse click
 		if(!SwingUtilities.isRightMouseButton(event)){
@@ -595,6 +642,7 @@ public class MapDisplay extends JPanel{
 		repaint();
 
 	}
+
 	public void mouseReleasedInput(MouseEvent event) {
 		//check it the user was dragging a box
 		if(draggingBox){

@@ -120,6 +120,8 @@ public class OverworldManager extends JPanel{
 	public void giveMapDisplay(MapDisplay mD){
 		//pass on the map display to the viewport
 		viewport.giveMapDisplay(mD);
+		//pass the viewport back to the map display
+		mD.giveViewport(viewport);
 	}
 	public void giveSettlementManager(SettlementManager newSM){
 		//set the settlement manager to that used in the running program
