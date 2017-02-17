@@ -27,7 +27,4 @@ public class EventManager {
 	public void updateTime(float newIndex){
 		mD.giveUpdateTimeCommand(newIndex);
 	}
-	public void resetBattle(){
-		mD.setUpUnits();
-	}
 }

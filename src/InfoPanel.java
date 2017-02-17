@@ -156,8 +156,7 @@ public class InfoPanel extends JPanel{
 	}
 	
 	public void escapeBattle(){
-		cM.showCard("BattleCard", "MenuCard");
-		eM.resetBattle();
+		cM.showCard("BattleCard", "OverCard");
 	}
 	
 	public void giveCardManager(CardManager newCM){

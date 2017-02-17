@@ -16,7 +16,7 @@ import javax.swing.Timer;
 
 
 public class MapDisplay extends JPanel{
-	
+
 	//Decalre the main variables to be used throught the class
 
 	int screenWidth;
@@ -68,10 +68,8 @@ public class MapDisplay extends JPanel{
 		draggingBox = false;
 		clickTimer = 0;
 
-		//add two players for testing purposes
+		//initialise the player list
 		playerList = new ArrayList<Player>();
-		playerList.add(new Player(new ArrayList<Unit>(), "Player One"));
-		playerList.add(new Player(new ArrayList<Unit>(), "Player Two"));
 
 		//set up the various managers needed by the class
 		sM = new SaveManager();
@@ -81,7 +79,7 @@ public class MapDisplay extends JPanel{
 
 
 		//set up the units for testing
-		setUpUnits();
+		//setUpUnits();
 
 
 		Paint display = new Paint();
@@ -162,31 +160,16 @@ public class MapDisplay extends JPanel{
 		gamePaused = false;
 	}
 
-	public void setUpUnits(){
-		//clear the controlled units of the players
-		playerList.get(0).getControlledUnits().clear();
-		playerList.get(1).getControlledUnits().clear();
-		//add units for testing purposes
-		
-		/*	NOTE TO SELF
-		 * 
-		 * JUST ADDED UNIT TABLE TO DATA BASE, INCORPORATE THIS AND ADD THE TIE BETWEEN THE OVERWORLD
-		 * AND THE BATTLES THEN BEGIN WORK ON MAKING UNITS FROM THE SETTLEMENT MANAGER
-		 * 
-		 */
+	public void setUpNewBattle(Army armyOne, Army armyTwo){
+		//clear the player list and add two new players to take part in the battle
+		playerList.clear();
+		playerList.add(new Player(new ArrayList<Unit>(), "Player One"));
+		playerList.add(new Player(new ArrayList<Unit>(), "Player Two"));
 
-		//add a set of units to both players for testing
-		playerList.get(0).addUnit(new Unit(500, 340, 5, 100, Color.BLACK, 10, 0, 200, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
-		playerList.get(0).addUnit(new Unit(430, 270, 5, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
-		playerList.get(0).addUnit(new Unit(750, 550, 5, 100, Color.MAGENTA, 10, 2, 200, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
+		//add the units from each army to their respective players
+		playerList.get(0).updateUnits(armyOne.getUnits());
+		playerList.get(1).updateUnits(armyTwo.getUnits());
 
-		playerList.get(1).addUnit(new Unit(700, 340, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
-		playerList.get(1).addUnit(new Unit(715, 340, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
-		playerList.get(1).addUnit(new Unit(700, 355, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
-		playerList.get(1).addUnit(new Unit(715, 355, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
-
-
-		//fill the map library with the required size grids
 		//clear the list of all units in the battle
 		allList.clear();
 		//loop through all players in the battle
@@ -216,6 +199,55 @@ public class MapDisplay extends JPanel{
 		}
 		repaint();
 	}
+
+	/* METHOD FOR HARD CODING UNITS INTO TEH BATTLE FOR TESTING
+	public void setUpUnits(){
+		//clear the controlled units of the players
+		playerList.get(0).getControlledUnits().clear();
+		playerList.get(1).getControlledUnits().clear();
+		//add units for testing purposes
+
+		//add a set of units to both players for testing
+		playerList.get(0).addUnit(new Unit(500, 340, 5, 100, Color.BLACK, 10, 0, 200, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
+		playerList.get(0).addUnit(new Unit(430, 270, 5, 200, Color.ORANGE, 10, 1, 500, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
+		playerList.get(0).addUnit(new Unit(750, 550, 5, 100, Color.MAGENTA, 10, 2, 200, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
+
+		playerList.get(1).addUnit(new Unit(700, 340, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
+		playerList.get(1).addUnit(new Unit(715, 340, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
+		playerList.get(1).addUnit(new Unit(700, 355, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
+		playerList.get(1).addUnit(new Unit(715, 355, 5, 100, Color.RED, 10, 0, 100, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
+
+
+		//clear the list of all units in the battle
+		allList.clear();
+		//loop through all players in the battle
+		for(Player nextPlayer: playerList){
+			//add all the units controlled by each player to the list of all units
+			allList.addAll(nextPlayer.getControlledUnits());
+		}
+
+		//loop through the list of all units
+		for(Unit nextUnit: allList){
+			//pass each unit in turn to the path finder to set up path maps for all unit sizes in the battle
+			pF.setUpMap(nextUnit.getWidth());
+		}
+
+		//empty the unit list of the movement manager
+		mM.emptyUnitList();
+
+		//give the units to the movement manager for collision detection
+		mM.addUnitList(allList);
+
+		//clear the selected unit list
+		selectedList.clear();
+		//check if the information panel exists (has been already initialised and implemented)
+		if(informationPanel != null){
+			//update the information panel to reflect that no units are selected
+			informationPanel.updateSelectedUnits(selectedList);
+		}
+		repaint();
+	}
+	 */
 
 	public class Paint extends JPanel{
 		public void paintComponent(Graphics gr){
@@ -252,7 +284,7 @@ public class MapDisplay extends JPanel{
 							}
 						}
 					}
-					*/
+					 */
 
 					//paint the unit with it's respective colour
 					g.setColor(nextUnit.getColor());
@@ -267,7 +299,7 @@ public class MapDisplay extends JPanel{
 
 				}
 			}
-			
+
 			//check if the user is dragging a selection box
 			if(draggingBox){
 				//paint the selection box
@@ -372,10 +404,10 @@ public class MapDisplay extends JPanel{
 			attackingUnit.emptyTempPath();
 			attackingUnit.setAttacking(false);
 			attackingUnit.setAgro(false);
-			
+
 			//empty the path of the attacker
 			attackingUnit.emptyPath();
-			
+
 			//check if the dead unit was selected at the time
 			if(selectedList.contains(attackingUnit.getSparringPartner())){
 				//if it was then remove it from the selected list
@@ -509,7 +541,7 @@ public class MapDisplay extends JPanel{
 				savedMouseX = event.getX();
 				savedMouseY = event.getY();
 			}
-			//update the drag box with the current mouse lcoation and saved location
+			//update the drag box with the current mouse location and saved location
 			updateDragBox(event.getX(), event.getY(), savedMouseX, savedMouseY);
 		} else {
 			//if the mouse was a right click then set the click timer to a value and set the mouse click location to the current mouse location
@@ -543,7 +575,7 @@ public class MapDisplay extends JPanel{
 			clickTimer = 30;
 			lastMouseX = event.getX();
 			lastMouseY = event.getY();
-			
+
 			//loop through the selected units
 			for(Unit next: selectedList){
 				//set the target of the selected unit to the click location

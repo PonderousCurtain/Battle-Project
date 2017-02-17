@@ -30,6 +30,8 @@ public class OverworldViewManager extends JPanel{
 	Boolean withinArmyMovement;
 	ArrayList<int[]> potentialMovementSquares;
 	int[] mouseCoords;
+	CardManager cM;
+	MapDisplay mD;
 
 	public OverworldViewManager(int startX, int startY, Obstruction[][] worldMap){
 		//initialise the variables including the 2D array that contains the map terrain
@@ -230,6 +232,16 @@ public class OverworldViewManager extends JPanel{
 		checkNewArmyLocation(x, y);
 		repaint();
 	}
+	
+	public void giveCardManager(CardManager newCM){
+		//be given the card manager used throughout the program
+		cM = newCM;
+	}
+	
+	public void giveMapDisplay(MapDisplay newMD){
+		//be given the map display used by the program
+		mD = newMD;
+	}
 
 	public void checkNewArmyLocation(int x, int y){
 		//get the coordinates of the new army location
@@ -261,7 +273,8 @@ public class OverworldViewManager extends JPanel{
 	
 	public void fightArmies(Army attacker, Army defender){
 		//set up a fight between the two armies then set the frame focus to the map display 
-		System.out.println("Fight two armies");
+		mD.setUpNewBattle(attacker, defender);
+		cM.showCard("OverCard", "BattleCard");
 	}
 	
 	public void interactWithSettlement(Army army, int settlementID){

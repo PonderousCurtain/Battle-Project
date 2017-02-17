@@ -47,6 +47,7 @@ public class Core{
 		menuPanel.giveCardManager(cM);
 		oM.giveCardManager(cM);
 		oM.giveSettlementManager(sManager);
+		oM.giveMapDisplay(mD);
 		iP.giveCardManager(cM);
 		MManager.giveCardManager(cM);
 		sManager.giveCardManager(cM);
