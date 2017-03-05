@@ -47,7 +47,7 @@ public class ArmyInfoPanel extends JPanel{
 			g.setColor(Color.BLACK);
 			g.drawString("Army", 10, 50);
 			//paint the cover image for that army
-			g.drawImage(coverImage, 10, 100, 280, 280, null);
+			g.drawImage(coverImage, 10, 100, width - 20, width - 20, null);
 			//indicate that the below will be the units in that army
 			g.drawString("Units", 10, 440);
 			//paint all of the unit images for that army

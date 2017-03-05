@@ -32,7 +32,7 @@ public class SettlementInfoPanel extends JPanel{
 		
 		//set an initial settlement ID
 		settlementID = 1;
-		//set an initial settlement ownder
+		//set an initial settlement owner
 		settlementOwner = 0;
 		
 		//initialise the settlement name so it can display something 

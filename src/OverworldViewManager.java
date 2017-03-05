@@ -32,15 +32,17 @@ public class OverworldViewManager extends JPanel{
 	int[] mouseCoords;
 	CardManager cM;
 	MapDisplay mD;
+	int width;
+	int height;
 
-	public OverworldViewManager(int startX, int startY, Obstruction[][] worldMap){
+	public OverworldViewManager(int startX, int startY, Obstruction[][] worldMap, int width, int height){
 		//initialise the variables including the 2D array that contains the map terrain
 		xOffset = startX;
 		yOffset = startY;
 		map = worldMap;
-		scaleSize = 1f;
-		scaledWidth = (int) (100 * scaleSize);
-		squareSize = 1000/scaledWidth;
+		scaleSize = 0.5f;
+		scaledWidth = (int) (70 * scaleSize);
+		squareSize = width/scaledWidth;
 		armyHovering = false;
 		settlementHovering = false;
 		selectionLocked = false;
@@ -48,15 +50,17 @@ public class OverworldViewManager extends JPanel{
 		withinArmyMovement = false;
 		potentialMovementSquares = new ArrayList<int[]>();
 		mouseCoords = new int[2];
+		this.width = width;
+		this.height = height;
 
-		//set the size of the viewport to a square of 1000 by 1000 pixels
+		//set the size of the viewport to a square of 700 by 700 pixels
 
-		setPreferredSize(new Dimension(1000, 1000));
+		setPreferredSize(new Dimension(width, height));
 
 		//create a new paint class
 		Paint display = new Paint();
 		//allow the paint class to fill the panel display
-		display.setPreferredSize(new Dimension(1000, 1000));
+		display.setPreferredSize(new Dimension(width, height));
 		//add the paint class to the panel
 		add(display);
 	}
@@ -71,7 +75,7 @@ public class OverworldViewManager extends JPanel{
 			}
 		} else {
 			//otherwise f the change is to the right then check that the view is not already as far to the right as possible
-			if(xOffset + scaledWidth < 200){
+			if(xOffset + scaledWidth < 140){
 				//if the change can be made then alter the offset
 				xOffset += change;
 			}
@@ -85,7 +89,7 @@ public class OverworldViewManager extends JPanel{
 				yOffset += change;
 			}
 		} else {
-			if(yOffset + scaledWidth < 200){
+			if(yOffset + scaledWidth < 140){
 				yOffset += change;
 			}
 		}
@@ -267,7 +271,7 @@ public class OverworldViewManager extends JPanel{
 		checkArmyMovementArea();
 
 		//check the new army location to see if the army was moved onto another army or a settlement
-		checkNewArmyLocation(x, y);
+		checkNewArmyLocation(x, y, allArmies.get(hoveringID));
 		repaint();
 	}
 
@@ -281,19 +285,21 @@ public class OverworldViewManager extends JPanel{
 		mD = newMD;
 	}
 
-	public void checkNewArmyLocation(int x, int y){
+	public void checkNewArmyLocation(int x, int y, Army movedArmy){
 		//get the coordinates of the new army location
 		int[] coords = getGridLocation(x, y);
 		//check if another army is in that square
 		for(Army nextArmy: allArmies){
-			if(nextArmy.getX() == coords[0] && nextArmy.getY() == coords[1]){
+			if(nextArmy.getX() == coords[0] + xOffset && nextArmy.getY() == coords[1] + yOffset && nextArmy != movedArmy){
 				//check if the army already at the location is owned by the same player
+				System.out.println("There is another army");
 				if(nextArmy.getPlayerIndex() == allArmies.get(hoveringID).getPlayerIndex()){
 					//the army has intersected another player owned army
 
 				} else {
 					//the army has intersected another player's army
 					//cause a battle between the two armies
+					System.out.println("It is an enemy");
 					fightArmies(allArmies.get(hoveringID), nextArmy);
 				}
 			}
@@ -384,7 +390,7 @@ public class OverworldViewManager extends JPanel{
 	}
 
 	public int[] getGridLocation(int x, int y){
-		//set up an array with references to a grid squaer on the map
+		//set up an array with references to a grid square on the map
 		int[] coords = new int[2];
 
 		//convert the x and y location into the grid reference for that square
@@ -406,7 +412,7 @@ public class OverworldViewManager extends JPanel{
 
 			//paint a background to the map view
 			g.setColor(Color.BLACK);
-			g.fillRect(0, 0, 1000, 1000);
+			g.fillRect(0, 0, 700, 700);
 
 			//draw the map
 			for(int xCount = 0; xCount < scaledWidth; xCount ++){

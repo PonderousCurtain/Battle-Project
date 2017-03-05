@@ -45,8 +45,8 @@ public class OverworldInformationPanel extends JPanel{
 		cl = new CardLayout();
 		
 		//initialise the two information panels
-		settlementPanel = new SettlementInfoPanel(300, 1000);
-		armyPanel = new ArmyInfoPanel(300, 1000);
+		settlementPanel = new SettlementInfoPanel(width, height);
+		armyPanel = new ArmyInfoPanel(width, height);
 		
 		//set the layout of this panel and add the two information panels
 		setLayout(cl);

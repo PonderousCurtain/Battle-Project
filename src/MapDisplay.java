@@ -17,7 +17,7 @@ import javax.swing.Timer;
 
 public class MapDisplay extends JPanel{
 
-	//Decalre the main variables to be used throught the class
+	//Declare the main variables to be used throughout the class
 
 	int screenWidth;
 	int screenHeight;
@@ -62,7 +62,7 @@ public class MapDisplay extends JPanel{
 		//set the size of the panel
 		setPreferredSize(new Dimension(screenWidth - 300, screenHeight));
 
-		blockages = new Obstruction[100][100];
+		blockages = new Obstruction[70][70];
 
 		//unitList = new ArrayList<Unit>();
 		selectedList = new ArrayList<Unit>();
@@ -284,8 +284,8 @@ public class MapDisplay extends JPanel{
 			g.fillRect(0, 0, screenWidth - 300, screenHeight);
 
 			//loop through the map grid
-			for(int x = 0; x < 100; x ++){
-				for(int y = 0; y < 100; y ++){
+			for(int x = 0; x < 70; x ++){
+				for(int y = 0; y < 70; y ++){
 					//paint in each square of the map grid
 					g.setColor(blockages[x][y].getColor());
 					g.fill(blockages[x][y].getRect());
@@ -506,7 +506,7 @@ public class MapDisplay extends JPanel{
 				for(Unit nextUnit: nextPlayer.getControlledUnits()){
 					//check if the distance to an enemy unit is less that 20
 					if(getDistance(checkUnit, nextUnit) < 20){
-						//if the unit is withing 20 units of an enemy unit then set it as attacking that unit and set that unit as attacking the unit being checked
+						//if the unit is within 20 units of an enemy unit then set it as attacking that unit and set that unit as attacking the unit being checked
 						checkUnit.setAttacking(true);
 						checkUnit.setSparringPartner(nextUnit);
 						nextUnit.setAttacking(true);

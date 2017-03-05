@@ -20,7 +20,7 @@ public class MMPanelManager extends JPanel{
 
 	public MMPanelManager(MMCanvasUI cUI){
 		this.cUI = cUI;
-		setSize(new Dimension(1300, 1000));
+		setSize(new Dimension(1000, 700));
 		setLayout(new GridBagLayout());
 		c = new GridBagConstraints();
 
@@ -38,7 +38,7 @@ public class MMPanelManager extends JPanel{
 	public void giveEManager(MMEventManager givenEManager){
 		eManager = givenEManager;
 		cPanel = new MMControlPanel(eManager);
-		cPanel.setPreferredSize(new Dimension(300, 1000));
+		cPanel.setPreferredSize(new Dimension(300, 700));
 		add(cPanel, c);
 		revalidate();
 		repaint();

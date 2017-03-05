@@ -46,7 +46,7 @@ public class MMControlPanel extends JPanel{
 		eManager = newManager;
 		brushColor = Color.BLACK;
 		Paint cDisplay = new Paint();
-		cDisplay.setPreferredSize(new Dimension(300, 1000));
+		cDisplay.setPreferredSize(new Dimension(300, 700));
 		cDisplay.setLayout(new GridLayout(0,1));
 		roughness = 1;
 		brushSize = 10;
@@ -65,7 +65,7 @@ public class MMControlPanel extends JPanel{
 		sizeLabel.setVerticalTextPosition(JLabel.BOTTOM);
 		sizeLabel.setHorizontalTextPosition(JLabel.CENTER);
 			
-		sizeSlider = new JSlider(JSlider.HORIZONTAL, 1, 15, 2);
+		sizeSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 2);
 		sizeSlider.addChangeListener(new ChangeListener(){
 
 			@Override
@@ -139,7 +139,7 @@ public class MMControlPanel extends JPanel{
 
 			@Override
 			public void stateChanged(ChangeEvent event) {
-				eManager.updateScale(scaleSlider.getValue() * 10);
+				eManager.updateScale(scaleSlider.getValue() * 7);
 				repaint();
 			}
 
@@ -195,10 +195,10 @@ public class MMControlPanel extends JPanel{
 		public void paintComponent(Graphics gr){
 			Graphics2D g = (Graphics2D) gr;
 			g.setColor(Color.GRAY);
-			g.fillRect(0, 0, 300, 1000);
+			g.fillRect(0, 0, 300, 700);
 
 			g.setColor(brushColor);
-			g.fillRect((300-sizeSlider.getValue()*brushSize)/2, (160-sizeSlider.getValue()*brushSize)/2, sizeSlider.getValue()*brushSize, sizeSlider.getValue()*brushSize);
+			g.fillRect((300-sizeSlider.getValue()*brushSize)/2, (140-sizeSlider.getValue()*brushSize)/2, sizeSlider.getValue()*brushSize, sizeSlider.getValue()*brushSize);
 		}
 	}
 }

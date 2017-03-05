@@ -34,7 +34,7 @@ public class MMCanvasUI extends JPanel implements MouseMotionListener, MouseList
 
 
 	public MMCanvasUI(){
-		setPreferredSize(new Dimension(1000, 1000));
+		setPreferredSize(new Dimension(700, 700));
 		brushSize = 2;
 		roughness = 1;
 		tileType = 0;
@@ -43,14 +43,14 @@ public class MMCanvasUI extends JPanel implements MouseMotionListener, MouseList
 		//mapBlockages = new ArrayList<Obstruction>();
 
 		Paint display = new Paint();
-		display.setPreferredSize(new Dimension(1000, 1000));
+		display.setPreferredSize(new Dimension(700, 700));
 
 		add(display);
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		brushColor = Color.BLACK;
 
-		gridSize = 100;
+		gridSize = 70;
 		squareSize = 10;
 
 		obstructionMap = new Obstruction[gridSize][gridSize];
@@ -62,7 +62,7 @@ public class MMCanvasUI extends JPanel implements MouseMotionListener, MouseList
 		obstructionMap = new Obstruction[newSize][newSize];
 		gridSize = newSize;
 
-		squareSize = 1000 / gridSize;
+		squareSize = 700 / gridSize;
 		eM.updatePanel(roughness, brushColor, tileType, squareSize);
 		resetMap();
 		repaint();
@@ -138,7 +138,7 @@ public class MMCanvasUI extends JPanel implements MouseMotionListener, MouseList
 		public void paintComponent(Graphics gr){
 			Graphics2D g = (Graphics2D) gr;
 			g.setColor(Color.WHITE);
-			g.fillRect(0, 0, 1000, 1000);
+			g.fillRect(0, 0, 700, 700);
 
 			for(int x = 0; x < gridSize; x ++){
 				for(int y = 0; y < gridSize; y ++){

@@ -11,8 +11,8 @@ public class Core{
 	}
 
 	public Core(){
-		int screenHeight = 1000;
-		int screenWidth = 1300;
+		int screenHeight = 700;
+		int screenWidth = 1000;
 
 		MapDisplay mD = new MapDisplay(screenWidth, screenHeight);
 		EventManager eM = new EventManager(mD);
