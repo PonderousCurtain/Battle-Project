@@ -34,6 +34,7 @@ public class ArmyInfoPanel extends JPanel{
 	public void updateInformation(Army newArmy){
 		coverImage = newArmy.getImage();
 		unitList = newArmy.getUnits();
+		currentArmy = newArmy;
 		repaint();
 	}
 	
@@ -45,7 +46,14 @@ public class ArmyInfoPanel extends JPanel{
 			g.fillRect(0, 0, width, height);
 			//display that the type is an army
 			g.setColor(Color.BLACK);
-			g.drawString("Army", 10, 50);
+			//check if an army has been selected or this is the first run
+			if(currentArmy != null){
+				//if it is not the first run, display the player that controls this army
+				g.drawString("Army owned by: "  + currentArmy.getPlayerIndex(), 10, 50);
+			} else {
+				//other wise display a default place holder
+				g.drawString("Army owned by: " , 10, 50);
+			}
 			//paint the cover image for that army
 			g.drawImage(coverImage, 10, 100, width - 20, width - 20, null);
 			//indicate that the below will be the units in that army

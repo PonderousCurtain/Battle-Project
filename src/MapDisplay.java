@@ -49,6 +49,8 @@ public class MapDisplay extends JPanel{
 	int normalRunTimerSpeed;
 	Boolean gamePaused;
 
+	int aIDelayTime;
+
 	JPanel mapDisplay;
 	CardManager cM;
 
@@ -90,6 +92,8 @@ public class MapDisplay extends JPanel{
 
 		//set up the timer to be used for animation
 		normalRunTimerSpeed = 20;
+		//reset the AI delay count
+		aIDelayTime = 0;
 		runTimer = new Timer(normalRunTimerSpeed, new ActionListener(){
 
 			@Override
@@ -169,6 +173,16 @@ public class MapDisplay extends JPanel{
 					//if only one army remains then end the battle
 					endBattle();
 				}
+				//handle the AI delay timer
+				//increase the delay count
+				aIDelayTime ++;
+				//check if it has reached the time for another AI move
+				if(aIDelayTime == 20){
+					//reset the AI delay
+					aIDelayTime = 0;
+					//run the AI movement methods
+					runAIOpponents();
+				}
 				repaint();
 			}
 
@@ -180,8 +194,59 @@ public class MapDisplay extends JPanel{
 	}
 
 	public void giveCardManger(CardManager newCM){
-		//get the card manage rused throughout the code
+		//get the card manage used throughout the code
 		cM = newCM;
+	}
+
+	public void runAIOpponents(){
+		//loop through all players
+		for(int count = 0; count < playerList.size(); count ++){
+			//check if the player is the user
+			if(count == 0){
+				continue;
+			}
+			//otherwise loop through the units controlled by the other player
+			for(Unit nextUnit: playerList.get(count).getControlledUnits()){
+				//set a default target value and default target unit
+				int targetValue = 0;
+				//create a target unit and initialise it
+				Unit targetUnit = null;
+				//loop through enemy player units
+				for(Unit enemyUnit: playerList.get(0).getControlledUnits()){
+					//calculate the target value for each enemy unit and replace the default value with the highest
+					int holder = calculateTargetValue(nextUnit, enemyUnit);
+					if(holder > targetValue){
+						targetValue = holder;
+						//update the target unit
+						targetUnit = enemyUnit;
+					}
+				}
+				
+				//set the target of the checked unit to the location of the target unit
+				nextUnit.setTarget(targetUnit.getX(), targetUnit.getY());
+				//clear the path scanned locations
+				pF.clearScanned();
+				//create a path to the current position of the target unit
+				ArrayList<Node> path = pF.pathFind(nextUnit.getX(), nextUnit.getY(), 20, targetUnit.getX(), targetUnit.getY(), nextUnit.getWidth(), nextUnit.getType());
+				//check if the path exists
+				if(path.size() > 0){
+					//if it does then set it as the path of that unit and set that unit as being in transit
+					nextUnit.setPath(path);
+					nextUnit.setArrived(false);
+				}
+			}
+		}
+	}
+
+	public int calculateTargetValue(Unit attackingUnit, Unit enemyUnit){
+		//set a default threat value
+		int threatValue = 0;
+		//calculate the distance between the two units
+		int distance = getDistance(attackingUnit, enemyUnit);
+		//calculate a threat value based on the distance and the statistics of the enemy unit
+		threatValue = (int) ((distance / 100) + (enemyUnit.getMaxHealth() / 100) + (enemyUnit.getAttack() / 10) + (enemyUnit.getSpeed() / 5));
+		//return the threat value calculated
+		return threatValue;
 	}
 
 	public void setUpNewBattle(Army armyOne, Army armyTwo){
