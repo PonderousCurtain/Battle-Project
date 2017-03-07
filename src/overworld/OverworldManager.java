@@ -7,6 +7,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -23,6 +27,7 @@ public class OverworldManager extends JPanel{
 	//declare the variables and classes that will be used throughout this class
 	int screenWidth;
 	int screenHeight;
+	int currentPlayerTurn;
 	CardManager cM;
 	SettlementManager settlementM;
 	OverworldViewManager viewport;
@@ -129,6 +134,50 @@ public class OverworldManager extends JPanel{
 		//pass the settlement manager to the information panel
 		infoPanel.giveSettlementManager(settlementM);
 	}
+	
+	public void endCurrentTurn(){
+		//increase the index of the current player
+		currentPlayerTurn++;
+		//check if all players have had their turn this run
+		if(currentPlayerTurn == 2){
+			//if they have then calculate any turn based results
+			calculateTurnResults();
+			//then set the player back to the first index
+			currentPlayerTurn = 0;
+		}
+	}
+	
+	public void calculateTurnResults(){
+		//construct any units created by the players
+		//increase the funds of each player by the value of the settlements they control
+		try{
+			//connect to the database
+			System.out.println("Attempting connection");
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+			System.out.println("Connected \n");
+			//create the query to be made to the table
+			Statement stmt = con.createStatement();
+			//get the result set for the query executed
+			ResultSet rs = stmt.executeQuery("select * from settlements join player on player.id = settlements.player");
+			while(rs.next()){
+				//loop through all rows in the table that were returned
+				//create a new statement
+				Statement stmt2 = con.createStatement();
+				System.out.println("Income increase for player " + rs.getInt(10));
+				System.out.println("Current funds for player " + rs.getInt(13));
+				//for each settlement increase the funds of that player by the income of the settlement
+				stmt2.executeUpdate("update player set funds = " + (rs.getInt(13) + rs.getInt(10)) + " where id = " + rs.getInt(9));
+				System.out.println("Funds increased to " + rs.getInt(13));
+			}
+			System.out.println("All ran through");
+			//close the connection to the database
+			con.close();
+		} catch (Exception e){
+			//in case of an error print the error code for trouble shooting
+			System.out.println(e.toString());
+		}
+	}
 
 	public void mouseMoved(MouseEvent event){
 		//get the location on the frame of the mouse
@@ -176,6 +225,10 @@ public class OverworldManager extends JPanel{
 		case KeyEvent.VK_ESCAPE:
 			//make the menu card appear when escape is pressed
 			cM.showCard("OverCard", "MenuCard");
+			break;
+		case KeyEvent.VK_T:
+			//end turn
+			endCurrentTurn();
 			break;
 		case KeyEvent.VK_S:
 			//add a keyboard shortcut to go to the last selected settlement manager

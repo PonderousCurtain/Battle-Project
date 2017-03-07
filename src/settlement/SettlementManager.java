@@ -443,7 +443,44 @@ public class SettlementManager extends JPanel implements Cloneable{
 		}
 		//clear the selected list and remove the building
 		selectedList.clear();
+		//alter the income to reflect the lost building
+		alterIncome(currentBuilding.getName());
 		placedBuildingList.remove(selectedBuilding);
+	}
+	
+	public void alterIncome(String buildingName){
+		//get the index of the current settlement
+		int settlementIndex = currentSettlement.getID();
+		try{
+			//connect to the database
+			System.out.println("Attempting connection");
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+			System.out.println("Connected \n");
+			//create the query to be made to the table
+			Statement stmt1 = con.createStatement();
+			//get the result set for the query executed
+			ResultSet rs = stmt1.executeQuery("select * from building where name = '" + buildingName + "'");
+			while(rs.next()){
+				//get the values of the building selected
+				//create a second query to be made to the table
+				Statement stmt2 = con.createStatement();
+				//get the result set for the query executed
+				ResultSet rs2 = stmt2.executeQuery("select * from settlements where id = " + settlementIndex);
+				while(rs2.next()){
+					//create a third query to be made to the table
+					Statement stmt3 = con.createStatement();
+					//decrease the income of the settlement by the upkeep of the building
+					stmt3.executeUpdate("update settlements set income = " + (rs2.getInt(10) - rs.getInt(2)) + " where id = " + rs2.getInt(1));
+					System.out.println("Income updated");
+				}
+			}
+			//close the connection to the database
+			con.close();
+		} catch (Exception e){
+			//in case of an error print the error code for trouble shooting
+			System.out.println(e.toString());
+		}
 	}
 
 	public void clearShadowPlacement(){
@@ -515,10 +552,14 @@ public class SettlementManager extends JPanel implements Cloneable{
 				settlementGrid[mouseGridX + currentBuildingSize.get(i)[0]][mouseGridY + currentBuildingSize.get(i)[1]].setImage(currentBuildingPlacedImage);
 				settlementGrid[mouseGridX + currentBuildingSize.get(i)[0]][mouseGridY + currentBuildingSize.get(i)[1]].setBuildingID(indexCount);
 			}
+			//alter the income of the settlement to reflect the new building
+			alterIncome(currentBuilding.getName());
 			//update the settlement grid placement to reflect that there is a building in that position now
 			updateSettlementGridPlace();
 			//increase the index count for the next building
 			indexCount ++;
+			
+			
 		} else if(removing){
 			//if the user is trying to remove a building and clicks then remove the selected building
 			removeSelected();
