@@ -31,6 +31,11 @@ public class Army{
 		
 	}
 	
+	public void addUnits(ArrayList<Unit> unitsToAdd){
+		//adds any units added to the units contained in the current army
+		containedUnits.addAll(unitsToAdd);
+	}
+	
 	public void updateMaxMovement(){
 		//set the maximum movement to a large value temporarily
 				maximumMovement = 10;

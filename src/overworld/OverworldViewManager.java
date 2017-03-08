@@ -330,12 +330,19 @@ public class OverworldViewManager extends JPanel{
 		//get the coordinates of the new army location
 		int[] coords = getGridLocation(x, y);
 		//check if another army is in that square
-		for(Army nextArmy: allArmies){
+		for(int i = 0; i < allArmies.size(); i ++){
+			Army nextArmy = allArmies.get(i);
 			if(nextArmy.getX() == coords[0] + xOffset && nextArmy.getY() == coords[1] + yOffset && nextArmy != movedArmy){
 				//check if the army already at the location is owned by the same player
 				System.out.println("There is another army");
 				if(nextArmy.getPlayerIndex() == allArmies.get(hoveringID).getPlayerIndex()){
 					//the army has intersected another player owned army
+					//move the units from the army just moved into the army that it was moved onto
+					nextArmy.addUnits(allArmies.get(hoveringID).getUnits());
+					//delete the army that was just moved
+					allArmies.remove(hoveringID);
+					//set the hovering ID to that of the newly formed larger army
+					hoveringID = i;
 
 				} else {
 					//the army has intersected another player's army
