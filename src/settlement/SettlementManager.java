@@ -17,10 +17,17 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.mysql.jdbc.Blob;
+
+import overworld.OverworldManager;
+import overworld.Unit;
 import utilities.CardManager;
 
 
@@ -42,8 +49,12 @@ public class SettlementManager extends JPanel implements Cloneable{
 	JButton buildingFour;
 	JButton buildingFive;
 	Image defaultImage;
-	
+
 	JButton removeButton;
+
+	JPanel makeUnitPanel;
+	JButton makeUnit;
+	JComboBox unitSelection;
 
 	Image currentImage;
 	Building currentBuilding;
@@ -66,6 +77,8 @@ public class SettlementManager extends JPanel implements Cloneable{
 	Boolean clearToPlace;
 	Boolean removing;
 
+	OverworldManager oM;
+
 	public SettlementManager(int screenWidth, int screenHeight){
 		//Initialise the main variables needed
 		this.screenWidth = screenWidth;
@@ -78,7 +91,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 
 		//create the list of settlements
 		settlementList = new ArrayList<Settlement>();
-		
+
 		//use SQL to get the settlements from the table to add the correct number of settlements to the settlement list
 		try{
 			System.out.println("Attempting connection");
@@ -100,7 +113,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 			//in case of an error print the error code for trouble shooting
 			System.out.println(e.toString());
 		}
-		
+
 
 		//set the default settlement as the first in the list
 		currentSettlement = settlementList.get(0);
@@ -120,6 +133,43 @@ public class SettlementManager extends JPanel implements Cloneable{
 		c.weighty = 1;
 		c.gridx = 0;
 		c.gridy = 0;
+
+		//set up the panel to make new units
+		makeUnitPanel = new JPanel();
+		makeUnitPanel.setPreferredSize(new Dimension(300, 300));
+
+		//make a label to show that the panel is for new units
+		JLabel unitLabel = new JLabel("Create a new unit");
+
+		//add a new button to make new units
+		makeUnit = new JButton("Create new unit");
+		//set it to non focusable
+		makeUnit.setFocusable(false);
+		makeUnit.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				createNewUnit((String) unitSelection.getSelectedItem());
+			}
+
+		});
+
+		//set up a combo box to list the units that the player can craft at this settlement
+		unitSelection = new JComboBox(getAvalibleUnits());
+		unitSelection.setEditable(false);
+		unitSelection.setFocusable(false);
+		unitSelection.setSelectedItem(0);
+
+		//set the layout of the new panel to a grid layout
+		makeUnitPanel.setLayout(new GridLayout(0, 2));
+
+		//add the new unit button to the unit panel
+		makeUnitPanel.add(unitLabel);
+		//add a blank panel for position holding
+		makeUnitPanel.add(new JPanel());
+		//add the button and selection to the panel
+		makeUnitPanel.add(unitSelection);
+		makeUnitPanel.add(makeUnit);
 
 		//set up the return button
 		JButton returnButton = new JButton("Return");
@@ -155,9 +205,10 @@ public class SettlementManager extends JPanel implements Cloneable{
 		//set up the information panel for the settlement
 		JPanel informationPanel = new JPanel();
 		informationPanel.setPreferredSize(new Dimension(screenWidth, 200));
-		informationPanel.setLayout(new GridLayout(0,2));
-		//add the return and remove buttons to the information panel
+		informationPanel.setLayout(new GridLayout(0,3));
+		//add the return and remove buttons to the information panel and the make unit panel
 		informationPanel.add(returnButton);
+		informationPanel.add(makeUnitPanel);
 		informationPanel.add(removeButton);
 
 		GridPaint display = new GridPaint();
@@ -296,7 +347,74 @@ public class SettlementManager extends JPanel implements Cloneable{
 		c.gridwidth = 2;
 		add(informationPanel, c);
 	}
-	
+
+	public String[] getAvalibleUnits(){
+		String[] units = {"Tank:     200", "Unit Two:         700"};
+		return units;
+	}
+
+	public void createNewUnit(String unitFromBox){
+		//cut the price of the unit from the string to just get the name
+		char[] characters = unitFromBox.toCharArray();
+		String unitName = "";
+		Unit newUnit = null;
+		for(int count = 0; count < unitFromBox.length(); count ++){
+			if(characters[count] == ':'){
+				//if the end of the string has been reached then stop looping
+				break;
+			} else {
+				unitName += characters[count];
+			}
+		}
+
+		//get the unit stats from the database
+		try{
+			System.out.println("Attempting connection");
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+			System.out.println("Connected \n");
+			//create the query to be made to the table
+			Statement stmt = con.createStatement();
+			//set an variable for the cost of the unit
+			int unitCost = 0;
+			//get the result set for the query executed
+			ResultSet rs = stmt.executeQuery("select * from unit where name = '" + unitName + "'");
+			while(rs.next()){
+				//loop through all rows in the table that were returned
+				//create a new copy of the unit returned
+				//newUnit = new Unit(350, 350, rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getString(5), rs.getInt(7), rs.getInt(6),  ImageIO.read(rs.getBlob(8).getBinaryStream()));
+				unitCost = rs.getInt(9);
+			}
+			//get the id of the player that owns this settlement
+			Statement stmt2 = con.createStatement();
+			ResultSet rs2 = stmt.executeQuery("select * from settlements where id = " + currentSettlement.getID());
+			int playerID = 0;
+			while(rs2.next()){
+				//get the index of the player that owns the settlement
+				playerID = rs2.getInt(9);
+			}
+			//get the values of the player
+			Statement stmt3 = con.createStatement();
+			ResultSet rs3 = stmt.executeQuery("select * from player where id = " + playerID);
+			while(rs3.next()){
+				//remove the cost of the unit from the funds of the player
+				Statement stmt4 = con.createStatement();
+				stmt4.executeUpdate("update player set funds = " + (rs3.getInt(3) - unitCost) + " where id = " + playerID);
+			}
+			//close the connection to the database
+			con.close();
+		} catch (Exception e){
+			//in case of an error print the error code for trouble shooting
+			System.out.println(e.toString());
+		}
+		//pass the unit to the over world
+		oM.makeNewUnit(newUnit, currentSettlement.getID());
+	}
+
+	public void giveOverworldManager(OverworldManager oM){
+		this.oM = oM;
+	}
+
 	public void getBuildingAtButton(int buttonNumber){
 		//set all the building variables to the ones at the referenced index from the buttons
 		currentImage = currentBuildingList.get(buttonNumber + displacement).getImage();
@@ -447,7 +565,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 		alterIncome(currentBuilding.getName());
 		placedBuildingList.remove(selectedBuilding);
 	}
-	
+
 	public void alterIncome(String buildingName){
 		//get the index of the current settlement
 		int settlementIndex = currentSettlement.getID();
@@ -558,8 +676,8 @@ public class SettlementManager extends JPanel implements Cloneable{
 			updateSettlementGridPlace();
 			//increase the index count for the next building
 			indexCount ++;
-			
-			
+
+
 		} else if(removing){
 			//if the user is trying to remove a building and clicks then remove the selected building
 			removeSelected();
@@ -603,7 +721,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 		public void paintComponent(Graphics gr){
 			//paint the panel display
 			Graphics2D g = (Graphics2D) gr;
-			
+
 			//set the grid width and size
 
 			int gridWidth = screenWidth - 600;

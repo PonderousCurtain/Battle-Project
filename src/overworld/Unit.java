@@ -27,13 +27,13 @@ public class Unit {
 	Unit assisting;
 	int attack;
 	double maxHealth;
-	
+
 	Image image;
-	
+
 	int targetX;
 	int targetY;
 
-	public Unit(int x, int y, int speed, int health, Color unitColor, int width, int type, int agroRange, int attack, Image image){
+	public Unit(int x, int y, int speed, int health, int width, String typeString, int agroRange, int attack, Image image){
 		this.x = x;
 		this.y = y;
 		targetX = x;
@@ -43,11 +43,24 @@ public class Unit {
 		this.image = image;
 		maxHealth = health;
 		rect = new Rectangle(x, y, width, width);
-		this.unitColor = unitColor;
 		selected = false;
 		arrived = true;
 		this.width = width;
-		this.type = type;
+
+		switch(typeString){
+		case "land":
+			type = 0;
+			break;
+		case "air":
+			type = 1;
+			break;
+		case "sea":
+			type = 2;
+			break;
+		default:
+			break;
+		}
+
 		this.agroRange = agroRange;
 		agro = false;
 		attacking = false;
@@ -61,7 +74,7 @@ public class Unit {
 	public int getX(){
 		return x;
 	}
-	
+
 	public Image getImage(){
 		return image;
 	}
@@ -77,11 +90,11 @@ public class Unit {
 		rect.setBounds(new Rectangle(x, y, width, width));
 		this.y = y;
 	}
-	
+
 	public void setAssisting(Unit newAssisting){
 		assisting = newAssisting;
 	}
-	
+
 	public Unit getAssisting(){
 		return assisting;
 	}
@@ -91,7 +104,7 @@ public class Unit {
 	public void setAttacking(Boolean newAttacking){
 		attacking = newAttacking;
 	}
-	
+
 	public int getAttack(){
 		return attack;
 	}
@@ -103,14 +116,14 @@ public class Unit {
 			return false;
 		}
 	}
-	
+
 	public void setAgro(Boolean newAgro){
 		agro = newAgro;
 	}
 	public Boolean getAgro(){
 		return agro;
 	}
-	
+
 	public Unit getSparringPartner(){
 		return sparringPartner;
 	}
@@ -120,7 +133,7 @@ public class Unit {
 	public void killSparringPartner(){
 		sparringPartner = null;
 	}
-	
+
 	public int getAgroRange(){
 		return agroRange;
 	}
@@ -155,15 +168,8 @@ public class Unit {
 	public void setRect(int newX, int newY, int newWidth, int newHeight){
 		rect.setBounds(new Rectangle(newX, newY, newWidth, newHeight));
 	}
-
-	public Color getColor(){
-		return unitColor;
-	}
 	public Color getSelectedColor(){
-		return new Color(255 - unitColor.getRed(), 255 - unitColor.getGreen(), 255 - unitColor.getBlue());
-	}
-	public void setColor(Color newColor){
-		unitColor = newColor;
+		return Color.RED;
 	}
 
 	public void setSelected(Boolean newSelected){
@@ -194,7 +200,7 @@ public class Unit {
 	public void setPath(ArrayList<Node> newPath){
 		path = newPath;
 	}
-	
+
 	public ArrayList<Node> getTempPath(){
 		return tempPath;
 	}
@@ -209,18 +215,18 @@ public class Unit {
 	public void setTempPath(ArrayList<Node> newPath){
 		tempPath = newPath;
 	}
-	
+
 	public void emptyTempPath(){
 		tempPath.clear();
 	}
 	public void emptyPath(){
 		path.clear();
 	}
-	
+
 	public int getWidth(){
 		return width;
 	}
-	
+
 	public void setTarget(int targX, int targY){
 		targetX = targX;
 		targetY = targY;
@@ -231,7 +237,7 @@ public class Unit {
 	public int getTargetY(){
 		return targetY;
 	}
-	
+
 	public double getHealthRatio(){
 		double healthRatio = health/maxHealth;
 		return healthRatio;
