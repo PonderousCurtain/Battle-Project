@@ -136,8 +136,9 @@ public class OverworldManager extends JPanel{
 		infoPanel.giveSettlementManager(settlementM);
 	}
 	
-	public void makeNewUnit(Unit newUnit, int settlementID){
-		
+	public void makeNewUnit(Unit newUnit, int settlementID, int player){
+		//make the viewport add a other unit to the map
+		viewport.addNewUnitToMap(newUnit, settlementID, player);
 	}
 	
 	public void endCurrentTurn(){

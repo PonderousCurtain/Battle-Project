@@ -69,6 +69,42 @@ public class OverworldViewManager extends JPanel{
 		//add the paint class to the panel
 		add(display);
 	}
+	
+	public void addNewUnitToMap(Unit unitToAdd, int settlementIDToAddToo, int player){
+		//get the x and y of the settlement that the unit has been added from
+		int newArmyX = 0;
+		int newArmyY = 0;
+		try{
+			System.out.println("Attempting connection");
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+			System.out.println("Connected \n");
+			//create the query to be made to the table
+			Statement stmt = con.createStatement();
+			//get the result set for the query executed
+			ResultSet rs = stmt.executeQuery("select * from settlements where id = " + settlementIDToAddToo);
+			while(rs.next()){
+				//loop through all rows in the table that were returned
+				//set the x and y of the new army to just above and to the left of the settlement
+				newArmyX = rs.getInt(3) - squareSize;
+				newArmyY = rs.getInt(4) - squareSize;
+			}
+			
+			//close the connection to the database
+			con.close();
+		} catch (Exception e){
+			//in case of an error print the error code for trouble shooting
+			System.out.println(e.toString());
+		}
+		//make a new army with the new unit
+		ArrayList<Unit> controlledUnits = new ArrayList<Unit>();
+		controlledUnits.add(unitToAdd);
+		Army newArmy = new Army(controlledUnits, unitToAdd.getImage(), newArmyX, newArmyY, player);
+		//add the new army to the list of armies on the map
+		allArmies.add(newArmy);
+		//refresh the map
+		repaint();
+	}
 
 	public void changeXOffset(int change){
 		//alter the offset to allow for a new segment being view on the world map

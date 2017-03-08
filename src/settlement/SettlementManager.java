@@ -349,7 +349,51 @@ public class SettlementManager extends JPanel implements Cloneable{
 	}
 
 	public String[] getAvalibleUnits(){
-		String[] units = {"Tank:     200", "Unit Two:         700"};
+		ArrayList<String> avalibleUnitArray = new ArrayList<String>();
+		
+		try{
+			//connect to the database
+			System.out.println("Attempting connection");
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+			System.out.println("Connected \n");
+			//create the query to be made to the table
+			Statement stmt = con.createStatement();
+			//get the result set for the query executed
+			ResultSet rs = stmt.executeQuery("select * from settlements where id = " + currentSettlement.getID());
+			while(rs.next()){
+				//loop through all rows in the table that were returned
+				//check which buildings can be made by the settlement
+				if(rs.getInt(5) == 1){
+					//barracks
+					//add the units that can be made in a barracks to the list of available units
+					avalibleUnitArray.add(new String("Tank:             200"));
+					avalibleUnitArray.add(new String("Infantry:         100"));
+				}
+				if(rs.getInt(6) == 1){
+					//hanger
+					//add the units that can be made in a hanger to the list of available units
+					avalibleUnitArray.add(new String("Bomber:           250"));
+				}
+				if(rs.getInt(7) == 1){
+					//dock
+					//add the units that can be made in a dock to the list of available units
+					avalibleUnitArray.add(new String("Cruiser:          200"));
+				}
+			}
+			//close the connection to the database
+			con.close();
+		} catch (Exception e){
+			//in case of an error print the error code for trouble shooting
+			System.out.println(e.toString());
+		}
+		
+		String[] units = new String[avalibleUnitArray.size()];
+		//loop through the array list and add each string to the string array to be used in the combo box
+		for(int i = 0; i < units.length; i ++){
+			units[i] = avalibleUnitArray.get(i);
+		}
+		
 		return units;
 	}
 
@@ -366,6 +410,8 @@ public class SettlementManager extends JPanel implements Cloneable{
 				unitName += characters[count];
 			}
 		}
+		
+		int playerID = 0;
 
 		//get the unit stats from the database
 		try{
@@ -388,7 +434,6 @@ public class SettlementManager extends JPanel implements Cloneable{
 			//get the id of the player that owns this settlement
 			Statement stmt2 = con.createStatement();
 			ResultSet rs2 = stmt.executeQuery("select * from settlements where id = " + currentSettlement.getID());
-			int playerID = 0;
 			while(rs2.next()){
 				//get the index of the player that owns the settlement
 				playerID = rs2.getInt(9);
@@ -408,7 +453,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 			System.out.println(e.toString());
 		}
 		//pass the unit to the over world
-		oM.makeNewUnit(newUnit, currentSettlement.getID());
+		oM.makeNewUnit(newUnit, currentSettlement.getID(), playerID);
 	}
 
 	public void giveOverworldManager(OverworldManager oM){
