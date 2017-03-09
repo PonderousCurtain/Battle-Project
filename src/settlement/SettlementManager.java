@@ -157,11 +157,11 @@ public class SettlementManager extends JPanel implements Cloneable{
 
 		//set up a combo box to list the units that the player can craft at this settlement
 		unitSelection = new JComboBox();
-		updateavailableUnits();
+		updateAvailableUnits();
 		unitSelection.setEditable(false);
 		unitSelection.setFocusable(false);
 		unitSelection.setSelectedItem(0);
-		
+
 		//create a label to show the funds of the player
 		fundsLabel = new JLabel();
 		//set the label to display the current funds of the player
@@ -354,7 +354,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 		c.gridwidth = 2;
 		add(informationPanel, c);
 	}
-	
+
 	public void updateFundsLabel(){
 		//get the player ID of the owner of the settlement
 		int playerID = 0;
@@ -389,14 +389,14 @@ public class SettlementManager extends JPanel implements Cloneable{
 			//in case of an error print the error code for trouble shooting
 			System.out.println(e.toString());
 		}
-		
+
 		//set the new label text for the current player funds
 		fundsLabel.setText("Player funds: " + playerFunds);
 	}
 
-	public void updateavailableUnits(){
+	public void updateAvailableUnits(){
 		ArrayList<String> availableUnitArray = new ArrayList<String>();
-		
+
 		try{
 			//connect to the database
 			System.out.println("Attempting connection");
@@ -411,20 +411,61 @@ public class SettlementManager extends JPanel implements Cloneable{
 				//loop through all rows in the table that were returned
 				//check which buildings can be made by the settlement
 				if(rs.getInt(5) == 1){
-					//barracks
-					//add the units that can be made in a barracks to the list of available units
-					availableUnitArray.add(new String("Tank:             200"));
-					availableUnitArray.add(new String("Infantry:         100"));
+					//there is a barracks
+					//create another statement and get the set of units that can be created from that building
+					Statement stmt2 = con.createStatement();
+					ResultSet rs2 = stmt2.executeQuery("select * from unit join building on unit.building = building.name where building.name = 'Barracks'");
+					while(rs2.next()){
+						//create a string to hold the name
+						String holdString = "";
+						holdString += rs2.getString(1) + ":";
+						//after adding the name to the string, add spaces to make the total character count to 15
+						for(int count = 0; count < 15 - rs2.getString(1).length(); count ++){
+							holdString += " ";
+						}
+						//add the cost of the unit to the string
+						holdString += "" + rs2.getInt(9);
+						//add the new string to the available units
+						availableUnitArray.add(holdString);
+					}
 				}
 				if(rs.getInt(6) == 1){
-					//hanger
-					//add the units that can be made in a hanger to the list of available units
-					availableUnitArray.add(new String("Bomber:           250"));
+					//there is a hanger
+					//create another statement and get the set of units that can be created from that building
+					Statement stmt2 = con.createStatement();
+					ResultSet rs2 = stmt2.executeQuery("select * from unit join building on unit.building = building.name where building.name = 'Hanger'");
+					while(rs2.next()){
+						//create a string to hold the name
+						String holdString = "";
+						holdString += rs2.getString(1) + ":";
+						//after adding the name to the string, add spaces to make the total character count to 15
+						for(int count = 0; count < 15 - rs2.getString(1).length(); count ++){
+							holdString += " ";
+						}
+						//add the cost of the unit to the string
+						holdString += "" + rs2.getInt(9);
+						//add the new string to the available units
+						availableUnitArray.add(holdString);
+					}
 				}
 				if(rs.getInt(7) == 1){
-					//dock
-					//add the units that can be made in a dock to the list of available units
-					availableUnitArray.add(new String("Cruiser:          200"));
+					//there is a dock
+					//create another statement and get the set of units that can be created from that building
+					Statement stmt2 = con.createStatement();
+					ResultSet rs2 = stmt2.executeQuery("select * from unit join building on unit.building = building.name where building.name = 'Dock'");
+					while(rs2.next()){
+						//create a string to hold the name
+						String holdString = "";
+						holdString += rs2.getString(1) + ":";
+						//after adding the name to the string, add spaces to make the total character count to 15
+						for(int count = 0; count < 15 - rs2.getString(1).length(); count ++){
+							holdString += " ";
+						}
+						//add the cost of the unit to the string
+						holdString += "" + rs2.getInt(9);
+						//add the new string to the available units
+						availableUnitArray.add(holdString);
+					}
 				}
 			}
 			//close the connection to the database
@@ -454,7 +495,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 				unitName += characters[count];
 			}
 		}
-		
+
 		int playerID = 0;
 
 		//get the unit stats from the database
@@ -562,7 +603,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 		//update the current player funds
 		updateFundsLabel();
 		//update the available units
-		updateavailableUnits();
+		updateAvailableUnits();
 	}
 
 	public void mouseMoved(MouseEvent event){

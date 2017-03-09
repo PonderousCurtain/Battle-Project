@@ -206,9 +206,6 @@ public class OverworldViewManager extends JPanel{
 				//loop through the armies to check if there is an army in the gris square where the mouse is located
 				for(int i = 0; i < allArmies.size(); i ++){
 					Army nextArmy = allArmies.get(i);
-					if(i == 3){
-						System.out.println("X: " + nextArmy.getX() + "  Y: " + nextArmy.getY() + "  click coords: " + (coords[0] + xOffset) + "||" + (coords[1] + yOffset));
-					}
 					if(nextArmy.getX() == coords[0] + xOffset && nextArmy.getY() == coords[1] + yOffset){
 						//if there is an army at the selected location then set is as selected
 						nextArmy.setSelected(true);
