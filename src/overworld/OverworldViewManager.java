@@ -74,6 +74,7 @@ public class OverworldViewManager extends JPanel{
 		//get the x and y of the settlement that the unit has been added from
 		int newArmyX = 0;
 		int newArmyY = 0;
+		System.out.println("Begin adding a new unit");
 		try{
 			System.out.println("Attempting connection");
 			Class.forName("com.mysql.jdbc.Driver");
@@ -86,8 +87,8 @@ public class OverworldViewManager extends JPanel{
 			while(rs.next()){
 				//loop through all rows in the table that were returned
 				//set the x and y of the new army to just above and to the left of the settlement
-				newArmyX = rs.getInt(3) - squareSize;
-				newArmyY = rs.getInt(4) - squareSize;
+				newArmyX = rs.getInt(3) - 1;
+				newArmyY = rs.getInt(4) - 1;
 			}
 			
 			//close the connection to the database
@@ -102,6 +103,8 @@ public class OverworldViewManager extends JPanel{
 		Army newArmy = new Army(controlledUnits, unitToAdd.getImage(), newArmyX, newArmyY, player);
 		//add the new army to the list of armies on the map
 		allArmies.add(newArmy);
+		//check the location the new army was created at for interaction
+		checkNewArmyLocation(newArmy);
 		//refresh the map
 		repaint();
 	}
@@ -203,6 +206,9 @@ public class OverworldViewManager extends JPanel{
 				//loop through the armies to check if there is an army in the gris square where the mouse is located
 				for(int i = 0; i < allArmies.size(); i ++){
 					Army nextArmy = allArmies.get(i);
+					if(i == 3){
+						System.out.println("X: " + nextArmy.getX() + "  Y: " + nextArmy.getY() + "  click coords: " + (coords[0] + xOffset) + "||" + (coords[1] + yOffset));
+					}
 					if(nextArmy.getX() == coords[0] + xOffset && nextArmy.getY() == coords[1] + yOffset){
 						//if there is an army at the selected location then set is as selected
 						nextArmy.setSelected(true);
@@ -312,7 +318,7 @@ public class OverworldViewManager extends JPanel{
 		checkArmyMovementArea();
 
 		//check the new army location to see if the army was moved onto another army or a settlement
-		checkNewArmyLocation(x, y, allArmies.get(hoveringID));
+		checkNewArmyLocation(allArmies.get(hoveringID));
 		repaint();
 	}
 
@@ -326,20 +332,19 @@ public class OverworldViewManager extends JPanel{
 		mD = newMD;
 	}
 
-	public void checkNewArmyLocation(int x, int y, Army movedArmy){
+	public void checkNewArmyLocation(Army movedArmy){
 		//get the coordinates of the new army location
-		int[] coords = getGridLocation(x, y);
 		//check if another army is in that square
 		for(int i = 0; i < allArmies.size(); i ++){
 			Army nextArmy = allArmies.get(i);
-			if(nextArmy.getX() == coords[0] + xOffset && nextArmy.getY() == coords[1] + yOffset && nextArmy != movedArmy){
+			if(nextArmy.getX() == movedArmy.getX() && nextArmy.getY() == movedArmy.getY() && nextArmy != movedArmy){
 				//check if the army already at the location is owned by the same player
-				if(nextArmy.getPlayerIndex() == allArmies.get(hoveringID).getPlayerIndex()){
+				if(nextArmy.getPlayerIndex() == movedArmy.getPlayerIndex()){
 					//the army has intersected another player owned army
 					//move the units from the army just moved into the army that it was moved onto
-					nextArmy.addUnits(allArmies.get(hoveringID).getUnits());
+					nextArmy.addUnits(movedArmy.getUnits());
 					//delete the army that was just moved
-					allArmies.remove(hoveringID);
+					allArmies.remove(movedArmy);
 					//set the hovering ID to that of the newly formed larger army
 					hoveringID = i;
 
@@ -351,10 +356,10 @@ public class OverworldViewManager extends JPanel{
 			}
 		}
 		//if the new location does not intersect another army then check if it intersects a settlement
-		if(map[coords[0] + xOffset][coords[1] + yOffset].isSettlement()){
+		if(map[movedArmy.getX()][movedArmy.getY()].isSettlement()){
 			//the army was moved onto a settlement
 			//get the settlement id that was moved onto
-			int intersectedSettlementID = map[coords[0] + xOffset][coords[1] + yOffset].getSettlementID();
+			int intersectedSettlementID = map[movedArmy.getX()][movedArmy.getY()].getSettlementID();
 			//interact with the settlement
 			interactWithSettlement(allArmies.get(hoveringID), intersectedSettlementID);
 		}

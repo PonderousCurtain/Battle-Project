@@ -598,7 +598,7 @@ public class MapDisplay extends JPanel{
 				//loop through all the units controlled by opposing players
 				for(Unit nextUnit: nextPlayer.getControlledUnits()){
 					//check if the distance to an enemy unit is less that 20
-					if(getDistance(checkUnit, nextUnit) < 20){
+					if(getDistance(checkUnit, nextUnit) < 20 + checkUnit.getWidth()){
 						//if the unit is within 20 units of an enemy unit then set it as attacking that unit and set that unit as attacking the unit being checked
 						checkUnit.setAttacking(true);
 						checkUnit.setSparringPartner(nextUnit);

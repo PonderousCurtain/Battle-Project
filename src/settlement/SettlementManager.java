@@ -472,7 +472,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 			while(rs.next()){
 				//loop through all rows in the table that were returned
 				//create a new copy of the unit returned
-				//newUnit = new Unit(350, 350, rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getString(5), rs.getInt(7), rs.getInt(6),  ImageIO.read(rs.getBlob(8).getBinaryStream()));
+				newUnit = new Unit(350, 350, rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getString(5), rs.getInt(7), rs.getInt(6),  ImageIO.read(rs.getBlob(8).getBinaryStream()));
 				unitCost = rs.getInt(9);
 			}
 			//get the id of the player that owns this settlement
