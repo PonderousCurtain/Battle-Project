@@ -1,5 +1,7 @@
-package overworld;
+package battle;
 import java.util.ArrayList;
+
+import overworld.Unit;
 
 
 public class Player {
@@ -7,7 +9,7 @@ public class Player {
 	String playerName;
 	int[] ownedTeritory;
 	
-	public Player(ArrayList<Unit> unitList, String playerName/*, int[] ownedTeritory*/){
+	public Player(ArrayList<Unit> unitList, String playerName/*, int[] ownedTeritory */){
 		this.unitList = unitList;
 		this.playerName = playerName;
 		this.ownedTeritory = ownedTeritory;

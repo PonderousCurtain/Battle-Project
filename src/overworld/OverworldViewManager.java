@@ -3,11 +3,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -69,7 +71,7 @@ public class OverworldViewManager extends JPanel{
 		//add the paint class to the panel
 		add(display);
 	}
-	
+
 	public void addNewUnitToMap(Unit unitToAdd, int settlementIDToAddToo, int player){
 		//get the x and y of the settlement that the unit has been added from
 		int newArmyX = 0;
@@ -90,7 +92,7 @@ public class OverworldViewManager extends JPanel{
 				newArmyX = rs.getInt(3) - 1;
 				newArmyY = rs.getInt(4) - 1;
 			}
-			
+
 			//close the connection to the database
 			con.close();
 		} catch (Exception e){
@@ -107,6 +109,29 @@ public class OverworldViewManager extends JPanel{
 		checkNewArmyLocation(newArmy);
 		//refresh the map
 		repaint();
+	}
+
+	public int[] getAvailableLocation(Unit unit, Army army, int[] unitCoords){
+		//create a rectangle with the dimensions of the unit in the location being tried
+		Rectangle testRectangle = new Rectangle(unitCoords[0], unitCoords[1], unit.getWidth(), unit.getWidth());
+		//loop through the units
+		for(Unit nextUnit: army.getUnits()){
+			//check if the new rectangle intersects a unit which is not itself
+			if(testRectangle.intersects(nextUnit.getRect()) && nextUnit != unit){
+				//create two random numbers between -1 and 1
+				Random rand = new Random();
+				int randomX = 1 - rand.nextInt(3);
+				int randomY = 1 - rand.nextInt(3);
+				//change the coordinates of the test location one unit width in the random directions
+				unitCoords[0] += randomX * unit.getWidth();
+				unitCoords[1] += randomY * unit.getWidth();
+				//check the availability of the new location
+				unitCoords = getAvailableLocation(unit, army, unitCoords);
+				break;
+			}
+		}
+		//once the recursion has found an available location return it
+		return unitCoords;
 	}
 
 	public void changeXOffset(int change){
@@ -157,7 +182,7 @@ public class OverworldViewManager extends JPanel{
 					armyHovering = false;
 					selectionLocked = false;
 				}
-				
+
 				//check if a different army is selected
 				else if(armyHovering){
 					//check if the army that is currently selected has a ID that is lower than the index of the army to be removed
@@ -340,10 +365,27 @@ public class OverworldViewManager extends JPanel{
 					//the army has intersected another player owned army
 					//move the units from the army just moved into the army that it was moved onto
 					nextArmy.addUnits(movedArmy.getUnits());
+					//for each unit in added check their location and if needed move them so they do not intersect another unit
+					for(Unit nextUnit: movedArmy.getUnits()){
+						int[] currentLocation = new int[2];
+						currentLocation[0] = nextUnit.getX();
+						currentLocation[1] = nextUnit.getY();
+						System.out.println("Unit at " + currentLocation[0] + ":" + currentLocation[1]);
+						int[] freeLocation = getAvailableLocation(nextUnit, nextArmy, currentLocation);
+						nextUnit.setX(freeLocation[0]);
+						nextUnit.setY(freeLocation[1]);
+						System.out.println("Moved to " + currentLocation[0] + ":" + currentLocation[1]);
+					}
 					//delete the army that was just moved
 					allArmies.remove(movedArmy);
-					//set the hovering ID to that of the newly formed larger army
-					hoveringID = i;
+					//check if the index of the army joined was higher than the one that was moved
+					if(hoveringID > i){
+						//set the hoveringID to the new larger army
+						hoveringID = i;
+					} else {
+						//otherwise set the hoveringID to the new larger army and then decrease it by 1 to accommodate for there being one less army remaining
+						hoveringID = i - 1;
+					}
 
 				} else {
 					//the army has intersected another player's army

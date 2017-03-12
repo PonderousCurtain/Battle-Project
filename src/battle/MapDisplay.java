@@ -18,7 +18,6 @@ import javax.swing.Timer;
 
 import overworld.Army;
 import overworld.OverworldViewManager;
-import overworld.Player;
 import overworld.Unit;
 import utilities.CardManager;
 import utilities.Obstruction;
@@ -209,8 +208,8 @@ public class MapDisplay extends JPanel{
 		});
 
 
-		//set the game to not paused
-		gamePaused = false;
+		//set the game to paused
+		gamePaused =true;
 	}
 
 	public void giveCardManger(CardManager newCM){
@@ -307,8 +306,8 @@ public class MapDisplay extends JPanel{
 			//update the information panel to reflect that no units are selected
 			informationPanel.updateSelectedUnits(selectedList);
 		}
-		//start the timer
-		runTimer.start();
+		//set the game to paused
+		gamePaused = true;
 		repaint();
 	}
 
