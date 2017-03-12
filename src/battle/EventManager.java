@@ -28,4 +28,7 @@ public class EventManager {
 	public void updateTime(float newIndex){
 		mD.giveUpdateTimeCommand(newIndex);
 	}
+	public void retreatFromBattle(){
+		mD.endBattle(true);
+	}
 }

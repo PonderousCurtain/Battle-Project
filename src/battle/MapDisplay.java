@@ -190,7 +190,7 @@ public class MapDisplay extends JPanel{
 				//check if the number of armies is now 1
 				if(playerList.size() == 1){
 					//if only one army remains then end the battle
-					endBattle();
+					endBattle(false);
 				}
 				//handle the AI delay timer
 				//increase the delay count
@@ -306,8 +306,10 @@ public class MapDisplay extends JPanel{
 			//update the information panel to reflect that no units are selected
 			informationPanel.updateSelectedUnits(selectedList);
 		}
-		//set the game to paused
-		gamePaused = true;
+		//if the game is not paused then set the game to paused
+		if(!gamePaused){
+			informationPanel.pauseGame();
+		}
 		repaint();
 	}
 
@@ -461,7 +463,6 @@ public class MapDisplay extends JPanel{
 				runTimer.stop();
 			}
 			gamePaused = !gamePaused;
-
 		} else {
 			//alter the game speed depending on the value passed
 			runTimer.setDelay((int) (normalRunTimerSpeed / timeCommand));
@@ -555,7 +556,7 @@ public class MapDisplay extends JPanel{
 		viewport = newViewport;
 	}
 
-	public void endBattle(){
+	public void endBattle(Boolean userRetreated){
 		//make sure that all the units in the remaining army are no longer selected and are completely reset in terms of aggression, attacking and are not in transit
 		for(Unit nextUnit : playerList.get(0).getControlledUnits()){
 			//remove all paths
@@ -571,13 +572,18 @@ public class MapDisplay extends JPanel{
 			repaint();
 		}
 		//create and show a JOptionpane to indicate if it was a victory or defeat for the player controlled army
-		if(userWon){
+		if(userRetreated){
+			//if the user retreated then display retreat
+			JOptionPane.showMessageDialog(this, "Retreated");
+		}
+		else if(userWon){
 			//if the user won then display victory
 			JOptionPane.showMessageDialog(this, "Victory");
 		} else {
 			//if the user lost then display defeat
 			JOptionPane.showMessageDialog(this, "Defeat");
 		}
+		userRetreated = false;
 		//run the check method on the over world to update army information
 		viewport.updateArmies();
 		//change the frame focus back to the over world view

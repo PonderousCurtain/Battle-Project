@@ -83,16 +83,7 @@ public class InfoPanel extends JPanel{
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				eM.updateTime(0);
-				//pause the game
-				gamePaused = !gamePaused;
-				if(gamePaused){
-					pauseButton.setText("Play");
-					currentGameSpeedLabel.setText("Game Paused");
-				} else {
-					pauseButton.setText("Pause");
-					currentGameSpeedLabel.setText("Current Game Speed: " + currentGameSpeed);
-				}
+				pauseGame();
 			}
 
 		});
@@ -161,6 +152,20 @@ public class InfoPanel extends JPanel{
 	
 	public void escapeBattle(){
 		cM.showCard("BattleCard", "OverCard");
+		eM.retreatFromBattle();
+	}
+	
+	public void pauseGame(){
+		eM.updateTime(0);
+		//pause the game
+		gamePaused = !gamePaused;
+		if(gamePaused){
+			pauseButton.setText("Play");
+			currentGameSpeedLabel.setText("Game Paused");
+		} else {
+			pauseButton.setText("Pause");
+			currentGameSpeedLabel.setText("Current Game Speed: " + currentGameSpeed);
+		}
 	}
 	
 	public void giveCardManager(CardManager newCM){

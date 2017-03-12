@@ -111,11 +111,11 @@ public class OverworldViewManager extends JPanel{
 		repaint();
 	}
 
-	public int[] getAvailableLocation(Unit unit, Army army, int[] unitCoords){
+	public int[] getAvailableLocation(Unit unit, ArrayList<Unit> unitList, int[] unitCoords){
 		//create a rectangle with the dimensions of the unit in the location being tried
 		Rectangle testRectangle = new Rectangle(unitCoords[0], unitCoords[1], unit.getWidth(), unit.getWidth());
 		//loop through the units
-		for(Unit nextUnit: army.getUnits()){
+		for(Unit nextUnit: unitList){
 			//check if the new rectangle intersects a unit which is not itself
 			if(testRectangle.intersects(nextUnit.getRect()) && nextUnit != unit){
 				//create two random numbers between -1 and 1
@@ -126,7 +126,7 @@ public class OverworldViewManager extends JPanel{
 				unitCoords[0] += randomX * unit.getWidth();
 				unitCoords[1] += randomY * unit.getWidth();
 				//check the availability of the new location
-				unitCoords = getAvailableLocation(unit, army, unitCoords);
+				unitCoords = getAvailableLocation(unit, unitList, unitCoords);
 				break;
 			}
 		}
@@ -371,7 +371,7 @@ public class OverworldViewManager extends JPanel{
 						currentLocation[0] = nextUnit.getX();
 						currentLocation[1] = nextUnit.getY();
 						System.out.println("Unit at " + currentLocation[0] + ":" + currentLocation[1]);
-						int[] freeLocation = getAvailableLocation(nextUnit, nextArmy, currentLocation);
+						int[] freeLocation = getAvailableLocation(nextUnit, nextArmy.getUnits(), currentLocation);
 						nextUnit.setX(freeLocation[0]);
 						nextUnit.setY(freeLocation[1]);
 						System.out.println("Moved to " + currentLocation[0] + ":" + currentLocation[1]);
@@ -406,6 +406,21 @@ public class OverworldViewManager extends JPanel{
 	}
 
 	public void fightArmies(Army attacker, Army defender){
+		//create a list with all the units that are to be involved in the fight
+		ArrayList<Unit> allUnits = new ArrayList<Unit>();
+		allUnits.addAll(attacker.getUnits());
+		allUnits.addAll(defender.getUnits());
+		//check all units on the attacking army to check they are not intersection any units on the enemy team
+		for(Unit nextUnit: allUnits){
+			int[] currentLocation = new int[2];
+			currentLocation[0] = nextUnit.getX();
+			currentLocation[1] = nextUnit.getY();
+			System.out.println("Unit at " + currentLocation[0] + ":" + currentLocation[1]);
+			int[] freeLocation = getAvailableLocation(nextUnit, allUnits, currentLocation);
+			nextUnit.setX(freeLocation[0]);
+			nextUnit.setY(freeLocation[1]);
+			System.out.println("Moved to " + currentLocation[0] + ":" + currentLocation[1]);
+		}
 		//set up a fight between the two armies then set the frame focus to the map display 
 		mD.setUpNewBattle(attacker, defender);
 		cM.showCard("OverCard", "BattleCard");
