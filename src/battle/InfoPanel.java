@@ -22,6 +22,7 @@ import utilities.CardManager;
 
 
 public class InfoPanel extends JPanel{
+	//declare any variables used throughout the class
 	int panelWidth;
 	int panelHeight;
 	ArrayList<Unit> selectedUnits;
@@ -38,6 +39,7 @@ public class InfoPanel extends JPanel{
 
 
 	public InfoPanel(int panelWidth, int panelHeight, EventManager newEventManager){
+		//initialise most of the declared variables
 		setPreferredSize(new Dimension(panelWidth, panelHeight));
 
 		this.panelWidth = panelWidth;
@@ -46,12 +48,15 @@ public class InfoPanel extends JPanel{
 
 		selectedUnits = new ArrayList<Unit>();
 
+		//create the display panel
 		Paint display = new Paint();
 		display.setPreferredSize(new Dimension(panelWidth, panelHeight - 300));
 
+		//create a new pane to hold the controls
 		controlOptionPane = new JPanel();
 		controlOptionPane.setPreferredSize(new Dimension(panelWidth, 300));
 
+		//create a slider to control the aggression range of selected units
 		JLabel agroSliderLabel = new JLabel("Agression Range");
 		agroSliderLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		agroSlider = new JSlider(JSlider.HORIZONTAL, 0, 500, 100);
@@ -59,7 +64,7 @@ public class InfoPanel extends JPanel{
 
 			@Override
 			public void stateChanged(ChangeEvent event) {
-				//update agro range on selected units
+				//update aggression range on selected units
 				eM.updateAgroRangeForMapDisplay(agroSlider.getValue());
 				repaint();
 			}
@@ -71,8 +76,10 @@ public class InfoPanel extends JPanel{
 		agroSlider.setPaintTicks(true);
 		agroSlider.setPaintLabels(true);
 
+		//set the game as starting paused
 		gamePaused = false;
 
+		//create a panel for the time controls
 		JPanel timeControlls = new JPanel();
 		timeControlls.setPreferredSize(new Dimension(300, 100));
 		
@@ -83,19 +90,24 @@ public class InfoPanel extends JPanel{
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
+				//pause the game
 				pauseGame();
 			}
 
 		});
 
+		//create a button to slow doen the speed of the game
 		JButton slowTimeButton = new JButton("Slower");
 		slowTimeButton.setFocusable(false);
 		slowTimeButton.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
+				//check if the current speed is already at its minimum
 				if(currentGameSpeed > 0.25){
+					//half the current game speed
 					currentGameSpeed = currentGameSpeed / 2;
+					//update the speed of the game to the new value and update the label to indicate this
 					eM.updateTime(currentGameSpeed);
 					currentGameSpeedLabel.setText("Current Game Speed: " + currentGameSpeed);
 				}
@@ -103,14 +115,18 @@ public class InfoPanel extends JPanel{
 
 		});
 
+		//add a button to increase game speed
 		JButton fastTimeButton = new JButton("Faster");
 		fastTimeButton.setFocusable(false);
 		fastTimeButton.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
+				//check if the game speed is already at the maximum value
 				if(currentGameSpeed < 4){
+					//double the game speed
 					currentGameSpeed = currentGameSpeed * 2;
+					//update the speed with the new value and update the label to reflect the new value
 					eM.updateTime(currentGameSpeed);
 					currentGameSpeedLabel.setText("Current Game Speed: " + currentGameSpeed);
 				}
@@ -118,17 +134,20 @@ public class InfoPanel extends JPanel{
 
 		});
 		
+		//add a button to retreat from battle
 		JButton retreatButton = new JButton("Retreat");
 		retreatButton.setFocusable(false);
 		retreatButton.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
+				//escape from the battle
 				escapeBattle();
 			}
 			
 		});
 
+		//add all the buttons and displays to the panel
 		timeControlls.setLayout(new GridLayout(3, 0));
 		timeControlls.add(slowTimeButton);
 		timeControlls.add(pauseButton);
@@ -145,12 +164,14 @@ public class InfoPanel extends JPanel{
 	}
 
 	public void updateSelectedUnits(ArrayList<Unit> newSelectedUnits){
+		//clear the list of selected untis and replace them with the given units
 		selectedUnits.clear();
 		selectedUnits.addAll(newSelectedUnits);
 		repaint();
 	}
 	
 	public void escapeBattle(){
+		//show the over world card and tell the map display to end the battle with a retreat
 		cM.showCard("BattleCard", "OverCard");
 		eM.retreatFromBattle();
 	}
@@ -160,6 +181,7 @@ public class InfoPanel extends JPanel{
 		//pause the game
 		gamePaused = !gamePaused;
 		if(gamePaused){
+			//update the labels to show the new state of the game
 			pauseButton.setText("Play");
 			currentGameSpeedLabel.setText("Game Paused");
 		} else {
@@ -169,15 +191,18 @@ public class InfoPanel extends JPanel{
 	}
 	
 	public void giveCardManager(CardManager newCM){
+		//get the card manager used throughout the program
 		cM = newCM;
 	}
 
 	public class Paint extends JPanel{
 		public void paintComponent(Graphics gr){
+			//paint a background
 			Graphics2D g = (Graphics2D) gr;
 			g.setColor(Color.GRAY);
 			g.fillRect(0, 0, panelWidth, panelHeight);
 
+			//display each unit that is currently selected
 			for(int i = 0; i < selectedUnits.size(); i ++){
 				g.setColor(Color.BLACK);
 				switch(selectedUnits.get(i).getType()){
@@ -193,6 +218,7 @@ public class InfoPanel extends JPanel{
 				default:
 					break;
 				}
+				//display the aggression range and health bars of the selected units
 				g.drawString("Agression range: " + selectedUnits.get(i).getAgroRange(), 20, (70 * i) + 29);
 				g.setColor(Color.GREEN);
 				g.drawRect(10, (70 * i ) + 49, 181, 11);
