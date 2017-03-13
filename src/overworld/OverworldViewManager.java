@@ -202,6 +202,42 @@ public class OverworldViewManager extends JPanel{
 		}
 		repaint();
 	}
+	
+	public ArrayList<Unit> sortUnitsOnMovement(ArrayList<Unit> unitArray){
+		//convert the array list into a object array
+		Unit[] unitList = new Unit[unitArray.size()];
+		for(int i = 0; i < unitArray.size(); i ++){
+			unitList[i] = unitArray.get(i);
+		}
+		//loop through the number of items in the list (the maximum number of iterations)
+		for(Unit nextUnit: unitList){
+			//set a boolean to changed being false
+			Boolean changed = false;
+			//loop through the unit list
+			for(int count = 0; count < unitList.length - 1; count ++){
+				//check if one unit has a speed greater than the speed of the next unit in the list
+				if(unitList[count].getSpeed() > unitList[count + 1].getSpeed()){
+					//if it does then swap the units
+					Unit holder = unitList[count];
+					unitList[count]= unitList[count + 1];
+					unitList[count + 1] = holder;
+					//indicate that there has been a change
+					changed = true;
+				}
+			}
+			if(!changed){
+				//if there was no change in this run then the units are in order and so stop running iterations
+				break;
+			}
+		}
+		//convert the unit list back into an array list
+		unitArray.clear();
+		for(int index = 0; index < unitList.length; index ++){
+			unitArray.add(unitList[index]);
+		}
+		//return the array list of units
+		return unitArray;
+	}
 
 	public Boolean selectItemAtLocation(int x, int y){
 		//covert the location into the corresponding grid square

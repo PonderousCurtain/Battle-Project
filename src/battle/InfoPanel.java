@@ -76,8 +76,8 @@ public class InfoPanel extends JPanel{
 		JPanel timeControlls = new JPanel();
 		timeControlls.setPreferredSize(new Dimension(300, 100));
 		
-		currentGameSpeedLabel  = new JLabel("Current Game Speed: " + currentGameSpeed);
-		pauseButton = new JButton("Pause");
+		currentGameSpeedLabel  = new JLabel("Game Paused");
+		pauseButton = new JButton("Play");
 		pauseButton.setFocusable(false);
 		pauseButton.addActionListener(new ActionListener(){
 
