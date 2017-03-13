@@ -24,6 +24,7 @@ public class MenuManager extends JPanel{
 	CardManager cM;
 
 	public MenuManager(int screenWidth, int screenHeight){
+		//set the size of the panel to the size given 
 		this.screenWidth = screenWidth;
 		this.screenHeight = screenHeight;
 		setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -32,49 +33,58 @@ public class MenuManager extends JPanel{
 		JLayeredPane lPane = new JLayeredPane();
 		lPane.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		
+		//create a panel to hold the buttons and set the location to be the centre of the panel
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new GridBagLayout());
 		buttonPanel.setBounds(screenWidth/2 - 150,  screenHeight/2 - 200,  300,  400);
 		
+		//add the button to go to the map maker
 		JButton mapMakerButton = new JButton("Map Maker");
 		mapMakerButton.setFocusable(false);
 		mapMakerButton.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
+				//change the shown card to the map maker
 				cM.showCard("MenuCard", "MapMakerCard");
 			}
 			
 		});
 		
+		//add a button to close the program
 		JButton exitButton = new JButton("Exit To Desktop");
 		exitButton.setFocusable(false);
 		exitButton.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
+				//stop the program and close
 				System.exit(1);
 			}
 			
 		});
 		
+		//add a button to go to the over world screen
 		JButton overworldButton = new JButton("View Overworld");
 		overworldButton.setFocusable(false);
 		overworldButton.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
+				//switch the card to the over world
 				cM.showCard("MenuCard", "OverCard");
 			}
 			
 		});
 		
+		//add a button to go to the battle map
 		JButton battleButton = new JButton("Fight");
 		battleButton.setFocusable(false);
 		battleButton.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
+				//switch to the card battle card
 				cM.showCard("MenuCard", "BattleCard");
 			}
 			
@@ -83,6 +93,7 @@ public class MenuManager extends JPanel{
 		Paint display = new Paint(); 
 		display.setBounds(0, 0, screenWidth, screenHeight);
 		
+		//add all of the components to the correct panels
 		c.fill =  GridBagConstraints.BOTH;
 		c.weightx = 1.0;
 		c.weighty = 1.0;
@@ -101,13 +112,14 @@ public class MenuManager extends JPanel{
 		
 		lPane.add(display, new Integer(0));
 		lPane.add(buttonPanel, new Integer(1));
-		
+	
 		add(lPane);
 		setVisible(true);
 	}
 
 	public class Paint extends JPanel{
 		public void paintComponent(Graphics gr){
+			//set a background clour and image
 			Graphics2D g = (Graphics2D) gr;
 			g.setColor(Color.GRAY);
 			g.fillRect(0, 0, screenWidth, screenHeight);
@@ -118,14 +130,8 @@ public class MenuManager extends JPanel{
 	}
 	
 	public void giveCardManager(CardManager newCM){
+		//get the card manager used for the program
 		cM = newCM;
-	}
-
-	public void keyPressed(KeyEvent event){
-		switch(event.getKeyCode()){
-		default:
-			break;
-		}
 	}
 
 }

@@ -6,6 +6,7 @@ import javax.swing.ImageIcon;
 
 
 public class Building implements Cloneable{
+	//declare the values used for a building object
 	String name;
 	ArrayList<int[]> size;
 	int placedIndex;
@@ -13,6 +14,7 @@ public class Building implements Cloneable{
 	int upkeep;
 	
 	public Building(String name, ArrayList<int[]> size, int cost, int upkeep){
+		//Initialise the variables with the values given in the constructor
 		this.name = name;
 		this.size = size;
 		placedIndex = 0;
@@ -21,11 +23,13 @@ public class Building implements Cloneable{
 	}
 	
 	public Building(Building copyBuilding){
+		//initialise the building as a copy of another building
 		name = copyBuilding.getName();
 		placedIndex = copyBuilding.getPlacedIndex();
 		size = new ArrayList<int[]>(copyBuilding.getTakenBlocks());
 	}
 	
+	//add functions to return the values of the building
 	public int getCost(){
 		return cost;
 	}
@@ -50,6 +54,7 @@ public class Building implements Cloneable{
 		return placedIndex;
 	}
 	public void setPlacedIndex(int newIndex){
+		//set the placed index value to the new value passed to this class
 		placedIndex = newIndex;
 	}
 }

@@ -8,6 +8,7 @@ import battle.Node;
 
 
 public class Unit {
+	//declare all the variables for a unit
 	int x;
 	int y;
 	int speed;
@@ -34,6 +35,7 @@ public class Unit {
 	int targetY;
 
 	public Unit(int x, int y, int speed, int health, int width, String typeString, int agroRange, int attack, Image image){
+		//initialise the variables for this unit as the ones given in the constructor
 		this.x = x;
 		this.y = y;
 		targetX = x;
@@ -47,6 +49,7 @@ public class Unit {
 		arrived = true;
 		this.width = width;
 
+		//change the type from a string to an int form
 		switch(typeString){
 		case "land":
 			type = 0;
@@ -71,6 +74,7 @@ public class Unit {
 		sparringPartner = null;
 	}
 
+	//add methods and functions to set and return the values of the unit
 	public int getX(){
 		return x;
 	}
@@ -109,6 +113,7 @@ public class Unit {
 		return attack;
 	}
 	public boolean deadFromDamage(int damage){
+		//reduce the health of the unit by the damage given and check if the unit health has decreased bellow 0, return true if the unit has lost all its health, otherwise return true
 		health = health - damage;
 		if(health < 1){
 			return true;
@@ -143,7 +148,7 @@ public class Unit {
 
 	public int getType(){
 		return type;
-		//land air or sea 0, 1, or 2 respectivly
+		//land air or sea 0, 1, or 2 respectively
 	}
 	public int getSpeed(){
 		return speed;
@@ -191,7 +196,8 @@ public class Unit {
 	}
 	public Node getPathNext(){
 		return path.get(path.size() - 1);
-	}public void removePath(){
+	}
+	public void removePath(){
 		path.clear();
 	}
 	public void removeLast(){
@@ -239,6 +245,7 @@ public class Unit {
 	}
 
 	public double getHealthRatio(){
+		//get the radio of current health to maximum health for the unit
 		double healthRatio = health/maxHealth;
 		return healthRatio;
 	}
