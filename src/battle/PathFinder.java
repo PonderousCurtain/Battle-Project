@@ -45,10 +45,32 @@ public class PathFinder {
 			for(int i = 0; i < screenSize; i += blockWidth){
 				for(int j = 0; j < screenSize; j += blockWidth){
 					grid[i/blockWidth][j/blockWidth] = new Node(i/blockWidth, j/blockWidth, blockWidth);
-					
+
 					//set the values of the new node to the values of the blockages present on the map
-					grid[i/blockWidth][j/blockWidth].setMoveCost(staticBlockages[i/blockWidth][j/blockWidth].getRoughness());
-					grid[i/blockWidth][j/blockWidth].setTileType(staticBlockages[i/blockWidth][j/blockWidth].getTileType());
+					grid[i/blockWidth][j/blockWidth].setMoveCost(staticBlockages[i/10][j/10].getRoughness());
+					grid[i/blockWidth][j/blockWidth].setTileType(staticBlockages[i/10][j/10].getTileType());
+
+					//loop through the other squares in the grid to check that the entire grid space can accommodate the larger unit
+					for(int countX = 0; countX < (blockWidth / 10); countX++){
+						for(int countY = 0; countY < (blockWidth / 10); countY++){
+							if(staticBlockages[(i/10) + countX][(j/10) + countY].getRoughness() > grid[i/blockWidth][j/blockWidth].getMoveCost() && grid[i/blockWidth][j/blockWidth].getMoveCost() != 0){
+								//if the roughness of any grid square in the larger map square is larger then replace the large square with the higher value
+								grid[i/blockWidth][j/blockWidth].setMoveCost(staticBlockages[(i/10) + countX][(j/10) + countY].getRoughness());
+							}
+							//check if there is any discrepancy between the terrain types
+							if(staticBlockages[(i/10) + countX][(j/10) + countY].getTileType() != grid[i/blockWidth][j/blockWidth].getTileType()){
+								//some of the grid squares in the larger map square are different terrain types
+								//check if one of the types is a bridge as if it is then the tile should be set as bridge to allow anything that uses a bridge to cross
+								if((staticBlockages[(i/10) + countX][(j/10) + countY].getTileType() == 3 || grid[i/blockWidth][j/blockWidth].getTileType() == 3)){
+									grid[i/blockWidth][j/blockWidth].setTileType(3);
+								} else {
+									//otherwise set the terrain type to a chasm so that only aircraft can use it to avoid large ships being able to run on ground and large land units on water
+									grid[i/blockWidth][j/blockWidth].setTileType(1);
+								}
+							}
+						}
+					}
+					//check if the block is a wall
 					if(grid[i/blockWidth][j/blockWidth].getMoveCost() == 0){
 						grid[i/blockWidth][j/blockWidth].setBlocked(true);
 					}
@@ -58,8 +80,8 @@ public class PathFinder {
 			mapLibrary.add(grid);
 		}
 	}
-	
-	
+
+
 	public int[] getAproxXY(int x, int y, int width, int screenSize, int blockWidth){
 		int[] ijStore = new int[2];
 		//loop through a phantom grid of squares the width and height of the unit being looked for
@@ -96,12 +118,12 @@ public class PathFinder {
 
 		int targetGridX = 0;
 		int targetGridY = 0;
-		
+
 		//get the approximate grid location of the unit
 		recivedIJ = getAproxXY(currentX, currentY, width, screenSize, blockWidth);
 		currentGridX = recivedIJ[0];
 		currentGridY = recivedIJ[1];
-		
+
 		//get the approximate grid location of the target
 		recivedIJ = getAproxXY(targetX, targetY, width, screenSize, blockWidth);
 		targetGridX = recivedIJ[0];
@@ -246,7 +268,7 @@ public class PathFinder {
 					if(x == 0 && y == 0){
 						continue;
 					}
-					
+
 					//work out the location of the next adjacent node being checked
 					int xTest = x + current.getGridX();
 					int yTest = y + current.getGridY();
@@ -288,7 +310,7 @@ public class PathFinder {
 			//if the open list is empty indicate this to show a path could not be found
 			System.out.println("Open List empty");
 		}
-		
+
 		while(current.getPrecursor() != null){
 			//rebuild the path by looking at the precursor nodes from the end of the path backwards
 			path.add(current);

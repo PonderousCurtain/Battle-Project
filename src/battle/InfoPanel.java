@@ -77,7 +77,7 @@ public class InfoPanel extends JPanel{
 		agroSlider.setPaintLabels(true);
 
 		//set the game as starting paused
-		gamePaused = false;
+		gamePaused = true;
 
 		//create a panel for the time controls
 		JPanel timeControlls = new JPanel();

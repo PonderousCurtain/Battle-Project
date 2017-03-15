@@ -65,6 +65,7 @@ public class OverworldManager extends JPanel{
 		testArmyUnits.add(new Unit(650, 550, 5, 100, 10, "sea", 200, 10, new ImageIcon("TestUnitThree.jpg").getImage()));
 		Army testArmy1 = new Army(testArmyUnits, new ImageIcon("TestArmy.png").getImage(), 20, 20, 0);
 		//add the test army to the array of armies
+		testArmy1.updateMaxMovement(20);
 		allArmies.add(testArmy1);
 		
 		//create and add a second army on a different team
@@ -75,6 +76,7 @@ public class OverworldManager extends JPanel{
 		testArmyUnits2.add(new Unit(615, 335, 5, 100, 10, "land", 100, 10, new ImageIcon("TestUnitFour.jpg").getImage()));
 		Army testArmy2 = new Army(testArmyUnits2, new ImageIcon("TestArmy.png").getImage(), 80, 70, 1);
 		//add the test army to the array of armies
+		testArmy2.updateMaxMovement(20);
 		allArmies.add(testArmy2);
 		
 		ArrayList<Unit> testArmyUnits3 = new ArrayList<Unit>();
@@ -83,6 +85,7 @@ public class OverworldManager extends JPanel{
 		testArmyUnits3.add(new Unit(650, 550, 5, 100, 10, "sea", 200, 10, new ImageIcon("TestUnitThree.jpg").getImage()));
 		Army testArmy3 = new Army(testArmyUnits3, new ImageIcon("TestArmy.png").getImage(), 30, 30, 0);
 		//add the test army to the array of armies
+		testArmy3.updateMaxMovement(20);
 		allArmies.add(testArmy3);
 		
 		//pass the list of armies to the view port 

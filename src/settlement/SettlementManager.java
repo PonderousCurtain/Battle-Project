@@ -406,67 +406,21 @@ public class SettlementManager extends JPanel implements Cloneable{
 			//create the query to be made to the table
 			Statement stmt = con.createStatement();
 			//get the result set for the query executed
-			ResultSet rs = stmt.executeQuery("select * from settlements where id = " + currentSettlement.getID());
+			ResultSet rs = stmt.executeQuery("select * from settlementunitlink join building on settlementunitlink.building = building.name join unit on unit.building = building.name where settlementunitlink.settlementid = " + currentSettlement.getID());
 			while(rs.next()){
 				//loop through all rows in the table that were returned
 				//check which buildings can be made by the settlement
-				if(rs.getInt(5) == 1){
-					//there is a barracks
-					//create another statement and get the set of units that can be created from that building
-					Statement stmt2 = con.createStatement();
-					ResultSet rs2 = stmt2.executeQuery("select * from unit join building on unit.building = building.name where building.name = 'Barracks'");
-					while(rs2.next()){
-						//create a string to hold the name
-						String holdString = "";
-						holdString += rs2.getString(1) + ":";
-						//after adding the name to the string, add spaces to make the total character count to 15
-						for(int count = 0; count < 15 - rs2.getString(1).length(); count ++){
-							holdString += " ";
-						}
-						//add the cost of the unit to the string
-						holdString += "" + rs2.getInt(9);
-						//add the new string to the available units
-						availableUnitArray.add(holdString);
-					}
+				//create a string to hold the name
+				String holdString = "";
+				holdString += rs.getString(16) + ":";
+				//after adding the name to the string, add spaces to make the total character count to 15
+				for(int count = 0; count < 15 - rs.getString(16).length(); count ++){
+					holdString += " ";
 				}
-				if(rs.getInt(6) == 1){
-					//there is a hanger
-					//create another statement and get the set of units that can be created from that building
-					Statement stmt2 = con.createStatement();
-					ResultSet rs2 = stmt2.executeQuery("select * from unit join building on unit.building = building.name where building.name = 'Hanger'");
-					while(rs2.next()){
-						//create a string to hold the name
-						String holdString = "";
-						holdString += rs2.getString(1) + ":";
-						//after adding the name to the string, add spaces to make the total character count to 15
-						for(int count = 0; count < 15 - rs2.getString(1).length(); count ++){
-							holdString += " ";
-						}
-						//add the cost of the unit to the string
-						holdString += "" + rs2.getInt(9);
-						//add the new string to the available units
-						availableUnitArray.add(holdString);
-					}
-				}
-				if(rs.getInt(7) == 1){
-					//there is a dock
-					//create another statement and get the set of units that can be created from that building
-					Statement stmt2 = con.createStatement();
-					ResultSet rs2 = stmt2.executeQuery("select * from unit join building on unit.building = building.name where building.name = 'Dock'");
-					while(rs2.next()){
-						//create a string to hold the name
-						String holdString = "";
-						holdString += rs2.getString(1) + ":";
-						//after adding the name to the string, add spaces to make the total character count to 15
-						for(int count = 0; count < 15 - rs2.getString(1).length(); count ++){
-							holdString += " ";
-						}
-						//add the cost of the unit to the string
-						holdString += "" + rs2.getInt(9);
-						//add the new string to the available units
-						availableUnitArray.add(holdString);
-					}
-				}
+				//add the cost of the unit to the string
+				holdString += "" + rs.getInt(24);
+				//add the new string to the available units
+				availableUnitArray.add(holdString);
 			}
 			//close the connection to the database
 			con.close();

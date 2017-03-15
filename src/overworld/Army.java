@@ -26,9 +26,6 @@ public class Army{
 		selected = false;
 		movedThisTurn = 0;
 		
-		//update the maximum movement distance
-		updateMaxMovement();
-		
 	}
 	
 	public void addUnits(ArrayList<Unit> unitsToAdd){
@@ -36,17 +33,9 @@ public class Army{
 		containedUnits.addAll(unitsToAdd);
 	}
 	
-	public void updateMaxMovement(){
-		//set the maximum movement to a large value temporarily
-				maximumMovement = 10;
-				//loop through the contained units 
-				for(int i = 0; i < containedUnits.size(); i ++){
-					//check if the next unit has a lower speed than the current maximum movement
-					if(containedUnits.get(i).getSpeed() < maximumMovement){
-						//if the speed is lower then lower the maximum movement to that value
-						maximumMovement = containedUnits.get(i).getSpeed();
-					}
-				}
+	public void updateMaxMovement(int newValue){
+		//set the maximum movement value to the new value
+		maximumMovement = newValue;
 	}
 	
 	//add return statements for each of the values needed for the army
@@ -92,5 +81,9 @@ public class Army{
 	}
 	public ArrayList<Unit> getUnits(){
 		return containedUnits;
+	}
+	public void replaceUnits(ArrayList<Unit> newUnits){
+		containedUnits = new ArrayList<Unit>();
+		containedUnits.addAll(newUnits);
 	}
 }

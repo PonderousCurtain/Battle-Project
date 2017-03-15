@@ -76,12 +76,9 @@ public class OverworldViewManager extends JPanel{
 		//get the x and y of the settlement that the unit has been added from
 		int newArmyX = 0;
 		int newArmyY = 0;
-		System.out.println("Begin adding a new unit");
 		try{
-			System.out.println("Attempting connection");
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
-			System.out.println("Connected \n");
 			//create the query to be made to the table
 			Statement stmt = con.createStatement();
 			//get the result set for the query executed
@@ -104,6 +101,8 @@ public class OverworldViewManager extends JPanel{
 		controlledUnits.add(unitToAdd);
 		Army newArmy = new Army(controlledUnits, unitToAdd.getImage(), newArmyX, newArmyY, player);
 		//add the new army to the list of armies on the map
+		//set the default movement size to the speed of the unit in the army
+		newArmy.updateMaxMovement(newArmy.getUnits().get(0).getSpeed());
 		allArmies.add(newArmy);
 		//check the location the new army was created at for interaction
 		checkNewArmyLocation(newArmy);
@@ -197,7 +196,9 @@ public class OverworldViewManager extends JPanel{
 				i--;
 			} else {
 				//if the army still has units then recalculate the move distance for that army
-				allArmies.get(i).updateMaxMovement();
+				allArmies.get(i).replaceUnits(sortUnitsOnMovement(allArmies.get(i).getUnits()));
+				//set the new maximum movement value on the sorted army
+				allArmies.get(i).updateMaxMovement(allArmies.get(i).getUnits().get(0).getSpeed());
 			}
 		}
 		repaint();
@@ -406,12 +407,14 @@ public class OverworldViewManager extends JPanel{
 						int[] currentLocation = new int[2];
 						currentLocation[0] = nextUnit.getX();
 						currentLocation[1] = nextUnit.getY();
-						System.out.println("Unit at " + currentLocation[0] + ":" + currentLocation[1]);
 						int[] freeLocation = getAvailableLocation(nextUnit, nextArmy.getUnits(), currentLocation);
 						nextUnit.setX(freeLocation[0]);
 						nextUnit.setY(freeLocation[1]);
-						System.out.println("Moved to " + currentLocation[0] + ":" + currentLocation[1]);
 					}
+					//re-sort the units in the new larger army in order of their movement speeds
+					nextArmy.replaceUnits(sortUnitsOnMovement(nextArmy.getUnits()));
+					//set the new maximum movement value on the sorted army to the lowest speed of the units in it
+					nextArmy.updateMaxMovement(nextArmy.getUnits().get(0).getSpeed());
 					//delete the army that was just moved
 					allArmies.remove(movedArmy);
 					//check if the index of the army joined was higher than the one that was moved
@@ -451,11 +454,9 @@ public class OverworldViewManager extends JPanel{
 			int[] currentLocation = new int[2];
 			currentLocation[0] = nextUnit.getX();
 			currentLocation[1] = nextUnit.getY();
-			System.out.println("Unit at " + currentLocation[0] + ":" + currentLocation[1]);
 			int[] freeLocation = getAvailableLocation(nextUnit, allUnits, currentLocation);
 			nextUnit.setX(freeLocation[0]);
 			nextUnit.setY(freeLocation[1]);
-			System.out.println("Moved to " + currentLocation[0] + ":" + currentLocation[1]);
 		}
 		//set up a fight between the two armies then set the frame focus to the map display 
 		mD.setUpNewBattle(attacker, defender);
@@ -467,10 +468,8 @@ public class OverworldViewManager extends JPanel{
 		int settlementPlayer = 0;
 		//connect to the data base and get the player number of the settlement
 		try{
-			System.out.println("Attempting connection");
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
-			System.out.println("Connected \n");
 			//create the query to be made to the table
 			Statement stmt = con.createStatement();
 			//get the result set for the query executed
@@ -494,10 +493,8 @@ public class OverworldViewManager extends JPanel{
 			//the army is attacking the settlement
 			//take over the settlement by changing the player number in the data base
 			try{
-				System.out.println("Attempting connection");
 				Class.forName("com.mysql.jdbc.Driver");
 				Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
-				System.out.println("Connected \n");
 				//create the query to be made to the table
 				Statement stmt = con.createStatement();
 				//change the player number of the settlement

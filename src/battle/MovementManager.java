@@ -118,13 +118,14 @@ public class MovementManager {
 				if(presentUnit.getType() == checkUnit.getType()){
 					//if they are on the same terrain do not allow the movement
 					moveXCheck = false;
+					System.out.println("Unit collision");
 				}
 			}
 		}
 
 		//get the grid coordinates of the top right corner of the hit box
-		int currentXCoord = (int) Math.floor(checkTangleX.getX()/checkUnit.getWidth());
-		int currentYCoord = (int) Math.floor(checkTangleX.getY()/checkUnit.getWidth());
+		int currentXCoord = (int) Math.floor(checkTangleX.getX()/10);
+		int currentYCoord = (int) Math.floor(checkTangleX.getY()/10);
 
 		//set a default height of 1 (the number of grid spaces the unit is in)
 		int height = 1;
@@ -146,6 +147,8 @@ public class MovementManager {
 						if((staticBlockages[currentXCoord + cX][currentYCoord + cY].getTileType() != 0 && staticBlockages[currentXCoord + cX][currentYCoord + cY].getTileType() != 3) || staticBlockages[currentXCoord + cX][currentYCoord + cY].getRoughness() == 0){
 							//if the unit cannot move on the grid space then do not let it move
 							moveXCheck = false;
+							System.out.println("terrain collision: " + staticBlockages[currentXCoord + cX][currentYCoord + cY].getTileType() + " at " + currentXCoord + cX + "||" + currentYCoord + cY);
+							
 						}
 						//land
 						break;
@@ -198,8 +201,8 @@ public class MovementManager {
 		}
 
 		//get the grid coordinates of the top right corner of the hit box
-		int currentXCoord = (int) Math.floor(checkTangleX.getX()/checkUnit.getWidth());
-		int currentYCoord = (int) Math.floor(checkTangleX.getY()/checkUnit.getWidth());
+		int currentXCoord = (int) Math.floor(checkTangleX.getX()/10);
+		int currentYCoord = (int) Math.floor(checkTangleX.getY()/10);
 
 		//set a default width of 1 (the number of grid spaces the unit is in)
 		int width = 1;
