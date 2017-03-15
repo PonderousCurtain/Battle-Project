@@ -161,10 +161,8 @@ public class OverworldManager extends JPanel{
 		//increase the funds of each player by the value of the settlements they control
 		try{
 			//connect to the database
-			System.out.println("Attempting connection");
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
-			System.out.println("Connected \n");
 			//create the query to be made to the table
 			Statement stmt = con.createStatement();
 			//get the result set for the query executed
@@ -179,7 +177,6 @@ public class OverworldManager extends JPanel{
 				stmt2.executeUpdate("update player set funds = " + (rs.getInt(13) + rs.getInt(10)) + " where id = " + rs.getInt(9));
 				System.out.println("Funds increased to " + rs.getInt(13));
 			}
-			System.out.println("All ran through");
 			//close the connection to the database
 			con.close();
 		} catch (Exception e){

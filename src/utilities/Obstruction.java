@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 
 public class Obstruction implements Serializable{
+	//declare the variables for an obstruction
 	int x;
 	int y;
 	int width;
@@ -17,6 +18,7 @@ public class Obstruction implements Serializable{
 	int settlementID;
 	
 	public Obstruction(int x, int y, int width, int height, Color color, int roughness, int type, Boolean isSettlement, int settlementID){
+		//initialise the variables with the values from the constructor
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -29,6 +31,7 @@ public class Obstruction implements Serializable{
 		this.settlementID = settlementID;
 	}
 	
+	//add methods and functions to set and return the variables for each obstruction
 	public int getX(){
 		return x;
 	}

@@ -118,7 +118,6 @@ public class MovementManager {
 				if(presentUnit.getType() == checkUnit.getType()){
 					//if they are on the same terrain do not allow the movement
 					moveXCheck = false;
-					System.out.println("Unit collision");
 				}
 			}
 		}
@@ -147,8 +146,6 @@ public class MovementManager {
 						if((staticBlockages[currentXCoord + cX][currentYCoord + cY].getTileType() != 0 && staticBlockages[currentXCoord + cX][currentYCoord + cY].getTileType() != 3) || staticBlockages[currentXCoord + cX][currentYCoord + cY].getRoughness() == 0){
 							//if the unit cannot move on the grid space then do not let it move
 							moveXCheck = false;
-							System.out.println("terrain collision: " + staticBlockages[currentXCoord + cX][currentYCoord + cY].getTileType() + " at " + currentXCoord + cX + "||" + currentYCoord + cY);
-							
 						}
 						//land
 						break;

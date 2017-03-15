@@ -84,10 +84,8 @@ public class SettlementInfoPanel extends JPanel{
 	public void updateInformation(){
 		//attempt to connect to the database containing the settlement table
 		try{
-			System.out.println("Attempting connection");
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
-			System.out.println("Connected \n");
 			//create the query to be made to the table
 			Statement stmt = con.createStatement();
 			//get the result set for the query executed

@@ -35,10 +35,8 @@ public class Settlement{
 		
 		//use SQL to add the correct buildings to the settlement available buildings list
 		try{
-			System.out.println("Attempting connection");
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
-			System.out.println("Connected \n");
 			//create the query to be made to the table
 			Statement stmt = con.createStatement();
 			//get the result set for the query executed
@@ -72,10 +70,8 @@ public class Settlement{
 	
 	public void addBuilding(String buildingName){
 		try{
-			System.out.println("Attempting connection");
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
-			System.out.println("Connected \n");
 			//create the query to be made to the table
 			Statement stmt = con.createStatement();
 			//get the result set for the query executed

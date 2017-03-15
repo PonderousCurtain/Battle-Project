@@ -95,10 +95,8 @@ public class SettlementManager extends JPanel implements Cloneable{
 
 		//use SQL to get the settlements from the table to add the correct number of settlements to the settlement list
 		try{
-			System.out.println("Attempting connection");
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
-			System.out.println("Connected \n");
 			//create the query to be made to the table
 			Statement stmt = con.createStatement();
 			//get the result set for the query executed
@@ -361,10 +359,8 @@ public class SettlementManager extends JPanel implements Cloneable{
 		int playerFunds = 0;
 		try{
 			//connect to the database
-			System.out.println("Attempting connection");
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
-			System.out.println("Connected \n");
 			//create the query to be made to the table
 			Statement stmt = con.createStatement();
 			//get the result set for the query executed
@@ -399,10 +395,8 @@ public class SettlementManager extends JPanel implements Cloneable{
 
 		try{
 			//connect to the database
-			System.out.println("Attempting connection");
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
-			System.out.println("Connected \n");
 			//create the query to be made to the table
 			Statement stmt = con.createStatement();
 			//get the result set for the query executed
@@ -454,10 +448,8 @@ public class SettlementManager extends JPanel implements Cloneable{
 
 		//get the unit stats from the database
 		try{
-			System.out.println("Attempting connection");
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
-			System.out.println("Connected \n");
 			//create the query to be made to the table
 			Statement stmt = con.createStatement();
 			//set an variable for the cost of the unit
@@ -661,10 +653,8 @@ public class SettlementManager extends JPanel implements Cloneable{
 		int settlementIndex = currentSettlement.getID();
 		try{
 			//connect to the database
-			System.out.println("Attempting connection");
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
-			System.out.println("Connected \n");
 			//create the query to be made to the table
 			Statement stmt1 = con.createStatement();
 			//get the result set for the query executed
@@ -680,7 +670,6 @@ public class SettlementManager extends JPanel implements Cloneable{
 					Statement stmt3 = con.createStatement();
 					//decrease the income of the settlement by the upkeep of the building
 					stmt3.executeUpdate("update settlements set income = " + (rs2.getInt(10) - rs.getInt(2)) + " where id = " + rs2.getInt(1));
-					System.out.println("Income updated");
 				}
 			}
 			//close the connection to the database
