@@ -1,14 +1,17 @@
 package overworld;
 import java.awt.Image;
+import java.io.Serializable;
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
 
-public class Army{
+
+public class Army implements Serializable{
 	
 	//declare the variables to be used throughout the class
 	
 	ArrayList<Unit> containedUnits;
-	Image coverImage;
+	//Image coverImage;
 	Boolean selected;
 	int x;
 	int y;
@@ -19,7 +22,7 @@ public class Army{
 	public Army(ArrayList<Unit> containedUnits, Image coverImage, int x, int y, int playerID){
 		//initialise the main variables
 		this.containedUnits = containedUnits;
-		this.coverImage = coverImage;
+		//this.coverImage = coverImage;
 		this.x = x;
 		this.y = y;
 		this.playerID = playerID;
@@ -40,7 +43,7 @@ public class Army{
 	
 	//add return statements for each of the values needed for the army
 	public Image getImage(){
-		return coverImage;
+		return new ImageIcon("TestUnitOne.jpg").getImage();
 	}
 	
 	public int getPlayerIndex(){

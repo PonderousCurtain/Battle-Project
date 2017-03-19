@@ -385,7 +385,7 @@ public class MapDisplay extends JPanel{
 				//loop through the units controlled by that player
 				for(Unit nextUnit: nextPlayer.getControlledUnits()){
 
-					// THIS CODE IS FOR TROUBLESHOOTING PURPOSES AND CAN BE USED TO PAINT THE PATHS OF UNITS ONTO THE SCREEN
+					/*// THIS CODE IS FOR TROUBLESHOOTING PURPOSES AND CAN BE USED TO PAINT THE PATHS OF UNITS ONTO THE SCREEN
 					if(!nextUnit.getArrived()){
 						g.setColor(nextUnit.getSelectedColor());
 						if(!nextUnit.getAgro()){
@@ -398,7 +398,7 @@ public class MapDisplay extends JPanel{
 							}
 						}
 					}
-					 
+					 */
 
 					//paint the unit with it's respective colour
 					g.drawImage(nextUnit.getImage(), nextUnit.getRect().x, nextUnit.getRect().y, nextUnit.getRect().width, nextUnit.getRect().height, null);

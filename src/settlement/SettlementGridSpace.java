@@ -1,14 +1,17 @@
 package settlement;
 import java.awt.Color;
 import java.awt.Image;
+import java.io.Serializable;
+
+import javax.swing.ImageIcon;
 
 
-public class SettlementGridSpace {
+public class SettlementGridSpace implements Serializable{
 	//declare the variables related to the settlement grid space
 	int value;
 	Color color;
 	int placedBuildingID;
-	Image image;
+	//Image image;
 	
 	public SettlementGridSpace(int value, Color color){
 		//set the values to through given in the constructor
@@ -26,10 +29,11 @@ public class SettlementGridSpace {
 	}
 	
 	public void setImage(Image newImage){
-		image = newImage;
+		//image = newImage;
 	}
 	public Image getPlacedImage(){
-		return image;
+		return new ImageIcon("TestUnitOne.jpg").getImage();
+		//return image;
 	}
 	
 	public void setBuildingID(int newID){

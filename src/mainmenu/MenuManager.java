@@ -15,29 +15,42 @@ import javax.swing.JButton;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
+import overworld.OverworldManager;
+import settlement.SettlementManager;
 import utilities.CardManager;
+import utilities.SaveManager;
 
 
 public class MenuManager extends JPanel{
 	int screenWidth;
 	int screenHeight;
 	CardManager cM;
+	String accountName;
 
-	public MenuManager(int screenWidth, int screenHeight){
+	SaveManager sM;
+	OverworldManager overworldManager;
+	SettlementManager settlementManager;
+
+
+	public MenuManager(int screenWidth, int screenHeight, String accountName, OverworldManager overworldManager, SettlementManager settlementManager, SaveManager sM){
 		//set the size of the panel to the size given 
 		this.screenWidth = screenWidth;
 		this.screenHeight = screenHeight;
+		this.accountName = accountName;
+		this.sM = sM;
+		this.overworldManager = overworldManager;
+		this.settlementManager = settlementManager;
 		setPreferredSize(new Dimension(screenWidth, screenHeight));
 		GridBagConstraints c = new GridBagConstraints();
-		
+
 		JLayeredPane lPane = new JLayeredPane();
 		lPane.setPreferredSize(new Dimension(screenWidth, screenHeight));
-		
+
 		//create a panel to hold the buttons and set the location to be the centre of the panel
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new GridBagLayout());
 		buttonPanel.setBounds(screenWidth/2 - 150,  screenHeight/2 - 200,  300,  400);
-		
+
 		//add the button to go to the map maker
 		JButton mapMakerButton = new JButton("Map Maker");
 		mapMakerButton.setFocusable(false);
@@ -48,9 +61,9 @@ public class MenuManager extends JPanel{
 				//change the shown card to the map maker
 				cM.showCard("MenuCard", "MapMakerCard");
 			}
-			
+
 		});
-		
+
 		//add a button to close the program
 		JButton exitButton = new JButton("Exit To Desktop");
 		exitButton.setFocusable(false);
@@ -61,9 +74,9 @@ public class MenuManager extends JPanel{
 				//stop the program and close
 				System.exit(1);
 			}
-			
+
 		});
-		
+
 		//add a button to go to the over world screen
 		JButton overworldButton = new JButton("View Overworld");
 		overworldButton.setFocusable(false);
@@ -74,9 +87,9 @@ public class MenuManager extends JPanel{
 				//switch the card to the over world
 				cM.showCard("MenuCard", "OverCard");
 			}
-			
+
 		});
-		
+
 		//add a button to go to the battle map
 		JButton battleButton = new JButton("Fight");
 		battleButton.setFocusable(false);
@@ -87,17 +100,42 @@ public class MenuManager extends JPanel{
 				//switch to the card battle card
 				cM.showCard("MenuCard", "BattleCard");
 			}
-			
+
 		});
-		
+
+		//add a button to create a new account (and so game)
+		JButton newAccount = new JButton("Create a new account");
+		newAccount.setFocusable(false);
+		newAccount.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				//run the method to add a new account
+				makeNewAccount();
+			}
+
+		});
+
+		//add a button to allow the user to save their game
+		JButton saveGame = new JButton("Save game");
+		saveGame.setFocusable(false);
+		saveGame.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				//save the current game
+				saveGame();
+			}});
+
+
 		Paint display = new Paint(); 
 		display.setBounds(0, 0, screenWidth, screenHeight);
-		
+
 		//add all of the components to the correct panels
 		c.fill =  GridBagConstraints.BOTH;
 		c.weightx = 1.0;
 		c.weighty = 1.0;
-		
+
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridwidth = 1;
@@ -107,12 +145,16 @@ public class MenuManager extends JPanel{
 		c.gridy = 2;
 		buttonPanel.add(overworldButton, c);
 		c.gridy = 3;
+		buttonPanel.add(newAccount, c);
+		c.gridy = 4;
+		buttonPanel.add(saveGame, c);
+		c.gridy = 5;
 		buttonPanel.add(exitButton, c);
-		
-		
+
+
 		lPane.add(display, new Integer(0));
 		lPane.add(buttonPanel, new Integer(1));
-	
+
 		add(lPane);
 		setVisible(true);
 	}
@@ -123,15 +165,24 @@ public class MenuManager extends JPanel{
 			Graphics2D g = (Graphics2D) gr;
 			g.setColor(Color.GRAY);
 			g.fillRect(0, 0, screenWidth, screenHeight);
-			
+
 			Image background = new ImageIcon("Test.jpg").getImage();
 			g.drawImage(background, 0, 0, 1300, 1000, null);
 		}
 	}
-	
+
 	public void giveCardManager(CardManager newCM){
 		//get the card manager used for the program
 		cM = newCM;
+	}
+
+	public void makeNewAccount(){
+
+	}
+
+	public void saveGame(){
+		//save the current game with the settlement list and army list being used
+		sM.saveGame(accountName, settlementManager.getSettlementList(), overworldManager.getAllArmies());
 	}
 
 }

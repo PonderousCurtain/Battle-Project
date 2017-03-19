@@ -1,11 +1,12 @@
 package settlement;
 import java.awt.Image;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 
 
-public class Building implements Cloneable{
+public class Building implements Cloneable, Serializable{
 	//declare the values used for a building object
 	String name;
 	ArrayList<int[]> size;

@@ -29,6 +29,7 @@ import com.mysql.jdbc.Blob;
 import overworld.OverworldManager;
 import overworld.Unit;
 import utilities.CardManager;
+import utilities.SaveManager;
 
 
 public class SettlementManager extends JPanel implements Cloneable{
@@ -80,7 +81,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 
 	OverworldManager oM;
 
-	public SettlementManager(int screenWidth, int screenHeight){
+	public SettlementManager(int screenWidth, int screenHeight, String accountName, SaveManager sM){
 		//Initialise the main variables needed
 		this.screenWidth = screenWidth;
 		this.screenHeight = screenHeight;
@@ -93,24 +94,32 @@ public class SettlementManager extends JPanel implements Cloneable{
 		//create the list of settlements
 		settlementList = new ArrayList<Settlement>();
 
-		//use SQL to get the settlements from the table to add the correct number of settlements to the settlement list
-		try{
-			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
-			//create the query to be made to the table
-			Statement stmt = con.createStatement();
-			//get the result set for the query executed
-			ResultSet rs = stmt.executeQuery("select * from settlements");
-			while(rs.next()){
-				//loop through all rows in the table that were returned
-				//add new settlements for each of those in the settlement table with the correct ID
-				settlementList.add(new Settlement(10, rs.getInt(1)));
+		//try to load the saved set of settlements from the account name
+		settlementList = sM.loadSettlementList(accountName);
+		//check if no list was returned
+		if(settlementList == null){
+			//if there was no list saved then create a new one from the database
+			settlementList = new ArrayList<Settlement>();
+			
+			//use SQL to get the settlements from the table to add the correct number of settlements to the settlement list
+			try{
+				Class.forName("com.mysql.jdbc.Driver");
+				Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+				//create the query to be made to the table
+				Statement stmt = con.createStatement();
+				//get the result set for the query executed
+				ResultSet rs = stmt.executeQuery("select * from settlements");
+				while(rs.next()){
+					//loop through all rows in the table that were returned
+					//add new settlements for each of those in the settlement table with the correct ID
+					settlementList.add(new Settlement(10, rs.getInt(1)));
+				}
+				//close the connection to the database
+				con.close();
+			} catch (Exception e){
+				//in case of an error print the error code for trouble shooting
+				System.out.println(e.toString());
 			}
-			//close the connection to the database
-			con.close();
-		} catch (Exception e){
-			//in case of an error print the error code for trouble shooting
-			System.out.println(e.toString());
 		}
 
 
@@ -768,6 +777,11 @@ public class SettlementManager extends JPanel implements Cloneable{
 		//handle mouse dragging
 		//as mouse clicked and dragged are no different currently then just call the mouse clicked function
 		mouseClicked(event);
+	}
+	
+	public ArrayList<Settlement> getSettlementList(){
+		//return the settlement list
+		return settlementList;
 	}
 
 	public void keyPressed(KeyEvent event){

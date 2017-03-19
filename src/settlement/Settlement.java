@@ -1,5 +1,6 @@
 package settlement;
 import java.awt.Color;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -7,7 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 
-public class Settlement{
+public class Settlement implements Serializable{
 	//set up the needed variables
 	ArrayList<Building> avalibleBuildings;
 	int gridSize;

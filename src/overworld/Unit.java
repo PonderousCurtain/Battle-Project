@@ -2,12 +2,15 @@ package overworld;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.io.Serializable;
 import java.util.ArrayList;
+
+import javax.swing.ImageIcon;
 
 import battle.Node;
 
 
-public class Unit {
+public class Unit implements Serializable{
 	//declare all the variables for a unit
 	int x;
 	int y;
@@ -29,7 +32,7 @@ public class Unit {
 	int attack;
 	double maxHealth;
 
-	Image image;
+	//Image image;
 
 	int targetX;
 	int targetY;
@@ -42,7 +45,7 @@ public class Unit {
 		targetY = y;
 		this.speed = speed;
 		this.health = health;
-		this.image = image;
+		//this.image = image;
 		maxHealth = health;
 		rect = new Rectangle(x, y, width, width);
 		selected = false;
@@ -80,7 +83,7 @@ public class Unit {
 	}
 
 	public Image getImage(){
-		return image;
+		return new ImageIcon("TestUnitOne.jpg").getImage();
 	}
 	public void setX(int x){
 		rect.setBounds(new Rectangle(x, y, width, width));
