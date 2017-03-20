@@ -1,6 +1,7 @@
 package overworld;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -42,6 +43,8 @@ public class OverworldViewManager extends JPanel{
 	int width;
 	int height;
 	int playerTurn;
+	Boolean gameOver;
+	int winnerIndex;
 
 	public OverworldViewManager(int startX, int startY, Obstruction[][] worldMap, int width, int height, int playerTurn){
 		//initialise the variables including the 2D array that contains the map terrain
@@ -55,6 +58,8 @@ public class OverworldViewManager extends JPanel{
 		settlementHovering = false;
 		selectionLocked = false;
 		lastSelectedID = 0;
+		winnerIndex = 0;
+		gameOver = false;
 		this.playerTurn = playerTurn;
 		withinArmyMovement = false;
 		potentialMovementSquares = new ArrayList<int[]>();
@@ -195,6 +200,8 @@ public class OverworldViewManager extends JPanel{
 
 				//remove this army from the list and lower the iterator to compensate
 				allArmies.remove(i);
+				//check if a player has lost the game
+				checkGameEnd();
 				i--;
 			} else {
 				//if the army still has units then recalculate the move distance for that army
@@ -240,6 +247,69 @@ public class OverworldViewManager extends JPanel{
 		}
 		//return the array list of units
 		return unitArray;
+	}
+
+	public void checkGameEnd(){
+		//check if the game is not already over
+		if(!gameOver){
+			int winner = 0;
+			int ownerOfArmies = -1;
+			gameOver = true;
+			//check if there are armies on the map
+			if(allArmies.size() > 0){
+				//check if all armies remaining are owned by one player
+				//set the check value to the player ID of the owner of the first army in the army list
+				int playerIDHolder = allArmies.get(0).getPlayerIndex();
+				winner = playerIDHolder;
+				ownerOfArmies = playerIDHolder;
+				for(Army nextArmy: allArmies){
+					if(playerIDHolder != nextArmy.getPlayerIndex()){
+						//There is an army controlled by another player
+						gameOver = false;
+					}
+				}
+			}
+			//if all remaining armies are controlled by one player check the settlements
+			//attempt to connect to the database containing the settlement table
+			try{
+				Class.forName("com.mysql.jdbc.Driver");
+				Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+				//create the query to be made to the table
+				Statement stmt = con.createStatement();
+				//get the result set for the query executed
+				ResultSet rs = stmt.executeQuery("select * from settlements");
+				//create a holder for the player index of the settlement
+				int indexHolder = -1;
+				while(rs.next()){
+					//loop through all rows in the table that were returned
+					//if the indexHodler is currently -1 then set it as the index of this result
+					if(indexHolder == -1){
+						indexHolder = rs.getInt(9);
+						winner = indexHolder;
+					} else {
+						//otherwise compare this results player to the held one to see if a settlement is owned by a different player
+						if(indexHolder != rs.getInt(9)){
+							//set the game to not yet over
+							gameOver = false;
+						}
+					}
+				}
+				//close the connection to the database
+				con.close();
+			} catch (Exception e){
+				//in case of an error print the error code for trouble shooting
+				System.out.println(e.toString());
+			}
+			//if game over is still true at this point then check if the same player owns the armies and settlements
+			if(gameOver && winner == ownerOfArmies){
+				endGame(winner);
+			}
+		}
+	}
+
+	public void endGame(int winner){
+		//set the winner as the player who still owns an army or settlement
+		winnerIndex = winner;
 	}
 
 	public Boolean selectItemAtLocation(int x, int y){
@@ -533,6 +603,9 @@ public class OverworldViewManager extends JPanel{
 				System.out.println(e.toString());
 			}
 		}
+		
+		//check if a player has won the game by gaining control of the last settlement
+		checkGameEnd();
 	}
 
 	public int getSelectedID(){
@@ -569,6 +642,9 @@ public class OverworldViewManager extends JPanel{
 		public void paintComponent(Graphics gr){
 			Graphics2D g = (Graphics2D) gr;
 
+			//reset to the default font
+			g.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+			
 			//paint a background to the map view
 			g.setColor(Color.BLACK);
 			g.fillRect(0, 0, 700, 700);
@@ -620,10 +696,18 @@ public class OverworldViewManager extends JPanel{
 					g.drawRect((nextArmy.getX() - xOffset) * squareSize, (nextArmy.getY() - yOffset) * squareSize, squareSize, squareSize);
 				}
 			}
-			
+
 			//display the index of the player whose turn it is
 			g.setColor(Color.BLACK);
 			g.drawString("Current player: " + playerTurn, 10, 20);
+			
+			//check if the game is over
+			if(gameOver){
+				//display which player has won the game
+				g.setFont(new Font("Times New Roman", Font.BOLD, 100));
+				g.drawString("Player " + winnerIndex, 50, 300);
+				g.drawString("Is Victorious", 50, 400);
+			}
 		}
 	}
 }
