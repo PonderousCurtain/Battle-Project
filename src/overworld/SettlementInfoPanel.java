@@ -27,14 +27,17 @@ public class SettlementInfoPanel extends JPanel{
 	int settlementOwner;
 	int settlementIncome;
 	int ownerFunds;
+	int playerTurn;
 
-	public SettlementInfoPanel(int width, int height){
+	public SettlementInfoPanel(int width, int height, int startPlayerTurn){
 		//set the size and layout for this panel
 		setPreferredSize(new Dimension(width, height));
 		//set the layout
 		setLayout(new GridLayout(0, 1));
 		this.width = width;
 		this.height = height;
+		
+		playerTurn = startPlayerTurn;
 
 		//set an initial settlement ID
 		settlementID = 1;
@@ -51,10 +54,13 @@ public class SettlementInfoPanel extends JPanel{
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				//show the settlement manager and give it the correct settlement
-				sM.setSettlement(settlementID);
-				//set the frame focus onto the settlement manager
-				cM.showCard("OverCard", "SettlementManager");
+				//check if the player whose turn it is owns the settlement
+				if(isSettlementOwnedByPlayer()){
+					//show the settlement manager and give it the correct settlement
+					sM.setSettlement(settlementID);
+					//set the frame focus onto the settlement manager
+					cM.showCard("OverCard", "SettlementManager");
+				}
 			}
 
 		});
@@ -70,6 +76,10 @@ public class SettlementInfoPanel extends JPanel{
 		//function to allow other classes to set the settlement that is currently being focused on
 		settlementID = newID;
 		updateInformation();
+	}
+	public void updatePlayerTurn(int newPlayerTurn){
+		//set the player turn to the new player index
+		playerTurn = newPlayerTurn;
 	}
 
 	public void giveCardManager(CardManager cM){
@@ -113,6 +123,9 @@ public class SettlementInfoPanel extends JPanel{
 			//in case of an error print the error code for trouble shooting
 			System.out.println(e.toString());
 		}
+	}
+	public Boolean isSettlementOwnedByPlayer(){
+		return (settlementOwner == playerTurn);
 	}
 
 	public class Paint extends JPanel{

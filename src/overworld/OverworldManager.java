@@ -41,6 +41,26 @@ public class OverworldManager extends JPanel{
 		GridBagConstraints c = new GridBagConstraints();
 		setLayout(new GridBagLayout());
 
+		//get the initial player turn from the database
+		//attempt to connect to the database containing the settlement table
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+			//create the query to be made to the table
+			Statement stmt = con.createStatement();
+			//get the result set for the query executed
+			ResultSet rs = stmt.executeQuery("select * from accounts where username = '" + accountName + "'");
+			while(rs.next()){
+				//loop through all rows in the table that were returned
+				//get the start player turn
+				currentPlayerTurn = rs.getInt(3);
+			}
+			//close the connection to the database
+			con.close();
+		} catch (Exception e){
+			//in case of an error print the error code for trouble shooting
+			System.out.println(e.toString());
+		}
 		//get the save manager
 		this.sM = sM;
 		//use the save manager to retrieve the map terrain and settlement locations as a map
@@ -51,21 +71,21 @@ public class OverworldManager extends JPanel{
 		this.screenWidth = screenWidth;
 
 		//create a new viewport passing the start offset (currently 0, 0 to indicate that the initial view is of the top left corner of the map
-		viewport = new OverworldViewManager(0, 0, map, 700, screenHeight);
+		viewport = new OverworldViewManager(0, 0, map, 700, screenHeight, currentPlayerTurn);
 		//create a new paint display and allocate it the entire frame to allow animation and display
 		Paint display = new Paint();
 		display.setPreferredSize(new Dimension(screenWidth, screenHeight));
-		
+
 		//initialise the array of the armies on the world map
 		allArmies = new ArrayList<Army>();
-		
+
 		//try to load the list of armies from the save of the account #
 		allArmies = sM.loadArmies(accountName);
 		//check if no armies were returned
 		if(allArmies == null){
 			//if there were none paired with that account name then add some to start
 			allArmies = new ArrayList<Army>();
-			
+
 			//for testing purposes add in an initial army to manipulate
 			ArrayList<Unit> testArmyUnits = new ArrayList<Unit>();
 			testArmyUnits.add(new Unit(400, 340, 5, 100, 10, "land", 200, 10, "TestUnitOne.jpg"));
@@ -75,7 +95,7 @@ public class OverworldManager extends JPanel{
 			//add the test army to the array of armies
 			testArmy1.updateMaxMovement(20);
 			allArmies.add(testArmy1);
-			
+
 			//create and add a second army on a different team
 			ArrayList<Unit> testArmyUnits2 = new ArrayList<Unit>();
 			testArmyUnits2.add(new Unit(600, 320, 5, 100, 10, "land", 100, 10, "TestUnitFour.jpg"));
@@ -86,7 +106,7 @@ public class OverworldManager extends JPanel{
 			//add the test army to the array of armies
 			testArmy2.updateMaxMovement(20);
 			allArmies.add(testArmy2);
-			
+
 			ArrayList<Unit> testArmyUnits3 = new ArrayList<Unit>();
 			testArmyUnits3.add(new Unit(400, 340, 5, 100, 10, "land", 200, 10, "TestUnitOne.jpg"));
 			testArmyUnits3.add(new Unit(330, 270, 5, 200, 20, "air", 500, 10, "TestUnitTwo.jpg"));
@@ -96,17 +116,17 @@ public class OverworldManager extends JPanel{
 			testArmy3.updateMaxMovement(20);
 			allArmies.add(testArmy3);
 		}
-		
+
 		//pass the list of armies to the view port 
 		viewport.giveArmies(allArmies);
 		//create a new information panel and pass the list of armies to it
-		infoPanel = new OverworldInformationPanel(300, screenHeight, allArmies);
+		infoPanel = new OverworldInformationPanel(300, screenHeight, allArmies, currentPlayerTurn);
 
 		//configure the layout manager
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 0;
 		c.gridy = 0;
-		
+
 		//add the viewport and information panel to the panel
 		add(viewport, c);
 
@@ -133,7 +153,7 @@ public class OverworldManager extends JPanel{
 		infoPanel.giveCardManager(cM);
 		viewport.giveCardManager(cM);
 	}
-	
+
 	public void giveMapDisplay(MapDisplay mD){
 		//pass on the map display to the viewport
 		viewport.giveMapDisplay(mD);
@@ -147,12 +167,12 @@ public class OverworldManager extends JPanel{
 		//pass the settlement manager to the information panel
 		infoPanel.giveSettlementManager(settlementM);
 	}
-	
+
 	public void makeNewUnit(Unit newUnit, int settlementID, int player){
 		//make the viewport add a other unit to the map
 		viewport.addNewUnitToMap(newUnit, settlementID, player);
 	}
-	
+
 	public void endCurrentTurn(){
 		//increase the index of the current player
 		currentPlayerTurn++;
@@ -162,9 +182,19 @@ public class OverworldManager extends JPanel{
 			calculateTurnResults();
 			//then set the player back to the first index
 			currentPlayerTurn = 0;
+			//return all armies to be able to move again
+			viewport.resetArmyMovement();
 		}
+		//update the current player turn
+		viewport.updatePlayerTurn(currentPlayerTurn);
+		infoPanel.updatePlayerTurn(currentPlayerTurn);
 	}
-	
+
+	public int getCurrentPlayer(){
+		//return the index of the player whose turn it is
+		return currentPlayerTurn;
+	}
+
 	public void calculateTurnResults(){
 		//construct any units created by the players
 		//increase the funds of each player by the value of the settlements they control
@@ -234,7 +264,7 @@ public class OverworldManager extends JPanel{
 		//replicate the mouse clicked method to allow for the case where the user was still slightly moving the mouse at the time of the click
 		mouseClicked(event);
 	}
-	
+
 	public ArrayList<Army> getAllArmies(){
 		//return the army list
 		return allArmies;
@@ -252,7 +282,10 @@ public class OverworldManager extends JPanel{
 			break;
 		case KeyEvent.VK_S:
 			//add a keyboard shortcut to go to the last selected settlement manager
-			cM.showCard("OverCard", "SettlementManager");
+			//check if the the current player own the selected settlement
+			if(infoPanel.isSettlementOwnedByPlayer()){
+				cM.showCard("OverCard", "SettlementManager");
+			}
 			break;
 			// set up the directional arrow keys to control movement of the view of the world map up down left and right
 		case KeyEvent.VK_RIGHT:

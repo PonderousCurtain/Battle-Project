@@ -9,6 +9,10 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -183,6 +187,21 @@ public class MenuManager extends JPanel{
 	public void saveGame(){
 		//save the current game with the settlement list and army list being used
 		sM.saveGame(accountName, settlementManager.getSettlementList(), overworldManager.getAllArmies());
+		//update the current player turn in the account database for the current player
+		//attempt to connect to the database containing the settlement table
+				try{
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+					//create the query to be made to the table
+					Statement stmt = con.createStatement();
+					//get the result set for the query executed
+					stmt.executeUpdate("update accounts set playerTurn = " + overworldManager.getCurrentPlayer() + " where username = '" + accountName + "'");
+					//close the connection to the database
+					con.close();
+				} catch (Exception e){
+					//in case of an error print the error code for trouble shooting
+					System.out.println(e.toString());
+				}
 	}
 
 }

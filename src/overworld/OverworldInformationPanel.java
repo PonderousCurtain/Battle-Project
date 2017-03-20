@@ -31,7 +31,7 @@ public class OverworldInformationPanel extends JPanel{
 	CardManager cM;
 	SettlementManager sM;
 
-	public OverworldInformationPanel(int width, int height, ArrayList<Army> allArmiesList){
+	public OverworldInformationPanel(int width, int height, ArrayList<Army> allArmiesList, int playerTurn){
 		//initialise the variables  as those passed to this class
 		this.width = width;
 		this.height = height;
@@ -49,7 +49,7 @@ public class OverworldInformationPanel extends JPanel{
 		cl = new CardLayout();
 		
 		//initialise the two information panels
-		settlementPanel = new SettlementInfoPanel(width, height);
+		settlementPanel = new SettlementInfoPanel(width, height, playerTurn);
 		armyPanel = new ArmyInfoPanel(width, height);
 		
 		//set the layout of this panel and add the two information panels
@@ -73,6 +73,14 @@ public class OverworldInformationPanel extends JPanel{
 		//get the card manger used through the code so this class can be used to change cards
 		this.cM = cM;
 		settlementPanel.giveCardManager(cM);
+	}
+	public Boolean isSettlementOwnedByPlayer(){
+		//return if the currently selected settlement is owner by the player whose turn it is
+		return settlementPanel.isSettlementOwnedByPlayer();
+	}
+	public void updatePlayerTurn(int newPlayerIndex){
+		//give the new player index to the settlement panel
+		settlementPanel.updatePlayerTurn(newPlayerIndex);
 	}
 	public void giveSettlementManager(SettlementManager sM){
 		//get the settlement manger used through the code so this class can be used to change cards
