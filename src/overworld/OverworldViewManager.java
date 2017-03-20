@@ -620,6 +620,10 @@ public class OverworldViewManager extends JPanel{
 					g.drawRect((nextArmy.getX() - xOffset) * squareSize, (nextArmy.getY() - yOffset) * squareSize, squareSize, squareSize);
 				}
 			}
+			
+			//display the index of the player whose turn it is
+			g.setColor(Color.BLACK);
+			g.drawString("Current player: " + playerTurn, 10, 20);
 		}
 	}
 }
