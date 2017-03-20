@@ -63,7 +63,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 	Building selectedBuilding;
 	ArrayList<int[]> currentBuildingSize;
 	ArrayList<int[]> selectedList;
-	Image currentBuildingPlacedImage;
+	String currentBuildingPlacedImage;
 
 	int mouseX;
 	int mouseY;
@@ -468,7 +468,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 			while(rs.next()){
 				//loop through all rows in the table that were returned
 				//create a new copy of the unit returned
-				newUnit = new Unit(350, 350, rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getString(5), rs.getInt(7), rs.getInt(6),  ImageIO.read(rs.getBlob(8).getBinaryStream()));
+				newUnit = new Unit(350, 350, rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getString(5), rs.getInt(7), rs.getInt(6), rs.getString(8));
 				unitCost = rs.getInt(9);
 			}
 			//get the id of the player that owns this settlement
@@ -506,7 +506,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 		//set all the building variables to the ones at the referenced index from the buttons
 		currentImage = currentBuildingList.get(buttonNumber + displacement).getImage();
 		currentBuildingSize = currentBuildingList.get(buttonNumber + displacement).getTakenBlocks();
-		currentBuildingPlacedImage = currentBuildingList.get(buttonNumber + displacement).getPlacedImage();
+		currentBuildingPlacedImage = currentBuildingList.get(buttonNumber + displacement).getPlacedImageString();
 		currentBuilding = currentBuildingList.get(buttonNumber + displacement);
 	}
 
@@ -755,7 +755,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 			for(int i = 0; i < currentBuildingSize.size(); i ++){
 				//set the values for the settlement grid square to that of the new values fo the building being placed
 				settlementGrid[mouseGridX + currentBuildingSize.get(i)[0]][mouseGridY + currentBuildingSize.get(i)[1]].setValue(1);
-				settlementGrid[mouseGridX + currentBuildingSize.get(i)[0]][mouseGridY + currentBuildingSize.get(i)[1]].setImage(currentBuildingPlacedImage);
+				settlementGrid[mouseGridX + currentBuildingSize.get(i)[0]][mouseGridY + currentBuildingSize.get(i)[1]].setImageString(currentBuildingPlacedImage);
 				settlementGrid[mouseGridX + currentBuildingSize.get(i)[0]][mouseGridY + currentBuildingSize.get(i)[1]].setBuildingID(indexCount);
 			}
 			//alter the income of the settlement to reflect the new building

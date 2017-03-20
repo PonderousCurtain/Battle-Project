@@ -32,12 +32,12 @@ public class Unit implements Serializable{
 	int attack;
 	double maxHealth;
 
-	//Image image;
+	String image;
 
 	int targetX;
 	int targetY;
 
-	public Unit(int x, int y, int speed, int health, int width, String typeString, int agroRange, int attack, Image image){
+	public Unit(int x, int y, int speed, int health, int width, String typeString, int agroRange, int attack, String image){
 		//initialise the variables for this unit as the ones given in the constructor
 		this.x = x;
 		this.y = y;
@@ -45,7 +45,7 @@ public class Unit implements Serializable{
 		targetY = y;
 		this.speed = speed;
 		this.health = health;
-		//this.image = image;
+		this.image = image;
 		maxHealth = health;
 		rect = new Rectangle(x, y, width, width);
 		selected = false;
@@ -83,7 +83,11 @@ public class Unit implements Serializable{
 	}
 
 	public Image getImage(){
-		return new ImageIcon("TestUnitOne.jpg").getImage();
+		//return new ImageIcon("TestUnitOne.jpg").getImage();
+		return new ImageIcon(image).getImage();
+	}
+	public String getImageString(){
+		return image;
 	}
 	public void setX(int x){
 		rect.setBounds(new Rectangle(x, y, width, width));

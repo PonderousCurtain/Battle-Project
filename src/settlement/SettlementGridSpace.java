@@ -11,7 +11,7 @@ public class SettlementGridSpace implements Serializable{
 	int value;
 	Color color;
 	int placedBuildingID;
-	//Image image;
+	String image;
 	
 	public SettlementGridSpace(int value, Color color){
 		//set the values to through given in the constructor
@@ -28,12 +28,11 @@ public class SettlementGridSpace implements Serializable{
 		return value;
 	}
 	
-	public void setImage(Image newImage){
-		//image = newImage;
+	public void setImageString(String newImage){
+		image = newImage;
 	}
 	public Image getPlacedImage(){
-		return new ImageIcon("TestUnitOne.jpg").getImage();
-		//return image;
+		return new ImageIcon(image).getImage();
 	}
 	
 	public void setBuildingID(int newID){

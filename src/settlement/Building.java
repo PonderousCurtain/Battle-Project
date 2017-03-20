@@ -51,6 +51,9 @@ public class Building implements Cloneable, Serializable{
 	public Image getPlacedImage(){
 		return new ImageIcon(name + "Placed.jpg").getImage().getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH);
 	}
+	public String getPlacedImageString(){
+		return name + "Placed.jpg";
+	}
 	public int getPlacedIndex(){
 		return placedIndex;
 	}

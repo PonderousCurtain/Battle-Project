@@ -7,6 +7,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -65,7 +66,7 @@ public class ArmyInfoPanel extends JPanel{
 			int yOffset = 0;
 			for(int i = 0; i < unitList.size(); i ++){
 				//draw each image in a grid pattern going from top left to bottom right
-				g.drawImage(unitList.get(i).getImage(), 10 + (xOffset*70), 470 + (yOffset*70), 70, 70, null);
+				g.drawImage(new ImageIcon(unitList.get(i).getImage()).getImage(), 10 + (xOffset*70), 470 + (yOffset*70), 70, 70, null);
 				//highlight a boarder around each unit
 				g.setColor(Color.BLACK);
 				g.drawRect(10 + (xOffset*70), 470 + (yOffset*70), 70, 70);

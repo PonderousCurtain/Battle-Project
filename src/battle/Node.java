@@ -1,8 +1,9 @@
 package battle;
 import java.awt.Rectangle;
+import java.io.Serializable;
 
 
-public class Node {
+public class Node implements Serializable{
 	//declare the variables needed for a node
 	float f;
 	float g;

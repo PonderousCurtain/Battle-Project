@@ -401,7 +401,7 @@ public class MapDisplay extends JPanel{
 					 */
 
 					//paint the unit with it's respective colour
-					g.drawImage(nextUnit.getImage(), nextUnit.getRect().x, nextUnit.getRect().y, nextUnit.getRect().width, nextUnit.getRect().height, null);
+					g.drawImage(new ImageIcon(nextUnit.getImage()).getImage(), nextUnit.getRect().x, nextUnit.getRect().y, nextUnit.getRect().width, nextUnit.getRect().height, null);
 
 					//check if the unit is selected
 					if(nextUnit.getSelected()){

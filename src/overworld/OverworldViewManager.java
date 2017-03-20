@@ -99,7 +99,7 @@ public class OverworldViewManager extends JPanel{
 		//make a new army with the new unit
 		ArrayList<Unit> controlledUnits = new ArrayList<Unit>();
 		controlledUnits.add(unitToAdd);
-		Army newArmy = new Army(controlledUnits, unitToAdd.getImage(), newArmyX, newArmyY, player);
+		Army newArmy = new Army(controlledUnits, unitToAdd.getImageString(), newArmyX, newArmyY, player);
 		//add the new army to the list of armies on the map
 		//set the default movement size to the speed of the unit in the army
 		newArmy.updateMaxMovement(newArmy.getUnits().get(0).getSpeed());

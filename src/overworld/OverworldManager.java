@@ -68,30 +68,30 @@ public class OverworldManager extends JPanel{
 			
 			//for testing purposes add in an initial army to manipulate
 			ArrayList<Unit> testArmyUnits = new ArrayList<Unit>();
-			testArmyUnits.add(new Unit(400, 340, 5, 100, 10, "land", 200, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
-			testArmyUnits.add(new Unit(330, 270, 5, 200, 20, "air", 500, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
-			testArmyUnits.add(new Unit(650, 550, 5, 100, 10, "sea", 200, 10, new ImageIcon("TestUnitThree.jpg").getImage()));
-			Army testArmy1 = new Army(testArmyUnits, new ImageIcon("TestArmy.png").getImage(), 20, 20, 0);
+			testArmyUnits.add(new Unit(400, 340, 5, 100, 10, "land", 200, 10, "TestUnitOne.jpg"));
+			testArmyUnits.add(new Unit(330, 270, 5, 200, 20, "air", 500, 10, "TestUnitTwo.jpg"));
+			testArmyUnits.add(new Unit(650, 550, 5, 100, 10, "sea", 200, 10, "TestUnitThree.jpg"));
+			Army testArmy1 = new Army(testArmyUnits, "TestArmy.png", 20, 20, 0);
 			//add the test army to the array of armies
 			testArmy1.updateMaxMovement(20);
 			allArmies.add(testArmy1);
 			
 			//create and add a second army on a different team
 			ArrayList<Unit> testArmyUnits2 = new ArrayList<Unit>();
-			testArmyUnits2.add(new Unit(600, 320, 5, 100, 10, "land", 100, 10, new ImageIcon("TestUnitFour.jpg").getImage()));
-			testArmyUnits2.add(new Unit(615, 320, 5, 100, 10, "land", 100, 10, new ImageIcon("TestUnitFour.jpg").getImage()));
-			testArmyUnits2.add(new Unit(600, 335, 5, 100, 10, "land", 100, 10, new ImageIcon("TestUnitFour.jpg").getImage()));
-			testArmyUnits2.add(new Unit(615, 335, 5, 100, 10, "land", 100, 10, new ImageIcon("TestUnitFour.jpg").getImage()));
-			Army testArmy2 = new Army(testArmyUnits2, new ImageIcon("TestArmy.png").getImage(), 80, 70, 1);
+			testArmyUnits2.add(new Unit(600, 320, 5, 100, 10, "land", 100, 10, "TestUnitFour.jpg"));
+			testArmyUnits2.add(new Unit(615, 320, 5, 100, 10, "land", 100, 10, "TestUnitFour.jpg"));
+			testArmyUnits2.add(new Unit(600, 335, 5, 100, 10, "land", 100, 10, "TestUnitFour.jpg"));
+			testArmyUnits2.add(new Unit(615, 335, 5, 100, 10, "land", 100, 10, "TestUnitFour.jpg"));
+			Army testArmy2 = new Army(testArmyUnits2, "TestArmy.png", 80, 70, 1);
 			//add the test army to the array of armies
 			testArmy2.updateMaxMovement(20);
 			allArmies.add(testArmy2);
 			
 			ArrayList<Unit> testArmyUnits3 = new ArrayList<Unit>();
-			testArmyUnits3.add(new Unit(400, 340, 5, 100, 10, "land", 200, 10, new ImageIcon("TestUnitOne.jpg").getImage()));
-			testArmyUnits3.add(new Unit(330, 270, 5, 200, 20, "air", 500, 10, new ImageIcon("TestUnitTwo.jpg").getImage()));
-			testArmyUnits3.add(new Unit(650, 550, 5, 100, 10, "sea", 200, 10, new ImageIcon("TestUnitThree.jpg").getImage()));
-			Army testArmy3 = new Army(testArmyUnits3, new ImageIcon("TestArmy.png").getImage(), 30, 30, 0);
+			testArmyUnits3.add(new Unit(400, 340, 5, 100, 10, "land", 200, 10, "TestUnitOne.jpg"));
+			testArmyUnits3.add(new Unit(330, 270, 5, 200, 20, "air", 500, 10, "TestUnitTwo.jpg"));
+			testArmyUnits3.add(new Unit(650, 550, 5, 100, 10, "sea", 200, 10, "TestUnitThree.jpg"));
+			Army testArmy3 = new Army(testArmyUnits3, "TestArmy.png", 30, 30, 0);
 			//add the test army to the array of armies
 			testArmy3.updateMaxMovement(20);
 			allArmies.add(testArmy3);
