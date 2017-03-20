@@ -17,6 +17,7 @@ import java.sql.Statement;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import overworld.OverworldManager;
@@ -181,7 +182,25 @@ public class MenuManager extends JPanel{
 	}
 
 	public void makeNewAccount(){
-
+		//get the desired username for the new account
+		String newAccountName = JOptionPane.showInputDialog("Please input the new Username");
+		//add a new account to the database with the new name
+		//attempt to connect to the database containing the settlement table
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+			//create the query to be made to the table
+			Statement stmt = con.createStatement();
+			//get the result set for the query executed
+			stmt.executeUpdate("insert into accounts value('" + newAccountName + "', 'Password', 0)");
+			//close the connection to the database
+			con.close();
+		} catch (Exception e){
+			//in case of an error print the error code for trouble shooting
+			System.out.println(e.toString());
+		}
+		//save a set of files with the default values under the new account name
+		sM.saveDefaultValues(newAccountName);
 	}
 
 	public void saveGame(){
@@ -189,19 +208,19 @@ public class MenuManager extends JPanel{
 		sM.saveGame(accountName, settlementManager.getSettlementList(), overworldManager.getAllArmies());
 		//update the current player turn in the account database for the current player
 		//attempt to connect to the database containing the settlement table
-				try{
-					Class.forName("com.mysql.jdbc.Driver");
-					Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
-					//create the query to be made to the table
-					Statement stmt = con.createStatement();
-					//get the result set for the query executed
-					stmt.executeUpdate("update accounts set playerTurn = " + overworldManager.getCurrentPlayer() + " where username = '" + accountName + "'");
-					//close the connection to the database
-					con.close();
-				} catch (Exception e){
-					//in case of an error print the error code for trouble shooting
-					System.out.println(e.toString());
-				}
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+			//create the query to be made to the table
+			Statement stmt = con.createStatement();
+			//get the result set for the query executed
+			stmt.executeUpdate("update accounts set playerTurn = " + overworldManager.getCurrentPlayer() + " where username = '" + accountName + "'");
+			//close the connection to the database
+			con.close();
+		} catch (Exception e){
+			//in case of an error print the error code for trouble shooting
+			System.out.println(e.toString());
+		}
 	}
 
 }
