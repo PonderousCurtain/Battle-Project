@@ -65,6 +65,9 @@ public class OverworldManager extends JPanel{
 		this.sM = sM;
 		//use the save manager to retrieve the map terrain and settlement locations as a map
 		map = sM.loadBlockages("OverworldMap.txt");
+		
+		//use the save manager to update the database values with the ones for the chosen account
+		sM.loadDatabaseValues(accountName);
 
 		// set the size of the panel to the size of the application frame
 		this.screenHeight = screenHeight;

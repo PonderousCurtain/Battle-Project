@@ -1,11 +1,14 @@
 package utilities;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -44,7 +47,6 @@ public class SaveManager {
 	public ArrayList<Settlement> loadSettlementList(String accountName){
 		//initialise an array for the settlements
 		ArrayList<Settlement> settlementList = null;
-		
 		try {
 			//create a connection to the save file
 			ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("C:/Users/Nat/git/Battle-Project/" + accountName + "Settlements.txt"));
@@ -61,14 +63,12 @@ public class SaveManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		 
 		return settlementList;
 	}
 
 	public ArrayList<Army> loadArmies(String accountName){
 		//initialise an array for the settlements
 		ArrayList<Army> ArmyList = null;
-		
 		try {
 			//create a connection to the save file
 			ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("C:/Users/Nat/git/Battle-Project/" + accountName + "Armies.txt"));
@@ -85,8 +85,193 @@ public class SaveManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		 
 		return ArmyList;
+	}
+	
+	public void saveDefaultDatabaseValues(String accountName){
+		//save the database values referring to the player
+		try {
+			PrintWriter write = new PrintWriter(new FileOutputStream(accountName + "PlayerDatabaseInfo.txt"));
+			try{
+				Class.forName("com.mysql.jdbc.Driver");
+				Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+				//create the query to be made to the table
+				Statement stmt = con.createStatement();
+				ResultSet rs = stmt.executeQuery("select * from player");
+				while(rs.next()){
+					//for each player set the funds to a default value
+					write.println(rs.getInt(2) + ":500");
+				}
+				//close the connection to the database
+				con.close();
+			} catch (Exception e){
+				//in case of an error print the error code for trouble shooting
+				System.out.println(e.toString());
+			}
+			write.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//save the database values referring to each settlement
+		try {
+			PrintWriter write = new PrintWriter(new FileOutputStream(accountName + "SettlementDatabaseInfo.txt"));
+			try{
+				Class.forName("com.mysql.jdbc.Driver");
+				Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+				//create the query to be made to the table
+				Statement stmt = con.createStatement();
+				ResultSet rs = stmt.executeQuery("select * from settlements");
+				while(rs.next()){
+					//calculate the owner (as default even settlements are owned by player 0 and odd by player 1)
+					int owner = rs.getInt(1) % 2;
+					//save each line returned into the text file
+					write.println(rs.getInt(1) + ":" + owner + ":0");
+				}
+				//close the connection to the database
+				con.close();
+			} catch (Exception e){
+				//in case of an error print the error code for trouble shooting
+				System.out.println(e.toString());
+			}
+			write.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void saveCurrentDatabaseValues(String accountName){
+		//save the database values referring to the player
+		try {
+			PrintWriter write = new PrintWriter(new FileOutputStream(accountName + "PlayerDatabaseInfo.txt"));
+			try{
+				Class.forName("com.mysql.jdbc.Driver");
+				Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+				//create the query to be made to the table
+				Statement stmt = con.createStatement();
+				ResultSet rs = stmt.executeQuery("select * from player");
+				while(rs.next()){
+					//save each line returned into the text file
+					write.println(rs.getInt(2) + ":" + rs.getInt(3));
+				}
+				//close the connection to the database
+				con.close();
+			} catch (Exception e){
+				//in case of an error print the error code for trouble shooting
+				System.out.println(e.toString());
+			}
+			write.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//save the database values referring to each settlement
+		try {
+			PrintWriter write = new PrintWriter(new FileOutputStream(accountName + "SettlementDatabaseInfo.txt"));
+			try{
+				Class.forName("com.mysql.jdbc.Driver");
+				Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+				//create the query to be made to the table
+				Statement stmt = con.createStatement();
+				ResultSet rs = stmt.executeQuery("select * from settlements");
+				while(rs.next()){
+					//save each line returned into the text file
+					write.println(rs.getInt(1) + ":" + rs.getInt(9) + ":" + rs.getInt(10));
+				}
+				//close the connection to the database
+				con.close();
+			} catch (Exception e){
+				//in case of an error print the error code for trouble shooting
+				System.out.println(e.toString());
+			}
+			write.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void loadDatabaseValues(String accountName){
+		//load the player funds from the player database information file for this account
+		try {
+			//create a connection to the save file
+			BufferedReader inputReader = new BufferedReader(new FileReader("C:/Users/Nat/git/Battle-Project/" + accountName + "PlayerDatabaseInfo.txt"));
+			String nextLine;
+			while((nextLine = inputReader.readLine()) != null){
+				//convert the string into a char array
+				char[] stringValues = nextLine.toCharArray();
+				//get the index of the player the line refers to
+				int playerIndex = Integer.parseInt("" + stringValues[0]);
+				String fundsString = "";
+				//get the funds of that player
+				for(int count = 2; count< stringValues.length; count ++){
+					fundsString += stringValues[count];
+				}
+				int playerFunds = Integer.parseInt(fundsString);
+				//save the values retrieved in the database
+				try{
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+					//create the query to be made to the table
+					Statement stmt = con.createStatement();
+					stmt.executeUpdate("update player set funds = " + playerFunds + " where id = " + playerIndex);
+					//close the connection to the database
+					con.close();
+				} catch (Exception e){
+					//in case of an error print the error code for trouble shooting
+					System.out.println(e.toString());
+				}
+			}
+			//close the connection
+			inputReader.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		//load the settlement income and player from the settlement database info file for this account
+		try {
+			//create a connection to the save file
+			BufferedReader inputReader = new BufferedReader(new FileReader("C:/Users/Nat/git/Battle-Project/" + accountName + "SettlementDatabaseInfo.txt"));
+			String nextLine;
+			while((nextLine = inputReader.readLine()) != null){
+				//convert the string into a char array
+				char[] stringValues = nextLine.toCharArray();
+				//get the index of the player the line refers to
+				int settlementIndex = Integer.parseInt("" + stringValues[0]);
+				int ownerIndex = Integer.parseInt("" + stringValues[2]);
+				String incomeString = "";
+				//get the income of that settlement
+				for(int count = 4; count< stringValues.length; count ++){
+					incomeString += stringValues[count];
+				}
+				int settlementIncome = Integer.parseInt(incomeString);
+				//save the values retrieved in the database
+				try{
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+					//create the query to be made to the table
+					Statement stmt = con.createStatement();
+					stmt.executeUpdate("update settlements set player = " + ownerIndex + " where id = " + settlementIndex);
+					//create the second query to be made to the table
+					Statement stmt2 = con.createStatement();
+					stmt2.executeUpdate("update settlements set income = " + settlementIncome + " where id = " + settlementIndex);
+					//close the connection to the database
+					con.close();
+				} catch (Exception e){
+					//in case of an error print the error code for trouble shooting
+					System.out.println(e.toString());
+				}
+			}
+			//close the connection
+			inputReader.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void saveGame(String accountName, ArrayList<Settlement> settlementList, ArrayList<Army> armyList){
@@ -114,8 +299,11 @@ public class SaveManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		//save the database values
+		saveCurrentDatabaseValues(accountName);
 	}
-	
+
 	public void saveDefaultValues(String accountName){
 		//create an army list with the default units and save it
 		ArrayList<Army> allArmies = new ArrayList<Army>();
@@ -149,10 +337,10 @@ public class SaveManager {
 		//add the test army to the array of armies
 		testArmy3.updateMaxMovement(20);
 		allArmies.add(testArmy3);
-		
+
 		//create a default settlement list
 		ArrayList<Settlement> settlementList = new ArrayList<Settlement>();
-		
+
 		//use SQL to get the settlements from the table to add the correct number of settlements to the settlement list
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
@@ -172,8 +360,10 @@ public class SaveManager {
 			//in case of an error print the error code for trouble shooting
 			System.out.println(e.toString());
 		}
-		
+
 		//save the default lists to the account name
 		saveGame(accountName, settlementList, allArmies);
+		//save the default database values
+		saveDefaultDatabaseValues(accountName);
 	}
 }

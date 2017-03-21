@@ -185,7 +185,7 @@ public class MenuManager extends JPanel{
 		//get the desired username for the new account
 		String newAccountName = JOptionPane.showInputDialog("Please input the new Username");
 		//add a new account to the database with the new name
-		//attempt to connect to the database containing the settlement table
+		//attempt to connect to the database
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
