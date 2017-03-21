@@ -184,6 +184,10 @@ public class MenuManager extends JPanel{
 	public void makeNewAccount(){
 		//get the desired username for the new account
 		String newAccountName = JOptionPane.showInputDialog("Please input the new Username");
+		//get the desired password for the new account
+		String password = JOptionPane.showInputDialog("Please input the new Password");
+		//encryot the new password
+		String encryptedPassword = encrypt(password);
 		//add a new account to the database with the new name
 		//attempt to connect to the database
 		try{
@@ -192,7 +196,7 @@ public class MenuManager extends JPanel{
 			//create the query to be made to the table
 			Statement stmt = con.createStatement();
 			//get the result set for the query executed
-			stmt.executeUpdate("insert into accounts value('" + newAccountName + "', 'Password', 0)");
+			stmt.executeUpdate("insert into accounts value('" + newAccountName + "', '" + encryptedPassword + "', 0)");
 			//close the connection to the database
 			con.close();
 		} catch (Exception e){
@@ -221,6 +225,12 @@ public class MenuManager extends JPanel{
 			//in case of an error print the error code for trouble shooting
 			System.out.println(e.toString());
 		}
+	}
+	
+	public String encrypt(String toEncrypt){
+		String encryptedString = "";
+		//return the encrypted string
+		return encryptedString;
 	}
 
 }
