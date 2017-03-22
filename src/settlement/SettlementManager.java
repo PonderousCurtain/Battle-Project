@@ -100,7 +100,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 		if(settlementList == null){
 			//if there was no list saved then create a new one from the database
 			settlementList = new ArrayList<Settlement>();
-			
+
 			//use SQL to get the settlements from the table to add the correct number of settlements to the settlement list
 			try{
 				Class.forName("com.mysql.jdbc.Driver");
@@ -440,6 +440,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 	}
 
 	public void createNewUnit(String unitFromBox){
+		Boolean canAfford = true;
 		//cut the price of the unit from the string to just get the name
 		char[] characters = unitFromBox.toCharArray();
 		String unitName = "";
@@ -482,9 +483,14 @@ public class SettlementManager extends JPanel implements Cloneable{
 			Statement stmt3 = con.createStatement();
 			ResultSet rs3 = stmt.executeQuery("select * from player where id = " + playerID);
 			while(rs3.next()){
-				//remove the cost of the unit from the funds of the player
-				Statement stmt4 = con.createStatement();
-				stmt4.executeUpdate("update player set funds = " + (rs3.getInt(3) - unitCost) + " where id = " + playerID);
+				//check if the player can afford the new unit
+				if(rs3.getInt(3) >= unitCost){
+					//remove the cost of the unit from the funds of the player
+					Statement stmt4 = con.createStatement();
+					stmt4.executeUpdate("update player set funds = " + (rs3.getInt(3) - unitCost) + " where id = " + playerID);
+				} else {
+					canAfford = false;
+				}
 			}
 			//close the connection to the database
 			con.close();
@@ -492,8 +498,10 @@ public class SettlementManager extends JPanel implements Cloneable{
 			//in case of an error print the error code for trouble shooting
 			System.out.println(e.toString());
 		}
-		//pass the unit to the over world
-		oM.makeNewUnit(newUnit, currentSettlement.getID(), playerID);
+		if(canAfford){
+			//if the player can afford the unit pass the unit to the over world
+			oM.makeNewUnit(newUnit, currentSettlement.getID(), playerID);
+		}
 		//update the current funds label
 		updateFundsLabel();
 	}
@@ -778,7 +786,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 		//as mouse clicked and dragged are no different currently then just call the mouse clicked function
 		mouseClicked(event);
 	}
-	
+
 	public ArrayList<Settlement> getSettlementList(){
 		//return the settlement list
 		return settlementList;

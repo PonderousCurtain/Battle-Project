@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 import overworld.OverworldManager;
 import settlement.SettlementManager;
 import utilities.CardManager;
+import utilities.EncryptionManager;
 import utilities.SaveManager;
 
 
@@ -35,6 +36,8 @@ public class MenuManager extends JPanel{
 	SaveManager sM;
 	OverworldManager overworldManager;
 	SettlementManager settlementManager;
+	
+	EncryptionManager encryption;
 
 
 	public MenuManager(int screenWidth, int screenHeight, String accountName, OverworldManager overworldManager, SettlementManager settlementManager, SaveManager sM){
@@ -47,6 +50,8 @@ public class MenuManager extends JPanel{
 		this.settlementManager = settlementManager;
 		setPreferredSize(new Dimension(screenWidth, screenHeight));
 		GridBagConstraints c = new GridBagConstraints();
+		
+		encryption = new EncryptionManager(); 
 
 		JLayeredPane lPane = new JLayeredPane();
 		lPane.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -186,8 +191,8 @@ public class MenuManager extends JPanel{
 		String newAccountName = JOptionPane.showInputDialog("Please input the new Username");
 		//get the desired password for the new account
 		String password = JOptionPane.showInputDialog("Please input the new Password");
-		//encryot the new password
-		String encryptedPassword = encrypt(password);
+		//encrypt the new password
+		String encryptedPassword = encryption.encrypt(password);
 		//add a new account to the database with the new name
 		//attempt to connect to the database
 		try{
@@ -225,12 +230,6 @@ public class MenuManager extends JPanel{
 			//in case of an error print the error code for trouble shooting
 			System.out.println(e.toString());
 		}
-	}
-	
-	public String encrypt(String toEncrypt){
-		String encryptedString = "";
-		//return the encrypted string
-		return encryptedString;
 	}
 
 }

@@ -29,6 +29,7 @@ public class Core{
 	}
 
 	public Core(){
+		EncryptionManager encryption = new EncryptionManager();
 		//get the account name of the user that is going to play
 		String accountName = "";
 		String accountPassword;
@@ -64,7 +65,7 @@ public class Core{
 					//otherwise get the encrypted password from the database
 					String passwordFromDatabase = rs.getString(2);
 					//Check if the entered password is the same as the one in the database after it is decrypted
-					if(!accountPassword.equals(decrypt(passwordFromDatabase))){
+					if(!passwordFromDatabase.equals(encryption.encrypt(accountPassword))){
 						signedIn = false;
 						//indicate that the password was incorrect
 						JOptionPane.showMessageDialog(new JFrame(), "Password Incorrect");
@@ -136,11 +137,6 @@ public class Core{
 
 		//Initialise a frame manager with all the classes that require mouse and key events
 		FrameManager fM = new FrameManager(screenWidth, screenHeight, eM, cM, menuPanel, oM, MManager, sManager);
-	}
-	
-	public String decrypt(String toDecrypt){
-		String decryptedString = "";
-		return decryptedString;
 	}
 
 }

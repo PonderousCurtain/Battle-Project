@@ -207,17 +207,19 @@ public class OverworldManager extends JPanel{
 			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
 			//create the query to be made to the table
 			Statement stmt = con.createStatement();
-			//get the result set for the query executed
-			ResultSet rs = stmt.executeQuery("select * from settlements join player on player.id = settlements.player");
+			//loop through the player list to
+			ResultSet rs = stmt.executeQuery("select * from player");
 			while(rs.next()){
-				//loop through all rows in the table that were returned
-				//create a new statement
+				//find all the settlements that the player owns and sum their incomes
+				int totalIncome = 0;
 				Statement stmt2 = con.createStatement();
-				System.out.println("Income increase for player " + rs.getInt(10));
-				System.out.println("Current funds for player " + rs.getInt(13));
-				//for each settlement increase the funds of that player by the income of the settlement
-				stmt2.executeUpdate("update player set funds = " + (rs.getInt(13) + rs.getInt(10)) + " where id = " + rs.getInt(9));
-				System.out.println("Funds increased to " + rs.getInt(13));
+				ResultSet rs2 = stmt2.executeQuery("select * from settlements where player = " + rs.getInt(2));
+				while(rs2.next()){
+					totalIncome += rs2.getInt(10);
+				}
+				//add the income to the player funds
+				Statement stmt3 = con.createStatement();
+				stmt3.executeUpdate("update player set funds = " + (totalIncome + rs.getInt(3)) + " where id = " + rs.getInt(2));
 			}
 			//close the connection to the database
 			con.close();
