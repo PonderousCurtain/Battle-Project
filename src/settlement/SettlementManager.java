@@ -409,7 +409,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 			//create the query to be made to the table
 			Statement stmt = con.createStatement();
 			//get the result set for the query executed
-			ResultSet rs = stmt.executeQuery("select * from settlementunitlink join building on settlementunitlink.building = building.name join unit on unit.building = building.name where settlementunitlink.settlementid = " + currentSettlement.getID());
+			ResultSet rs = stmt.executeQuery("select * from settlementbuildinglink join building on settlementbuildinglink.building = building.name join unit on unit.building = building.name where settlementbuildinglink.settlementid = " + currentSettlement.getID());
 			while(rs.next()){
 				//loop through all rows in the table that were returned
 				//check which buildings can be made by the settlement
