@@ -661,11 +661,11 @@ public class SettlementManager extends JPanel implements Cloneable{
 		//clear the selected list and remove the building
 		selectedList.clear();
 		//alter the income to reflect the lost building
-		alterIncome(currentBuilding.getName());
+		alterIncome(currentBuilding.getName(), -1);
 		placedBuildingList.remove(selectedBuilding);
 	}
 
-	public void alterIncome(String buildingName){
+	public void alterIncome(String buildingName, int removeInt){
 		//get the index of the current settlement
 		int settlementIndex = currentSettlement.getID();
 		try{
@@ -686,7 +686,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 					//create a third query to be made to the table
 					Statement stmt3 = con.createStatement();
 					//decrease the income of the settlement by the upkeep of the building
-					stmt3.executeUpdate("update settlements set income = " + (rs2.getInt(10) - rs.getInt(2)) + " where id = " + rs2.getInt(1));
+					stmt3.executeUpdate("update settlements set income = " + (rs2.getInt(10) - (removeInt *rs.getInt(2))) + " where id = " + rs2.getInt(1));
 				}
 			}
 			//close the connection to the database
@@ -767,7 +767,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 				settlementGrid[mouseGridX + currentBuildingSize.get(i)[0]][mouseGridY + currentBuildingSize.get(i)[1]].setBuildingID(indexCount);
 			}
 			//alter the income of the settlement to reflect the new building
-			alterIncome(currentBuilding.getName());
+			alterIncome(currentBuilding.getName(), 1);
 			//update the settlement grid placement to reflect that there is a building in that position now
 			updateSettlementGridPlace();
 			//increase the index count for the next building
