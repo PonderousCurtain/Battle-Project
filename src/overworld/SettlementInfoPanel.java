@@ -57,7 +57,7 @@ public class SettlementInfoPanel extends JPanel{
 				//check if the player whose turn it is owns the settlement
 				if(isSettlementOwnedByPlayer()){
 					//show the settlement manager and give it the correct settlement
-					sM.setSettlement(settlementID);
+					updateSettlementIDForSettlementManager();
 					//set the frame focus onto the settlement manager
 					cM.showCard("OverCard", "SettlementManager");
 				}
@@ -70,6 +70,11 @@ public class SettlementInfoPanel extends JPanel{
 		display.setPreferredSize(new Dimension(width, height));
 		add(display);
 		add(settlementButton);
+	}
+	
+	public void updateSettlementIDForSettlementManager(){
+		//update the settlement being shown in teh settlement manager
+		sM.setSettlement(settlementID);
 	}
 
 	public void setNewSettlement(int newID){

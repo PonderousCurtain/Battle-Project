@@ -155,6 +155,10 @@ public class OverworldViewManager extends JPanel{
 				xOffset += change;
 			}
 		}
+		//update the movement area for the selected army if one is selected.
+		if(armyHovering && selectionLocked){
+			checkArmyMovementArea();
+		}
 		repaint();
 	}
 	public void changeYOffset(int change){
@@ -167,6 +171,10 @@ public class OverworldViewManager extends JPanel{
 			if(yOffset + scaledWidth < 140){
 				yOffset += change;
 			}
+		}
+		//update the movement area for the selected army if one is selected.
+		if(armyHovering && selectionLocked){
+			checkArmyMovementArea();
 		}
 		repaint();
 	}
@@ -603,7 +611,7 @@ public class OverworldViewManager extends JPanel{
 				System.out.println(e.toString());
 			}
 		}
-		
+
 		//check if a player has won the game by gaining control of the last settlement
 		checkGameEnd();
 	}
@@ -644,7 +652,7 @@ public class OverworldViewManager extends JPanel{
 
 			//reset to the default font
 			g.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-			
+
 			//paint a background to the map view
 			g.setColor(Color.BLACK);
 			g.fillRect(0, 0, 700, 700);
@@ -700,7 +708,7 @@ public class OverworldViewManager extends JPanel{
 			//display the index of the player whose turn it is
 			g.setColor(Color.BLACK);
 			g.drawString("Current player: " + playerTurn, 10, 20);
-			
+
 			//check if the game is over
 			if(gameOver){
 				//display which player has won the game

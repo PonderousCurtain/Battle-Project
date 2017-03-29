@@ -118,4 +118,10 @@ public class OverworldInformationPanel extends JPanel{
 			g.fillRect(0, 0, width, height);
 		}
 	}
+
+	public void updateSettlementIDForSettlementManager() {
+		//pass on the request to update the settlemetn in the settlement manager
+		settlementPanel.updateSettlementIDForSettlementManager();
+		
+	}
 }

@@ -289,6 +289,8 @@ public class OverworldManager extends JPanel{
 			//add a keyboard shortcut to go to the last selected settlement manager
 			//check if the the current player own the selected settlement
 			if(infoPanel.isSettlementOwnedByPlayer()){
+				//show the settlement manager and give it the correct settlement
+				infoPanel.updateSettlementIDForSettlementManager();
 				cM.showCard("OverCard", "SettlementManager");
 			}
 			break;
