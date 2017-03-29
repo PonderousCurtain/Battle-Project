@@ -10,6 +10,7 @@ import java.sql.Statement;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 
 import battle.EventManager;
 import battle.InfoPanel;
@@ -34,6 +35,8 @@ public class Core{
 		String accountName = "";
 		String accountPassword;
 		Boolean signedIn = false;
+		//create a password field
+		JPasswordField passwordEntry = new JPasswordField();
 		while(!signedIn){
 			signedIn = true;
 			accountName = JOptionPane.showInputDialog("Please sign in");
@@ -41,9 +44,15 @@ public class Core{
 				System.exit(1);
 				break;
 			}
-			accountPassword = JOptionPane.showInputDialog("Password");
-			//if the user cancelled then close the program
-			if(accountPassword == null){
+			int passwordResult = JOptionPane.showConfirmDialog(null, passwordEntry, "Password", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+			//if the user cancelled then close the program otherwise get the password
+			if(passwordResult == JOptionPane.OK_OPTION){
+				accountPassword = "";
+				//get the char[] that contains the password and convert it into a string
+				for(int count = 0; count < passwordEntry.getPassword().length; count ++){
+					accountPassword += passwordEntry.getPassword()[count];
+				}
+			} else {
 				System.exit(1);
 				break;
 			}
