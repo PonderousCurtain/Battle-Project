@@ -284,6 +284,8 @@ public class OverworldManager extends JPanel{
 		case KeyEvent.VK_T:
 			//end turn
 			endCurrentTurn();
+			//repaint the view
+			viewport.repaint();
 			break;
 		case KeyEvent.VK_S:
 			//add a keyboard shortcut to go to the last selected settlement manager

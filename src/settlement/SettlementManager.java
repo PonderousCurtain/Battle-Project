@@ -416,14 +416,23 @@ public class SettlementManager extends JPanel implements Cloneable{
 				//create a string to hold the name
 				String holdString = "";
 				holdString += rs.getString(16) + ":";
-				//after adding the name to the string, add spaces to make the total character count to 15
-				for(int count = 0; count < 15 - rs.getString(16).length(); count ++){
-					holdString += " ";
+				//check if the settlement has the necessary building to make the unit
+				Boolean buildingOwned = false;
+				for(Building nextBuilding: placedBuildingList){
+					if(rs.getString(3).equals(nextBuilding.getName())){
+						buildingOwned = true;
+					}
 				}
-				//add the cost of the unit to the string
-				holdString += "" + rs.getInt(24);
-				//add the new string to the available units
-				availableUnitArray.add(holdString);
+				if(buildingOwned){
+					//after adding the name to the string, add spaces to make the total character count to 15
+					for(int count = 0; count < 15 - rs.getString(16).length(); count ++){
+						holdString += " ";
+					}
+					//add the cost of the unit to the string
+					holdString += "" + rs.getInt(24);
+					//add the new string to the available units
+					availableUnitArray.add(holdString);
+				}
 			}
 			//close the connection to the database
 			con.close();
@@ -758,6 +767,8 @@ public class SettlementManager extends JPanel implements Cloneable{
 
 			//add the building trying to be placed to the placed building list
 			placedBuildingList.add(new Building(currentBuilding));
+			//update the available units
+			updateAvailableUnits();
 
 			//loop through the new building size
 			for(int i = 0; i < currentBuildingSize.size(); i ++){
@@ -777,6 +788,8 @@ public class SettlementManager extends JPanel implements Cloneable{
 		} else if(removing){
 			//if the user is trying to remove a building and clicks then remove the selected building
 			removeSelected();
+			//update the available units
+			updateAvailableUnits();
 		}
 		repaint();
 	}
