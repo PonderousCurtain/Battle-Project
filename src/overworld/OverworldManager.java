@@ -284,6 +284,10 @@ public class OverworldManager extends JPanel{
 		case KeyEvent.VK_T:
 			//end turn
 			endCurrentTurn();
+			if(viewport.isSelectedArmy() || viewport.isSelectedSettlement()){
+				//if something is selected then update the information panel with the selected ID and the the type of item selected (true for settlement false for army)
+				infoPanel.updateSelected(viewport.getSelectedID(), viewport.isSelectedSettlement());
+			}
 			//repaint the view
 			viewport.repaint();
 			break;
