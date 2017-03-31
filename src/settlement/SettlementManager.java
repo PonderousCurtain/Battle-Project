@@ -72,6 +72,8 @@ public class SettlementManager extends JPanel implements Cloneable{
 
 	int mouseGridX;
 	int mouseGridY;
+	
+	int playerID;
 
 	int gapWidth;
 	SettlementGridSpace[][] settlementGrid;
@@ -532,6 +534,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 		if(currentBuildingList.size() > 0){
 			//set the building one button to have the icon of the building at that index of the list
 			buildingOne.setIcon(new ImageIcon(currentBuildingList.get(0 + displacement).getImage()));
+			buildingOne.setText("Cost: " + currentBuildingList.get(0 + displacement).getCost());
 		} else {
 			//if there is not another building type available for the settlement then display the default image
 			buildingOne.setIcon(new ImageIcon(defaultImage));
@@ -539,21 +542,25 @@ public class SettlementManager extends JPanel implements Cloneable{
 		//repeat the building button one for the rest of the buttons with their respective off sets
 		if(currentBuildingList.size() > 1){
 			buildingTwo.setIcon(new ImageIcon(currentBuildingList.get(1 + displacement).getImage()));
+			buildingTwo.setText("Cost: " + currentBuildingList.get(1 + displacement).getCost());
 		} else {
 			buildingTwo.setIcon(new ImageIcon(defaultImage));
 		}
 		if(currentBuildingList.size() > 2){
 			buildingThree.setIcon(new ImageIcon(currentBuildingList.get(2 + displacement).getImage()));
+			buildingThree.setText("Cost: " + currentBuildingList.get(2 + displacement).getCost());
 		} else {
 			buildingThree.setIcon(new ImageIcon(defaultImage));
 		}
 		if(currentBuildingList.size() > 3){
 			buildingFour.setIcon(new ImageIcon(currentBuildingList.get(3 + displacement).getImage()));
+			buildingFour.setText("Cost: " + currentBuildingList.get(3 + displacement).getCost());
 		} else {
 			buildingFour.setIcon(new ImageIcon(defaultImage));
 		}
 		if(currentBuildingList.size() > 4){
 			buildingFive.setIcon(new ImageIcon(currentBuildingList.get(4 + displacement).getImage()));
+			buildingFive.setText("Cost: " + currentBuildingList.get(4 + displacement).getCost());
 		} else {
 			buildingFive.setIcon(new ImageIcon(defaultImage));
 		}
@@ -564,7 +571,9 @@ public class SettlementManager extends JPanel implements Cloneable{
 		cM = newCM;
 	}
 
-	public void setSettlement(int newSettlement){
+	public void setSettlement(int newSettlement, int playerID){
+		//set the player ID to the owner of the settlement
+		this.playerID = playerID;
 		//set the new settlement variables to that of the new settlement
 		currentSettlement = settlementList.get(newSettlement - 1);
 		//update the building lists to those of the new settlement
@@ -757,33 +766,65 @@ public class SettlementManager extends JPanel implements Cloneable{
 		//convert the y position to a relative grid square coordinate
 		mouseGridY = Math.floorDiv(mouseY - 50, gapWidth);
 	}
+	
+	public Boolean canAffordBuilding(){
+		Boolean canAfford = false;
+		try{
+			//connect to the database and get the funds of the player
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localHost:3306/battle?useSSL=true", "root", "root");
+			//create the query to be made to the table
+			Statement stmt = con.createStatement();
+			//get the result set for the query executed
+			ResultSet rs = stmt.executeQuery("select * from player where id = " + playerID);
+			while(rs.next()){
+				//loop through all rows in the table that were returned
+				if(rs.getInt(3) >= currentBuilding.getCost()){
+					//if the player can afford the building then remove the cost from their funds and set can afford to true
+					Statement stmt2 = con.createStatement();
+					stmt2.executeUpdate("update player set funds = " + (rs.getInt(3) - currentBuilding.getCost()) + " where id = " + playerID);
+					canAfford = true;
+					//update the funds label for the player
+					updateFundsLabel();
+				}
+			}
+			//close the connection to the database
+			con.close();
+		} catch (Exception e){
+			//in case of an error print the error code for trouble shooting
+			System.out.println(e.toString());
+		}
+		return canAfford;
+	}
 
 	public void mouseClicked(MouseEvent event){
 		//get the mouse clicked event for this panel
 		//check if the user is currently trying to place a building and that building is in a place where it can be placed down
 		if(clearToPlace && !removing){
-			//get the placed index of the building trying to be placed to the next available index
-			currentBuilding.setPlacedIndex(indexCount);
+			//check if the user can afford the building, if they can then deduct the cost from their funds
+			if(canAffordBuilding()){
+				//get the placed index of the building trying to be placed to the next available index
+				currentBuilding.setPlacedIndex(indexCount);
 
-			//add the building trying to be placed to the placed building list
-			placedBuildingList.add(new Building(currentBuilding));
-			//update the available units
-			updateAvailableUnits();
+				//add the building trying to be placed to the placed building list
+				placedBuildingList.add(new Building(currentBuilding));
+				//update the available units
+				updateAvailableUnits();
 
-			//loop through the new building size
-			for(int i = 0; i < currentBuildingSize.size(); i ++){
-				//set the values for the settlement grid square to that of the new values fo the building being placed
-				settlementGrid[mouseGridX + currentBuildingSize.get(i)[0]][mouseGridY + currentBuildingSize.get(i)[1]].setValue(1);
-				settlementGrid[mouseGridX + currentBuildingSize.get(i)[0]][mouseGridY + currentBuildingSize.get(i)[1]].setImageString(currentBuildingPlacedImage);
-				settlementGrid[mouseGridX + currentBuildingSize.get(i)[0]][mouseGridY + currentBuildingSize.get(i)[1]].setBuildingID(indexCount);
+				//loop through the new building size
+				for(int i = 0; i < currentBuildingSize.size(); i ++){
+					//set the values for the settlement grid square to that of the new values fo the building being placed
+					settlementGrid[mouseGridX + currentBuildingSize.get(i)[0]][mouseGridY + currentBuildingSize.get(i)[1]].setValue(1);
+					settlementGrid[mouseGridX + currentBuildingSize.get(i)[0]][mouseGridY + currentBuildingSize.get(i)[1]].setImageString(currentBuildingPlacedImage);
+					settlementGrid[mouseGridX + currentBuildingSize.get(i)[0]][mouseGridY + currentBuildingSize.get(i)[1]].setBuildingID(indexCount);
+				}
+				//alter the income of the settlement to reflect the new building
+				alterIncome(currentBuilding.getName(), 1);
+				//update the settlement grid placement to reflect that there is a building in that position now
+				updateSettlementGridPlace();
+				//increase the index count for the next building
+				indexCount ++;
 			}
-			//alter the income of the settlement to reflect the new building
-			alterIncome(currentBuilding.getName(), 1);
-			//update the settlement grid placement to reflect that there is a building in that position now
-			updateSettlementGridPlace();
-			//increase the index count for the next building
-			indexCount ++;
-
 
 		} else if(removing){
 			//if the user is trying to remove a building and clicks then remove the selected building

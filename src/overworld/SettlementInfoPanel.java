@@ -73,8 +73,8 @@ public class SettlementInfoPanel extends JPanel{
 	}
 	
 	public void updateSettlementIDForSettlementManager(){
-		//update the settlement being shown in teh settlement manager
-		sM.setSettlement(settlementID);
+		//update the settlement being shown in the settlement manager
+		sM.setSettlement(settlementID, playerTurn);
 	}
 
 	public void setNewSettlement(int newID){
