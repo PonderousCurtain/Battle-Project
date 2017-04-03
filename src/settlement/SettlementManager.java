@@ -538,6 +538,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 		} else {
 			//if there is not another building type available for the settlement then display the default image
 			buildingOne.setIcon(new ImageIcon(defaultImage));
+			buildingOne.setText("");
 		}
 		//repeat the building button one for the rest of the buttons with their respective off sets
 		if(currentBuildingList.size() > 1){
@@ -545,24 +546,28 @@ public class SettlementManager extends JPanel implements Cloneable{
 			buildingTwo.setText("Cost: " + currentBuildingList.get(1 + displacement).getCost());
 		} else {
 			buildingTwo.setIcon(new ImageIcon(defaultImage));
+			buildingTwo.setText("");
 		}
 		if(currentBuildingList.size() > 2){
 			buildingThree.setIcon(new ImageIcon(currentBuildingList.get(2 + displacement).getImage()));
 			buildingThree.setText("Cost: " + currentBuildingList.get(2 + displacement).getCost());
 		} else {
 			buildingThree.setIcon(new ImageIcon(defaultImage));
+			buildingThree.setText("");
 		}
 		if(currentBuildingList.size() > 3){
 			buildingFour.setIcon(new ImageIcon(currentBuildingList.get(3 + displacement).getImage()));
 			buildingFour.setText("Cost: " + currentBuildingList.get(3 + displacement).getCost());
 		} else {
 			buildingFour.setIcon(new ImageIcon(defaultImage));
+			buildingFour.setText("");
 		}
 		if(currentBuildingList.size() > 4){
 			buildingFive.setIcon(new ImageIcon(currentBuildingList.get(4 + displacement).getImage()));
 			buildingFive.setText("Cost: " + currentBuildingList.get(4 + displacement).getCost());
 		} else {
 			buildingFive.setIcon(new ImageIcon(defaultImage));
+			buildingFive.setText("");
 		}
 	}
 
