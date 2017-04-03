@@ -679,7 +679,7 @@ public class SettlementManager extends JPanel implements Cloneable{
 		//clear the selected list and remove the building
 		selectedList.clear();
 		//alter the income to reflect the lost building
-		alterIncome(currentBuilding.getName(), -1);
+		alterIncome(selectedBuilding.getName(), -1);
 		placedBuildingList.remove(selectedBuilding);
 	}
 

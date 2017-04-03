@@ -327,8 +327,26 @@ public class OverworldViewManager extends JPanel{
 		mouseCoords = coords.clone();
 		//check that the selection is not currently locked otherwise maintain the last selected item
 		if(!selectionLocked){
-			//check if there is a settlement at the location of the mouse
-			if(map[coords[0] + xOffset][coords[1] + yOffset].getSettlementID() != 0){
+			//check if there is an army at the location of the mouse
+			//set that nothing is selected
+			settlementHovering = false;
+			armyHovering = false;
+			//loop through the armies to check if there is an army in the grid square where the mouse is located
+			for(int i = 0; i < allArmies.size(); i ++){
+				Army nextArmy = allArmies.get(i);
+				if(nextArmy.getX() == coords[0] + xOffset && nextArmy.getY() == coords[1] + yOffset){
+					//if there is an army at the selected location then set is as selected
+					nextArmy.setSelected(true);
+					armyHovering = true;
+					//set the ID of the hovering ID to the index in the army list that the army lies in
+					hoveringID = i;
+				} else {
+					//if the army is not in the selected location then ensure that it is set as unselected
+					nextArmy.setSelected(false);
+				}
+			}
+			//if no army was selected check if there is a settlement at the location of the mouse
+			if(!armyHovering && map[coords[0] + xOffset][coords[1] + yOffset].getSettlementID() != 0){
 				//if there is a settlement at this location then set the hovering ID to that of the settlement and indicate that it is a settlement that is selected
 				settlementHovering = true;
 				hoveringID = map[coords[0] + xOffset][coords[1] + yOffset].getSettlementID();
@@ -337,25 +355,6 @@ public class OverworldViewManager extends JPanel{
 				//loop through the armies to set them all to unselected
 				for(Army nextArmy: allArmies){
 					if(nextArmy.isSelected()){
-						nextArmy.setSelected(false);
-					}
-				}
-			} else {
-				//otherwise if there is not a settlement at the mouse location
-				//set that nothing is selected
-				settlementHovering = false;
-				armyHovering = false;
-				//loop through the armies to check if there is an army in the gris square where the mouse is located
-				for(int i = 0; i < allArmies.size(); i ++){
-					Army nextArmy = allArmies.get(i);
-					if(nextArmy.getX() == coords[0] + xOffset && nextArmy.getY() == coords[1] + yOffset){
-						//if there is an army at the selected location then set is as selected
-						nextArmy.setSelected(true);
-						armyHovering = true;
-						//set the ID of the hovering ID to the index in the army list that the army lies in
-						hoveringID = i;
-					} else {
-						//if the army is not in the selected location then ensure that it is set as unselected
 						nextArmy.setSelected(false);
 					}
 				}
@@ -463,7 +462,7 @@ public class OverworldViewManager extends JPanel{
 			int[] coords = getGridLocation(x, y);
 			//get the number of squares moved (the largest out of x or y)
 			int distanceMoved = Math.abs(allArmies.get(hoveringID).getX() - (coords[0] + xOffset));
-			if(Math.abs(allArmies.get(hoveringID).getY() - (coords[1] + yOffset)) > Math.abs(allArmies.get(hoveringID).getX() - (coords[0] + yOffset))){
+			if(Math.abs(allArmies.get(hoveringID).getY() - (coords[1] + yOffset)) > Math.abs(allArmies.get(hoveringID).getX() - (coords[0] + xOffset))){
 				distanceMoved = Math.abs(allArmies.get(hoveringID).getY() - (coords[1] + yOffset));
 			}
 			//move the selected army to the new location
