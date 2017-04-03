@@ -57,7 +57,7 @@ public class InfoPanel extends JPanel{
 		controlOptionPane.setPreferredSize(new Dimension(panelWidth, 300));
 
 		//create a slider to control the aggression range of selected units
-		JLabel agroSliderLabel = new JLabel("Agression Range");
+		JLabel agroSliderLabel = new JLabel("Aggression Range");
 		agroSliderLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		agroSlider = new JSlider(JSlider.HORIZONTAL, 0, 500, 100);
 		agroSlider.addChangeListener(new ChangeListener(){
